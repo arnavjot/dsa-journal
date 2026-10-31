@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Floyd's Cycle Stepper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — mode tabs, presets, array strip, graph stage, controls, then code + math side by side */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --slow:#0b8486; --fast:#d9661f; --s2:#7446d1; --hit:#cf2f55; --hit-soft:#fbe4ea; --x:#0b8486;
+  --code-bg:#f0f2f6; --hl:#fff1c2;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --slow:#3cc3c5; --fast:#ff9650; --s2:#a98bff; --hit:#ff6a8a; --hit-soft:#3a1d27; --x:#3cc3c5;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --slow:#3cc3c5; --fast:#ff9650; --s2:#a98bff; --hit:#ff6a8a; --hit-soft:#3a1d27; --x:#3cc3c5;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:72ch}
+.sub code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:620px}
+@media (max-width:440px){.tabs{grid-template-columns:minmax(0,1fr)}}
+.tab{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;cursor:pointer;
+  background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 16px;
+  box-shadow:0 2px 0 var(--line);transition:border-color .15s, box-shadow .15s, transform .1s}
+.tab:hover{border-color:var(--edge);box-shadow:0 3px 0 var(--edge)}
+.tab:active{transform:translateY(2px);box-shadow:0 0 0 var(--line)}
+.tab .t{font-size:17px;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px}
+.tab .t::before{content:"";width:14px;height:14px;border-radius:50%;border:2px solid var(--edge);flex:0 0 auto;box-sizing:border-box}
+.tab .d{font-family:var(--f-mono);font-size:12px;color:var(--muted);padding-left:22px}
+.tab[aria-selected="true"]{border-color:var(--s2);background:color-mix(in srgb, var(--s2) 9%, var(--surface));box-shadow:0 2px 0 var(--s2)}
+.tab[aria-selected="true"] .t::before{border:4px solid var(--s2);background:var(--surface)}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--s2);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.scroll{overflow-x:auto}
+.arr{display:flex;gap:4px;padding:4px 2px 2px}
+.cell{flex:0 0 auto;width:46px;border:1px solid var(--line);border-radius:8px;background:var(--surface);text-align:center;font-family:var(--f-mono);padding-top:4px}
+.cell .i{font-size:11px;color:var(--muted)}
+.cell .v{font-size:17px;font-weight:700;padding:2px 0 4px}
+.cell.dup .v{color:var(--hit)}
+.cell.off{opacity:.45}
+.cell .marks{display:flex;justify-content:center;gap:2px;height:7px;margin:0 0 5px}
+.cell .marks i{width:10px;height:6px;border-radius:2px;display:block}
+.m-slow{background:var(--slow)} .m-fast{background:var(--fast)} .m-s2{background:var(--s2)}
+
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:620px;height:auto}
+.node circle{fill:var(--surface);stroke:var(--edge);stroke-width:1.5}
+.node.start circle{stroke:var(--hit);stroke-width:3;fill:var(--hit-soft)}
+.node text{font-family:var(--f-mono);font-weight:700;font-size:15px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.nullbox rect{fill:var(--code-bg);stroke:var(--edge);stroke-dasharray:4 3}
+.nullbox text{font-family:var(--f-mono);font-size:12px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.edge{fill:none;stroke:var(--edge);stroke-width:1.6}
+.edge.in{stroke:var(--hit);stroke-width:2.4}
+.edge.xarc{stroke:var(--x);stroke-width:5;opacity:.5}
+.edge.larc{stroke:var(--s2);stroke-width:5;opacity:.45}
+.ah{fill:var(--edge)} .ah-hit{fill:var(--hit)}
+.ann{font-family:var(--f-body);font-size:13px;fill:var(--muted);text-anchor:middle}
+.ann.big{font-family:var(--f-mono);font-size:15px;font-weight:700;fill:var(--ink)}
+.ann.hit{fill:var(--hit);font-weight:600}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok rect{transition:fill .3s}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.tok.slow rect{fill:var(--slow)} .tok.fast rect{fill:var(--fast)} .tok.s2 rect{fill:var(--s2)}
+.tok.fast.walk rect{fill:var(--s2)}
+@media (prefers-reduced-motion:reduce){.tok,.tok rect{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--fast)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.ok{color:var(--slow)}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--s2);padding:2px 0 2px 12px;max-width:80ch}
+.why b{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Floyd's cycle detection, step by step</h1>
+    <p class="sub" id="sub"></p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-array" data-mode="array"><span class="t">Array</span><span class="d">LC 287 · find duplicate</span></button>
+    <button class="tab" role="tab" id="tab-list" data-mode="list"><span class="t">Linked list</span><span class="d">LC 142 · cycle start</span></button>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+
+  <div id="arrBlock">
+    <div class="label">nums[] — top: index, bottom: value</div>
+    <div class="scroll"><div class="arr" id="arr"></div></div>
+  </div>
+
+  <div class="stage"><svg id="g" role="img" aria-label="Pointer graph"></svg></div>
+
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed">
+      <option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option>
+    </select>
+    <span class="phase" id="phase">Phase 1</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label" id="codeLabel">The code</div>
+      <pre class="code" id="code"></pre>
+    </div>
+    <div class="card">
+      <div class="label">What just happened</div>
+      <div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div>
+      <dl class="math" id="math"></dl>
+    </div>
+  </div>
+
+  <p class="why" id="why"></p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* ---------- mode definitions ---------- */
+const ARRAY_PRESETS = [
+  {key:'a-huge', label:'21 numbers (L=8, C=13)', nums:[13,14,19,15,17,12,11,18,20,2,11,3,16,4,7,8,10,9,5,6,1]},
+  {key:'a-hugetail', label:'20 numbers (L=14, C=6)', nums:[7,16,18,10,13,14,19,15,12,1,17,4,10,9,8,2,6,5,11,3]},
+  {key:'a-cycle', label:'12 numbers (L=5, C=7)', nums:[6,11,5,8,7,9,10,2,5,1,3,4]},
+  {key:'a-small', label:'[1,3,4,2,2]', nums:[1,3,4,2,2]},
+];
+const LIST_PRESETS = [
+  {key:'l-big', label:'21 nodes (L=8, C=13)', L:8, C:13},
+  {key:'l-road', label:'20 nodes (L=14, C=6)', L:14, C:6},
+  {key:'l-small', label:'A→B→[C D E F] (L=2, C=4)', L:2, C:4},
+  {key:'l-head', label:'Cycle at head (L=0, C=7)', L:0, C:7},
+  {key:'l-none', label:'No cycle (9 nodes)', L:9, C:0},
+];
+
+const CODE_ARRAY = [
+  "int findDuplicate(vector<int>& nums) {",
+  "    int slow = 0, fast = 0;",
+  "    while (true) {",
+  "        slow = nums[slow];",
+  "        fast = nums[nums[fast]];",
+  "        if (slow == fast) {",
+  "            int slow2 = 0;",
+  "            while (slow != slow2) {",
+  "                slow = nums[slow];",
+  "                slow2 = nums[slow2];",
+  "            }",
+  "            return slow;",
+  "        }",
+  "    }",
+  "}"
+];
+const CODE_LIST = [
+  "ListNode* detectCycle(ListNode* head) {",
+  "    ListNode* fast = head;",
+  "    ListNode* slow = head;",
+  "    while (fast != NULL && fast->next != NULL) {",
+  "        fast = fast->next->next;",
+  "        slow = slow->next;",
+  "        if (fast == slow) {",
+  "            fast = head;",
+  "            while (fast != slow) {",
+  "                fast = fast->next;",
+  "                slow = slow->next;",
+  "            }",
+  "            return slow;",
+  "        }",
+  "    }",
+  "    return NULL;",
+  "}"
+];
+
+const MODES = {
+  array: {
+    code: CODE_ARRAY, codeLabel:'The code — array (phase 2 inside the if)',
+    sub:`Every index <code>i</code> points to <code>nums[i]</code>, so the array is secretly a linked list where "next" means <code>nums[i]</code>. The red node is where the road joins the loop. It has two arrows coming in, so two cells hold that value. That's the duplicate.`,
+    legend:`<span><i class="dot m-slow"></i>slow (1 step)</span><span><i class="dot m-fast"></i>fast (2 steps)</span><span><i class="dot m-s2"></i>slow2 (phase 2, starts at 0)</span><span><i class="dot" style="background:var(--hit)"></i>cycle start = duplicate</span>`,
+    placeholder:'your own array: 3,1,3,4,2',
+    why:`<b>Why it works:</b> when they meet, slow walked <b>L + x</b> and fast walked <b>2(L + x)</b>. Fast's extra <b>L + x</b> was only laps, so <b>L + x = k·C</b>. Slow is x into the loop, so L more steps puts it at x + L = k·C, which is full laps, back at the cycle start. slow2 also needs exactly L steps from index 0. They arrive together.`,
+    presets: ARRAY_PRESETS
+  },
+  list: {
+    code: CODE_LIST, codeLabel:'The code — linked list',
+    sub:`Same algorithm, real linked list. Each node points to <code>node->next</code>. Phase 2 doesn't make a new pointer: it sends <code>fast</code> back to <code>head</code> and from then on moves it <b>1 step</b> (it turns purple). A list may also have <b>no</b> cycle, so the loop checks for <code>NULL</code>.`,
+    legend:`<span><i class="dot m-slow"></i>slow (1 step)</span><span><i class="dot m-fast"></i>fast (2 steps)</span><span><i class="dot m-s2"></i>fast in phase 2 (back at head, 1 step)</span><span><i class="dot" style="background:var(--hit)"></i>cycle start = node to return</span>`,
+    placeholder:'your own: road L, loop C (e.g. 4,7 or 6,0 for no cycle)',
+    why:`<b>Why it works:</b> identical math to the array version. L + x = k·C, so walking L steps from head and L steps from the meeting point both land on the cycle start. <b>Try "Cycle at head":</b> L = 0, so after <code>fast = head</code> they're already equal. That's why this version checks <code>while (fast != slow)</code> <i>before</i> moving.`,
+    presets: LIST_PRESETS
+  }
+};
+
+/* ---------- graph helpers ---------- */
+function letter(i){ let s=''; i++; while(i>0){ i--; s = String.fromCharCode(65 + i%26) + s; i = Math.floor(i/26); } return s; }
+
+function makeListGraph(L, C){
+  const n = L + C, next = [];
+  for(let i=0;i<n;i++) next.push(i+1);
+  next[n-1] = C > 0 ? L : -1;
+  return {next, head:0, lab: i => i === -1 ? 'NULL' : letter(i)};
+}
+function makeArrayGraph(nums){
+  return {next: nums.slice(), head:0, lab: i => String(i), nums};
+}
+
+function analyze(G){
+  const first = new Map(), path = [];
+  let c = G.head;
+  while(c !== -1 && !first.has(c)){ first.set(c, path.length); path.push(c); c = G.next[c]; }
+  if(c === -1) return {noCycle:true, L:path.length, C:0, start:null, tail:path, cycle:[], onPath:new Set(path)};
+  const L = first.get(c);
+  return {L, C: path.length - L, start:c, tail:path.slice(0,L), cycle:path.slice(L), onPath:new Set(path)};
+}
+
+/* ---------- frame builders ---------- */
+function framesArray(G, A){
+  const nums = G.next, F = [];
+  let slow = 0, fast = 0, ss = 0, fs = 0;
+  F.push({ph:1, slow, fast, s2:null, ss, fs, p2:0, lines:[1],
+    msg:`Both start at index <code>0</code>. They hold <b>indices</b>. A move means "jump to the index written in this cell".`});
+  for(let g=0; g<5000; g++){
+    const os = slow, of = fast, a = nums[slow], f1 = nums[fast], f2 = nums[f1];
+    slow = a; fast = f2; ss++; fs += 2;
+    const meet = slow === fast;
+    F.push({ph:1, slow, fast, s2:null, ss, fs, p2:0, lines:[3,4,5], meet,
+      msg:`<span class="eq">slow = nums[${os}] = ${a}\nfast = nums[nums[${of}]] = nums[${f1}] = ${f2}</span>` +
+        (meet ? `<b>slow == fast == ${slow}</b>, so we go inside the <code>if</code>. They're somewhere in the loop. This is <b>not</b> the answer yet.`
+              : `if: ${slow} ≠ ${fast}, not equal, loop again.`)});
+    if(meet) break;
+  }
+  const x = ss - A.L;
+  let s2 = 0, p2 = 0;
+  F.push({ph:2, slow, fast:null, s2, ss, fs, p2, lines:[6], x,
+    msg:`<code>int slow2 = 0;</code> slow2 starts at index 0. slow stays at ${slow}, which is <b>x = ${x}</b> step${x===1?'':'s'} past the cycle start. Now both move <b>1 step</b> at a time.`});
+  for(let g=0; g<5000; g++){
+    if(slow === s2) break;
+    const os = slow, o2 = s2;
+    slow = nums[slow]; s2 = nums[s2]; p2++;
+    F.push({ph:2, slow, fast:null, s2, ss, fs, p2, lines:[7,8,9], x,
+      msg:`<span class="eq">check: ${os} != ${o2} ✓ → move\nslow  = nums[${os}] = ${slow}\nslow2 = nums[${o2}] = ${s2}</span>Phase-2 steps: ${p2} of L = ${A.L}.`});
+  }
+  F.push({ph:2, slow, fast:null, s2, ss, fs, p2, lines:[7,11], x, done:true,
+    msg:`<span class="eq">check: ${slow} != ${s2} ✗ → loop stops</span><b>return ${slow}</b>. It took ${p2} steps, exactly L = ${A.L}. ${slow} is the duplicate.`});
+  return F;
+}
+
+function framesList(G, A){
+  const nx = G.next, lab = G.lab, F = [];
+  let fast = G.head, slow = G.head, ss = 0, fs = 0;
+  F.push({ph:1, slow, fast, s2:null, ss, fs, p2:0, lines:[1,2],
+    msg:`Both pointers start at <code>head</code> (node ${lab(G.head)}).`});
+  for(let g=0; g<5000; g++){
+    if(fast === -1 || nx[fast] === -1){
+      const why = fast === -1 ? 'fast == NULL' : `fast->next == NULL (${lab(fast)} is the last node)`;
+      F.push({ph:1, slow, fast, s2:null, ss, fs, p2:0, lines:[3,15], end:true,
+        msg:`<span class="eq">while check: ${why} ✗</span>Fast ran off the end of the list. A loop would never end, so there is <b>no cycle</b>. <b>return NULL</b>.`});
+      return F;
+    }
+    const of = fast, os = slow, f1 = nx[fast], f2 = nx[f1];
+    fast = f2; slow = nx[slow]; fs += 2; ss++;
+    const meet = fast === slow;
+    F.push({ph:1, slow, fast, s2:null, ss, fs, p2:0, lines:[3,4,5,6], meet,
+      msg:`<span class="eq">while: fast, fast->next not NULL ✓\nfast = fast->next->next : ${lab(of)} → ${lab(f1)} → ${lab(f2)}\nslow = slow->next       : ${lab(os)} → ${lab(slow)}</span>` +
+        (meet ? `<b>fast == slow</b> (both at ${lab(slow)}), so we go inside the <code>if</code>. They're in the loop, but this isn't the start yet.`
+              : `if: ${lab(fast)} ≠ ${lab(slow)}, keep going.`)});
+    if(meet) break;
+  }
+  const x = ss - A.L;
+  let w = G.head, p2 = 0;
+  F.push({ph:2, slow, fast:w, walk:true, s2:null, ss, fs, p2, lines:[7], x,
+    msg:`<code>fast = head;</code> fast jumps back to ${lab(G.head)}. From now on it moves only <b>1 step</b> (shown purple). slow stays at ${lab(slow)}, <b>x = ${x}</b> step${x===1?'':'s'} past the cycle start.`});
+  for(let g=0; g<5000; g++){
+    if(w === slow) break;
+    const ow = w, os = slow;
+    w = nx[w]; slow = nx[slow]; p2++;
+    F.push({ph:2, slow, fast:w, walk:true, s2:null, ss, fs, p2, lines:[8,9,10], x,
+      msg:`<span class="eq">check: ${lab(ow)} != ${lab(os)} ✓ → move\nfast = fast->next : ${lab(ow)} → ${lab(w)}\nslow = slow->next : ${lab(os)} → ${lab(slow)}</span>Phase-2 steps: ${p2} of L = ${A.L}.`});
+  }
+  F.push({ph:2, slow, fast:w, walk:true, s2:null, ss, fs, p2, lines:[8,12], x, done:true,
+    msg:`<span class="eq">check: ${lab(w)} != ${lab(slow)} ✗ → loop stops</span><b>return node ${lab(slow)}</b>, the start of the cycle, after ${p2} step${p2===1?'':'s'} (L = ${A.L}).` +
+      (A.L === 0 ? ` Here L = 0: they were equal right after <code>fast = head</code>, so the loop body never ran. Checking <i>before</i> moving is what makes this case correct.` : '')});
+  return F;
+}
+
+/* ---------- layout & render ---------- */
+function layout(A){
+  const NR = 20, SP = A.L > 10 ? 62 : 72;
+  const pos = {};
+  if(A.noCycle){
+    const cy = 90;
+    A.tail.forEach((n,i)=>{ pos[n] = {x: 60 + i*SP, y: cy}; });
+    pos[-1] = {x: 60 + A.L*SP + 10, y: cy};
+    return {pos, NR, cy, W: 60 + A.L*SP + 80, H: 190, R:0, cx:0};
+  }
+  const R = Math.max(78, A.C * 66 / (2*Math.PI));
+  const cx = 60 + A.L*SP + R + 10, cy = R + 72;
+  A.cycle.forEach((n,k)=>{ const t = Math.PI + k*2*Math.PI/A.C; pos[n] = {x:cx + R*Math.cos(t), y:cy + R*Math.sin(t)}; });
+  A.tail.forEach((n,i)=>{ pos[n] = {x: cx - R - (A.L - i)*SP, y: cy}; });
+  return {pos, R, cx, cy, NR, W: cx + R + 70, H: cy + R + 84};
+}
+function unit(dx,dy){ const l = Math.hypot(dx,dy)||1; return [dx/l, dy/l]; }
+
+function render(){
+  const {G, A, Lo, mode} = S;
+  const {pos, R, cx, cy, NR, W, H} = Lo;
+  let s = `<defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker>
+    <marker id="ahh" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="ah-hit" d="M0,0 L10,5 L0,10 z"/></marker>
+  </defs>`;
+  const edges = [];
+  if(A.noCycle){
+    for(let i=0;i<A.tail.length;i++){
+      const p = pos[A.tail[i]], last = i === A.tail.length-1;
+      const q = last ? pos[-1] : pos[A.tail[i+1]];
+      const endPad = last ? 26 : NR+3;
+      edges.push({id:`t${i}`, d:`M${p.x+NR},${p.y} L${q.x-endPad},${q.y}`, cls:''});
+    }
+  } else {
+    const path = A.tail.concat([A.start]);
+    for(let i=0;i<A.tail.length;i++){
+      const p = pos[path[i]], q = pos[path[i+1]];
+      const [ux,uy] = unit(q.x-p.x, q.y-p.y);
+      edges.push({id:`t${i}`, d:`M${p.x+ux*NR},${p.y+uy*NR} L${q.x-ux*(NR+3)},${q.y-uy*(NR+3)}`, cls: i===A.tail.length-1 ? 'in':''});
+    }
+    for(let k=0;k<A.C;k++){
+      const p = pos[A.cycle[k]], q = pos[A.cycle[(k+1)%A.C]];
+      if(A.C === 1){
+        edges.push({id:'c0', d:`M${p.x-8},${p.y-NR+2} C${p.x-40},${p.y-80} ${p.x+40},${p.y-80} ${p.x+8},${p.y-NR-3}`, cls:'in'});
+        continue;
+      }
+      const mx = (p.x+q.x)/2, my = (p.y+q.y)/2;
+      let [nx,ny] = unit(mx-cx, my-cy);
+      if(Math.hypot(mx-cx,my-cy) < 1){ [nx,ny] = unit(-(q.y-p.y), q.x-p.x); }
+      const bulge = A.C <= 2 ? 40 : 14;
+      const qx = mx + nx*bulge, qy = my + ny*bulge;
+      const [u1x,u1y] = unit(qx-p.x, qy-p.y), [u2x,u2y] = unit(qx-q.x, qy-q.y);
+      edges.push({id:`c${k}`, d:`M${p.x+u1x*NR},${p.y+u1y*NR} Q${qx},${qy} ${q.x+u2x*(NR+3)},${q.y+u2y*(NR+3)}`, cls: k===A.C-1 ? 'in':''});
+    }
+  }
+  edges.forEach(e=>{ s += `<path id="hl-${e.id}" class="edge" d="${e.d}" style="opacity:0"/>`; });
+  edges.forEach(e=>{ s += `<path class="edge ${e.cls}" d="${e.d}" marker-end="url(#${e.cls==='in'?'ahh':'ah'})"/>`; });
+  Object.keys(pos).forEach(k=>{
+    const n = +k, p = pos[k];
+    if(n === -1){ s += `<g class="nullbox"><rect x="${p.x-24}" y="${p.y-14}" width="48" height="28" rx="6"/><text x="${p.x}" y="${p.y}">NULL</text></g>`; return; }
+    s += `<g class="node${n===A.start?' start':''}"><circle cx="${p.x}" cy="${p.y}" r="${NR}"/><text x="${p.x}" y="${p.y}">${G.lab(n)}</text></g>`;
+  });
+  if(mode === 'list' && A.tail.length + A.cycle.length > 0){
+    const h = pos[G.head];
+    s += `<text class="ann" x="${h.x}" y="${A.L === 0 ? h.y + 62 : h.y - 46}">head</text>`;
+  }
+  if(A.noCycle){
+    s += `<text class="ann" x="${(pos[A.tail[0]].x + pos[-1].x)/2}" y="${cy+62}">no loop: the last node points to NULL</text>`;
+  } else {
+    if(A.L>0){
+      const x0 = pos[A.tail[0]].x, x1 = pos[A.start].x;
+      s += `<path class="edge" d="M${x0},${cy+34} L${x0},${cy+38} L${x1},${cy+38} L${x1},${cy+34}" style="opacity:.6"/>`;
+      s += `<text class="ann" x="${(x0+x1)/2}" y="${cy+54}">road: L = ${A.L} step${A.L>1?'s':''} to the cycle start</text>`;
+    }
+    s += `<text class="ann big" x="${cx}" y="${cy-10}">C = ${A.C}</text>`;
+    s += `<text class="ann" x="${cx}" y="${cy+10}">cycle length</text>`;
+    const sp = pos[A.start];
+    const what = mode === 'array' ? `duplicate ${A.start}` : `return ${G.lab(A.start)}`;
+    s += `<text class="ann hit" x="${sp.x}" y="${sp.y - 62}">cycle start</text>`;
+    s += `<text class="ann hit" x="${sp.x}" y="${sp.y - 47}">(${what})</text>`;
+    s += `<text id="xlab" class="ann" x="${cx}" y="${cy+R+58}" style="opacity:0"></text>`;
+  }
+  [['slow','slow'],['fast','fast'],['s2','slow2']].forEach(([k,lab])=>{
+    const w = lab.length*7.4+14;
+    s += `<g class="tok ${k}" id="tok-${k}" style="opacity:0"><rect x="${-w/2}" y="-10" width="${w}" height="20" rx="6"/><text x="0" y="0">${lab}</text></g>`;
+  });
+  const svg = $('g');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.innerHTML = s;
+
+  $('arrBlock').hidden = mode !== 'array';
+  if(mode === 'array'){
+    $('arr').innerHTML = G.nums.map((v,i)=>`<div class="cell${v===A.start?' dup':''}${A.onPath.has(i)?'':' off'}" id="cell-${i}">
+      <div class="i">${i}</div><div class="v">${v}</div><div class="marks"></div></div>`).join('');
+  }
+  const code = MODES[mode].code;
+  $('code').innerHTML = code.map((l,i)=>`<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
+  $('codeLabel').textContent = MODES[mode].codeLabel;
+}
+
+function placeTok(k, idx, slot){
+  const el = $('tok-'+k);
+  if(idx === null || idx === undefined){ el.style.opacity = 0; return; }
+  const p = S.Lo.pos[idx];
+  el.style.opacity = 1;
+  el.style.transform = `translate(${p.x}px, ${p.y + (slot==='up' ? -33 : 33)}px)`;
+}
+
+function setHL(f){
+  const {A} = S;
+  document.querySelectorAll('[id^="hl-"]').forEach(e=>{ e.style.opacity = 0; e.setAttribute('class','edge'); });
+  const lab = $('xlab');
+  if(A.noCycle || !lab) return;
+  if(f.ph === 2 || f.meet){
+    const x = f.ss - A.L;
+    for(let k=0;k<x;k++){ const e = $('hl-c'+(k%A.C)); if(e){ e.setAttribute('class','edge xarc'); e.style.opacity=''; } }
+    lab.style.opacity = 1;
+    lab.textContent = `teal = x = ${x} step${x===1?'':'s'} (cycle start → meeting point)` + (f.ph===2 ? `   ·   purple = L = ${A.L} (start → cycle start)` : '');
+  } else lab.style.opacity = 0;
+  if(f.ph === 2){
+    for(let i=0;i<A.L;i++){ const e = $('hl-t'+i); if(e){ e.setAttribute('class','edge larc'); e.style.opacity=''; } }
+  }
+}
+
+function update(){
+  const f = S.F[cur], {A, mode, G} = S;
+  placeTok('slow', f.slow, 'up');
+  placeTok('fast', f.fast, 'down');
+  placeTok('s2', f.s2, 'down');
+  $('tok-fast').classList.toggle('walk', !!f.walk);
+  setHL(f);
+  if(mode === 'array'){
+    G.nums.forEach((v,i)=>{
+      const m = [];
+      if(f.slow===i) m.push('m-slow');
+      if(f.fast===i) m.push('m-fast');
+      if(f.s2===i) m.push('m-s2');
+      $('cell-'+i).querySelector('.marks').innerHTML = m.map(c=>`<i class="${c}"></i>`).join('');
+    });
+  }
+  MODES[mode].code.forEach((_,i)=>$('ln-'+i).classList.toggle('on', f.lines.includes(i)));
+  $('msg').innerHTML = f.msg;
+  $('phase').textContent = f.end ? 'No cycle · return NULL' : f.ph===1 ? 'Phase 1 · find the loop' : (f.done ? 'Done · found the start' : 'Phase 2 · find the start');
+  $('counter').textContent = `frame ${cur+1} / ${S.F.length}`;
+
+  const startName = mode === 'array' ? 'index 0' : 'head';
+  let rows;
+  if(A.noCycle){
+    rows = [
+      ['nodes in list', `${A.L}`],
+      ['slow walked', `${f.ss}`],
+      ['fast walked', `${f.fs}  (= 2 × ${f.ss})`],
+      ['cycle?', f.end ? 'none, fast hit NULL → return NULL' : '<span class="wait">still checking</span>'],
+    ];
+  } else {
+    const met = f.ph===2 || f.meet, a = f.ss, W = '<span class="wait">after they meet</span>';
+    const walker = mode === 'array' ? 'slow2' : 'fast (from head)';
+    rows = [
+      [`L (${startName} → cycle start)`, `${A.L}`],
+      ['C (cycle length)', `${A.C}`],
+      ['slow walked', `${f.ss}`],
+      ['fast walked', `${f.fs}  (= 2 × ${f.ss})`],
+      ["fast's extra steps", met ? `${f.fs} − ${f.ss} = ${a}` : `${f.fs - f.ss} so far`],
+      ['extra = k full laps', met ? `${a} = ${a/A.C} × ${A.C}  →  k = ${a/A.C}` : W],
+      ['x = slow walked − L', met ? `${a} − ${A.L} = ${a - A.L}` : W],
+      ['check L + x = k·C', met ? `${A.L} + ${a-A.L} = ${a} = ${a/A.C}·${A.C} <span class="ok">✓</span>` : W],
+      [`${walker} steps`, f.ph===2 ? `${f.p2} of L = ${A.L}` : '<span class="wait">phase 2</span>'],
+      ['slow, steps past cycle start', f.ph===2 ? `x + ${f.p2} = ${(a-A.L)+f.p2}` + (f.done ? ` = ${a/A.C}·${A.C} → full laps → at the start <span class="ok">✓</span>` : '') : '<span class="wait">phase 2</span>'],
+    ];
+  }
+  $('math').innerHTML = rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur===0;
+  $('next').disabled = cur===S.F.length-1;
+}
+
+/* ---------- state & controls ---------- */
+let S = null, cur = 0, timer = null, mode = 'array';
+
+function loadGraph(G, key){
+  stop();
+  const A = analyze(G);
+  S = {G, A, mode, Lo: layout(A), F: mode === 'array' ? framesArray(G, A) : framesList(G, A)};
+  cur = 0;
+  render();
+  document.querySelectorAll('.tok').forEach(t=>t.style.transition='none');
+  update();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('.tok').forEach(t=>t.style.transition='')));
+  document.querySelectorAll('[data-preset]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.preset===key ? 'true':'false'));
+}
+
+function loadPreset(p){
+  $('err').textContent = '';
+  loadGraph(mode === 'array' ? makeArrayGraph(p.nums) : makeListGraph(p.L, p.C), p.key);
+}
+
+function setMode(m){
+  mode = m;
+  const M = MODES[m];
+  document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected', t.dataset.mode===m ? 'true':'false'));
+  $('sub').innerHTML = M.sub;
+  $('legend').innerHTML = M.legend;
+  $('why').innerHTML = M.why;
+  $('presets').innerHTML = M.presets.map(p=>`<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+    `<form class="custom" id="customForm"><input id="customIn" placeholder="${M.placeholder}" aria-label="Custom input"><button class="btn" type="submit">Run</button></form>`;
+  document.querySelectorAll('[data-preset]').forEach(b=>b.onclick = ()=>loadPreset(M.presets.find(p=>p.key===b.dataset.preset)));
+  $('customForm').addEventListener('submit', onCustom);
+  loadPreset(M.presets[0]);
+  try { if(location.hash !== '#'+m) history.replaceState(null, '', '#'+m); } catch(e){}
+}
+
+function onCustom(e){
+  e.preventDefault();
+  const v = ($('customIn').value.match(/-?\d+/g) || []).map(Number);
+  if(mode === 'array'){
+    const n = v.length - 1;
+    if(v.length < 2) return void($('err').textContent = 'Enter at least 2 numbers, like 3,1,3,4,2.');
+    if(v.length > 30) return void($('err').textContent = 'Keep it to 30 numbers or fewer so the picture stays readable.');
+    if(v.some(x => x < 1 || x > n)) return void($('err').textContent = `With ${v.length} numbers, every value must be between 1 and ${n}. That's what guarantees a duplicate.`);
+    $('err').textContent = '';
+    loadGraph(makeArrayGraph(v), null);
+  } else {
+    if(v.length !== 2) return void($('err').textContent = 'Enter two numbers: road length L and loop length C, like 4,7. Use C = 0 for no cycle.');
+    const [L, C] = v;
+    if(L < 0 || C < 0 || L + C < 1) return void($('err').textContent = 'L and C must be 0 or more, and the list needs at least 1 node.');
+    if(L + C > 30) return void($('err').textContent = 'Keep L + C to 30 or fewer so the picture stays readable.');
+    $('err').textContent = '';
+    loadGraph(makeListGraph(L, C), null);
+  }
+}
+
+function step(d){ const n = cur + d; if(n<0 || n>=S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer=null; } $('play').textContent = '▶ Play'; }
+function play(){
+  if(timer){ stop(); return; }
+  if(cur === S.F.length-1){ cur = 0; update(); }
+  $('play').textContent = '❚❚ Pause';
+  timer = setInterval(()=>{ if(!step(1)) stop(); }, +$('speed').value);
+}
+
+$('next').onclick = ()=>{ stop(); step(1); };
+$('prev').onclick = ()=>{ stop(); step(-1); };
+$('reset').onclick = ()=>{ stop(); cur=0; update(); };
+$('play').onclick = play;
+$('speed').onchange = ()=>{ if(timer){ stop(); play(); } };
+document.querySelectorAll('.tab').forEach(t=>t.onclick = ()=>setMode(t.dataset.mode));
+document.addEventListener('keydown', e=>{
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); }
+  else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); }
+  else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+window.addEventListener('hashchange', ()=>{ const h = location.hash.slice(1); if(MODES[h] && h !== mode) setMode(h); });
+
+setMode(MODES[location.hash.slice(1)] ? location.hash.slice(1) : 'array');
+</script>
+
+</body>
+</html>

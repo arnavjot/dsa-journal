@@ -1,0 +1,1025 @@
+[
+ {
+  "name": "Arrays & Hashing",
+  "slug": "arrays-hashing",
+  "problems": [
+   {
+    "id": 217,
+    "title": "Contains Duplicate",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 242,
+    "title": "Valid Anagram",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 1,
+    "title": "Two Sum",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 49,
+    "title": "Group Anagrams",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 347,
+    "title": "Top K Frequent Elements",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 271,
+    "title": "Encode and Decode Strings",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 238,
+    "title": "Product of Array Except Self",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 36,
+    "title": "Valid Sudoku",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 128,
+    "title": "Longest Consecutive Sequence",
+    "difficulty": "Medium",
+    "solved": true
+   }
+  ]
+ },
+ {
+  "name": "Two Pointers",
+  "slug": "two-pointers",
+  "problems": [
+   {
+    "id": 125,
+    "title": "Valid Palindrome",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 167,
+    "title": "Two Sum II - Input Array Is Sorted",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 15,
+    "title": "3Sum",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 11,
+    "title": "Container With Most Water",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 42,
+    "title": "Trapping Rain Water",
+    "difficulty": "Hard",
+    "solved": true
+   }
+  ]
+ },
+ {
+  "name": "Sliding Window",
+  "slug": "sliding-window",
+  "problems": [
+   {
+    "id": 121,
+    "title": "Best Time to Buy and Sell Stock",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 3,
+    "title": "Longest Substring Without Repeating Characters",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 424,
+    "title": "Longest Repeating Character Replacement",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 567,
+    "title": "Permutation in String",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 76,
+    "title": "Minimum Window Substring",
+    "difficulty": "Hard",
+    "solved": true
+   },
+   {
+    "id": 239,
+    "title": "Sliding Window Maximum",
+    "difficulty": "Hard",
+    "solved": true
+   }
+  ]
+ },
+ {
+  "name": "Stack",
+  "slug": "stack",
+  "problems": [
+   {
+    "id": 20,
+    "title": "Valid Parentheses",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 155,
+    "title": "Min Stack",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 150,
+    "title": "Evaluate Reverse Polish Notation",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 22,
+    "title": "Generate Parentheses",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 739,
+    "title": "Daily Temperatures",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 853,
+    "title": "Car Fleet",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 84,
+    "title": "Largest Rectangle in Histogram",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Binary Search",
+  "slug": "binary-search",
+  "problems": [
+   {
+    "id": 704,
+    "title": "Binary Search",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 74,
+    "title": "Search a 2D Matrix",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 875,
+    "title": "Koko Eating Bananas",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 153,
+    "title": "Find Minimum in Rotated Sorted Array",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 33,
+    "title": "Search in Rotated Sorted Array",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 981,
+    "title": "Time Based Key-Value Store",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 4,
+    "title": "Median of Two Sorted Arrays",
+    "difficulty": "Hard",
+    "solved": true
+   }
+  ]
+ },
+ {
+  "name": "Linked List",
+  "slug": "linked-list",
+  "problems": [
+   {
+    "id": 206,
+    "title": "Reverse Linked List",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 21,
+    "title": "Merge Two Sorted Lists",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 141,
+    "title": "Linked List Cycle",
+    "difficulty": "Easy",
+    "solved": true
+   },
+   {
+    "id": 143,
+    "title": "Reorder List",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 19,
+    "title": "Remove Nth Node From End of List",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 138,
+    "title": "Copy List with Random Pointer",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 2,
+    "title": "Add Two Numbers",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 287,
+    "title": "Find the Duplicate Number",
+    "difficulty": "Medium",
+    "solved": true,
+    "solvedOn": "2026-10-31"
+   },
+   {
+    "id": 146,
+    "title": "LRU Cache",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 23,
+    "title": "Merge k Sorted Lists",
+    "difficulty": "Hard",
+    "solved": true
+   },
+   {
+    "id": 25,
+    "title": "Reverse Nodes in k-Group",
+    "difficulty": "Hard",
+    "solved": true
+   }
+  ]
+ },
+ {
+  "name": "Trees",
+  "slug": "trees",
+  "problems": [
+   {
+    "id": 226,
+    "title": "Invert Binary Tree",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 104,
+    "title": "Maximum Depth of Binary Tree",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 543,
+    "title": "Diameter of Binary Tree",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 110,
+    "title": "Balanced Binary Tree",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 100,
+    "title": "Same Tree",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 572,
+    "title": "Subtree of Another Tree",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 235,
+    "title": "Lowest Common Ancestor of a Binary Search Tree",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 102,
+    "title": "Binary Tree Level Order Traversal",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 199,
+    "title": "Binary Tree Right Side View",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 1448,
+    "title": "Count Good Nodes in Binary Tree",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 98,
+    "title": "Validate Binary Search Tree",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 230,
+    "title": "Kth Smallest Element in a BST",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 105,
+    "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 124,
+    "title": "Binary Tree Maximum Path Sum",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 297,
+    "title": "Serialize and Deserialize Binary Tree",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Tries",
+  "slug": "tries",
+  "problems": [
+   {
+    "id": 208,
+    "title": "Implement Trie (Prefix Tree)",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 211,
+    "title": "Design Add and Search Words Data Structure",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 212,
+    "title": "Word Search II",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Heap / Priority Queue",
+  "slug": "heap",
+  "problems": [
+   {
+    "id": 703,
+    "title": "Kth Largest Element in a Stream",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 1046,
+    "title": "Last Stone Weight",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 973,
+    "title": "K Closest Points to Origin",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 215,
+    "title": "Kth Largest Element in an Array",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 621,
+    "title": "Task Scheduler",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 355,
+    "title": "Design Twitter",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 295,
+    "title": "Find Median from Data Stream",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Backtracking",
+  "slug": "backtracking",
+  "problems": [
+   {
+    "id": 78,
+    "title": "Subsets",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 39,
+    "title": "Combination Sum",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 40,
+    "title": "Combination Sum II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 46,
+    "title": "Permutations",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 90,
+    "title": "Subsets II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 79,
+    "title": "Word Search",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 131,
+    "title": "Palindrome Partitioning",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 17,
+    "title": "Letter Combinations of a Phone Number",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 51,
+    "title": "N-Queens",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Graphs",
+  "slug": "graphs",
+  "problems": [
+   {
+    "id": 200,
+    "title": "Number of Islands",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 133,
+    "title": "Clone Graph",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 695,
+    "title": "Max Area of Island",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 417,
+    "title": "Pacific Atlantic Water Flow",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 130,
+    "title": "Surrounded Regions",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 994,
+    "title": "Rotting Oranges",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 286,
+    "title": "Walls and Gates",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 207,
+    "title": "Course Schedule",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 210,
+    "title": "Course Schedule II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 684,
+    "title": "Redundant Connection",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 323,
+    "title": "Number of Connected Components in an Undirected Graph",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 261,
+    "title": "Graph Valid Tree",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 127,
+    "title": "Word Ladder",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Advanced Graphs",
+  "slug": "advanced-graphs",
+  "problems": [
+   {
+    "id": 332,
+    "title": "Reconstruct Itinerary",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 1584,
+    "title": "Min Cost to Connect All Points",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 743,
+    "title": "Network Delay Time",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 778,
+    "title": "Swim in Rising Water",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 269,
+    "title": "Alien Dictionary",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 787,
+    "title": "Cheapest Flights Within K Stops",
+    "difficulty": "Medium",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "1-D Dynamic Programming",
+  "slug": "dp-1d",
+  "problems": [
+   {
+    "id": 70,
+    "title": "Climbing Stairs",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 746,
+    "title": "Min Cost Climbing Stairs",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 198,
+    "title": "House Robber",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 213,
+    "title": "House Robber II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 5,
+    "title": "Longest Palindromic Substring",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 647,
+    "title": "Palindromic Substrings",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 91,
+    "title": "Decode Ways",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 322,
+    "title": "Coin Change",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 152,
+    "title": "Maximum Product Subarray",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 139,
+    "title": "Word Break",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 300,
+    "title": "Longest Increasing Subsequence",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 416,
+    "title": "Partition Equal Subset Sum",
+    "difficulty": "Medium",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "2-D Dynamic Programming",
+  "slug": "dp-2d",
+  "problems": [
+   {
+    "id": 62,
+    "title": "Unique Paths",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 1143,
+    "title": "Longest Common Subsequence",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 309,
+    "title": "Best Time to Buy and Sell Stock with Cooldown",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 518,
+    "title": "Coin Change II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 494,
+    "title": "Target Sum",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 97,
+    "title": "Interleaving String",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 329,
+    "title": "Longest Increasing Path in a Matrix",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 115,
+    "title": "Distinct Subsequences",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 72,
+    "title": "Edit Distance",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 312,
+    "title": "Burst Balloons",
+    "difficulty": "Hard",
+    "solved": false
+   },
+   {
+    "id": 10,
+    "title": "Regular Expression Matching",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Greedy",
+  "slug": "greedy",
+  "problems": [
+   {
+    "id": 53,
+    "title": "Maximum Subarray",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 55,
+    "title": "Jump Game",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 45,
+    "title": "Jump Game II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 134,
+    "title": "Gas Station",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 846,
+    "title": "Hand of Straights",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 1899,
+    "title": "Merge Triplets to Form Target Triplet",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 763,
+    "title": "Partition Labels",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 678,
+    "title": "Valid Parenthesis String",
+    "difficulty": "Medium",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Intervals",
+  "slug": "intervals",
+  "problems": [
+   {
+    "id": 57,
+    "title": "Insert Interval",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 56,
+    "title": "Merge Intervals",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 435,
+    "title": "Non-overlapping Intervals",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 252,
+    "title": "Meeting Rooms",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 253,
+    "title": "Meeting Rooms II",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 1851,
+    "title": "Minimum Interval to Include Each Query",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Math & Geometry",
+  "slug": "math-geometry",
+  "problems": [
+   {
+    "id": 48,
+    "title": "Rotate Image",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 54,
+    "title": "Spiral Matrix",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 73,
+    "title": "Set Matrix Zeroes",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 202,
+    "title": "Happy Number",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 66,
+    "title": "Plus One",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 50,
+    "title": "Pow(x, n)",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 43,
+    "title": "Multiply Strings",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 2013,
+    "title": "Detect Squares",
+    "difficulty": "Medium",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Bit Manipulation",
+  "slug": "bit-manipulation",
+  "problems": [
+   {
+    "id": 136,
+    "title": "Single Number",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 191,
+    "title": "Number of 1 Bits",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 338,
+    "title": "Counting Bits",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 190,
+    "title": "Reverse Bits",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 268,
+    "title": "Missing Number",
+    "difficulty": "Easy",
+    "solved": false
+   },
+   {
+    "id": 371,
+    "title": "Sum of Two Integers",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 7,
+    "title": "Reverse Integer",
+    "difficulty": "Medium",
+    "solved": false
+   }
+  ]
+ },
+ {
+  "name": "Extra (not in NeetCode 150)",
+  "slug": "extra",
+  "extra": true,
+  "problems": [
+   {
+    "id": 142,
+    "title": "Linked List Cycle II",
+    "difficulty": "Medium",
+    "solved": true,
+    "solvedOn": "2026-10-31"
+   }
+  ]
+ }
+]

@@ -1,0 +1,25 @@
+{
+  "id": 0,
+  "title": "Problem Title",
+  "keyIdea": "One or two sentences: the trick that makes the optimal solution work.",
+  "approaches": [
+    {
+      "name": "Brute force",
+      "file": "brute.cpp",
+      "idea": "What the brute force does, in plain words.",
+      "time": "O(n²)", "space": "O(1)",
+      "why": "Why it has that complexity."
+    },
+    {
+      "name": "Optimal",
+      "file": "optimal.cpp",
+      "best": true,
+      "idea": "What the optimal does.",
+      "time": "O(n)", "space": "O(1)",
+      "why": "Why it has that complexity."
+    }
+  ],
+  "quiz": [
+    {"q": "A question that checks the key idea?", "options": ["Right answer", "Wrong", "Wrong", "Wrong"], "answer": 0}
+  ]
+}

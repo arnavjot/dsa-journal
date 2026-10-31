@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cyclic Sort Stepper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column — presets, the array row (animated boxes), controls, then code + explanation */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --i:#0b8486; --cor:#d9661f; --home:#0f8a5f; --home-bg:#e2f5ec; --hit:#cf2f55; --hit-bg:#fbe4ea;
+  --code-bg:#f0f2f6; --hl:#fff1c2; --accent:#7446d1;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --i:#3cc3c5; --cor:#ff9650; --home:#4fd19c; --home-bg:#16302a; --hit:#ff6a8a; --hit-bg:#3a1d27;
+  --code-bg:#121821; --hl:#3a3418; --accent:#a98bff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --i:#3cc3c5; --cor:#ff9650; --home:#4fd19c; --home-bg:#16302a; --hit:#ff6a8a; --hit-bg:#3a1d27;
+  --code-bg:#121821; --hl:#3a3418; --accent:#a98bff; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:16px}
+h1{font-size:24px;margin:0;text-wrap:balance}
+.sub{margin:4px 0 0;color:var(--muted);max-width:72ch}
+code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.custom{display:flex;gap:6px;flex:1 1 240px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-8px}
+
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto;padding:16px}
+.row{position:relative;margin:0 auto}
+.slot{position:absolute;top:44px;width:52px;height:56px;border:1.5px dashed var(--line);border-radius:10px}
+.idx{position:absolute;top:104px;width:52px;text-align:center;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.want{position:absolute;top:120px;width:52px;text-align:center;font-family:var(--f-mono);font-size:11px;color:var(--muted);opacity:.75}
+.box{position:absolute;top:44px;width:52px;height:56px;border-radius:10px;background:var(--surface);border:2px solid var(--edge);
+  display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:20px;transition:transform .5s cubic-bezier(.3,.7,.3,1), background .3s, border-color .3s}
+.box.home{background:var(--home-bg);border-color:var(--home)}
+.box.dup{background:var(--hit-bg);border-color:var(--hit);color:var(--hit)}
+.box.lift{transform-origin:center}
+.ptr{position:absolute;top:0;width:52px;text-align:center;font-family:var(--f-mono);font-size:11px;font-weight:700;transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.ptr span{display:inline-block;color:#fff;border-radius:6px;padding:2px 7px}
+.ptr.i span{background:var(--i)} .ptr.c span{background:var(--cor)}
+.ptr::after{content:"";display:block;margin:2px auto 0;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent}
+.ptr.i::after{border-top:8px solid var(--i)} .ptr.c::after{border-top:8px solid var(--cor)}
+.swaparc{position:absolute;top:26px;height:12px;border:2px solid var(--cor);border-bottom:0;border-radius:10px 10px 0 0;opacity:0;transition:opacity .3s}
+@media (prefers-reduced-motion:reduce){.box,.ptr{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--cor)}
+.eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.vars{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;margin:0}
+.vars dt{color:var(--muted)} .vars dd{margin:0;font-family:var(--f-mono);font-weight:600}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--accent);padding:2px 0 2px 12px;max-width:80ch}
+.why b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Cyclic sort, step by step</h1>
+    <p class="sub">Values are 1..n, so value <code>v</code> has a home: index <code>v − 1</code>. Keep swapping each value into its home. The duplicate finds its home already taken, so it gets stuck in a wrong spot. Then scan for it.</p>
+  </header>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--i)"></i>i (current index)</span>
+    <span><i class="dot" style="background:var(--cor)"></i>correct = nums[i] − 1</span>
+    <span><i class="dot" style="background:var(--home)"></i>value is home</span>
+    <span><i class="dot" style="background:var(--hit)"></i>duplicate</span>
+  </div>
+  <div class="presets">
+    <button class="btn" data-p="0">[3,1,3,4,2]</button>
+    <button class="btn" data-p="1">9 numbers</button>
+    <button class="btn" data-p="2">13 numbers</button>
+    <button class="btn" data-p="3">All same [2,2,2,2,2]</button>
+    <form class="custom" id="cf"><input id="ci" placeholder="your own: 1,3,4,2,2" aria-label="Custom array"><button class="btn" type="submit">Run</button></form>
+  </div>
+  <div class="err" id="err"></div>
+  <div class="stage"><div class="row" id="row"></div></div>
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed"><option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option></select>
+    <span class="phase" id="phase">Placing</span>
+    <span class="counter" id="counter"></span>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">The code</div><pre class="code" id="code"></pre></div>
+    <div class="card"><div class="label">What just happened</div><div id="msg"></div>
+      <div class="label" style="margin-top:4px">Counts</div><dl class="vars" id="vars"></dl></div>
+  </div>
+  <p class="why"><b>Why it's O(n):</b> every swap puts one value in its final home, and a value at home never moves again. So at most n swaps. Every other step is <code>i++</code>, at most n times. <b>Catch:</b> it changes <code>nums</code>, which LC 287 doesn't allow. Say that in the interview, then give Floyd.</p>
+</div>
+<script>
+const PRESETS = [[3,1,3,4,2],[8,6,4,2,5,1,7,3,8],[12,9,4,11,2,7,1,10,5,3,8,6,9],[2,2,2,2,2]];
+const CODE = [
+  "int findDuplicate(vector<int>& nums) {",
+  "    int i = 0;",
+  "    while (i < nums.size()) {",
+  "        int correct = nums[i] - 1;",
+  "        if (nums[i] != nums[correct]) {",
+  "            swap(nums[i], nums[correct]);",
+  "        } else {",
+  "            i++;",
+  "        }",
+  "    }",
+  "    for (int i = 0; i < nums.size(); i++) {",
+  "        if (nums[i] - 1 != i) {",
+  "            return nums[i];",
+  "        }",
+  "    }",
+  "    return -1;",
+  "}"
+];
+const $ = id => document.getElementById(id);
+const W = 60;
+let F = [], cur = 0, timer = null, N = 0;
+
+function build(nums){
+  const a = nums.map((v,k)=>({id:k, v}));
+  const snap = () => a.map(o=>o.id);
+  const vals = () => a.map(o=>o.v);
+  const out = []; let i = 0, swaps = 0, incs = 0;
+  out.push({order:snap(), i:0, c:null, lines:[1], ph:'Placing', swaps, incs, msg:`Start with <code>i = 0</code>. Goal: put every value <code>v</code> at index <code>v − 1</code>.`});
+  for(let g=0; g<10000 && i < a.length; g++){
+    const v = a[i].v, c = v - 1, there = a[c].v;
+    const differ = v !== there;
+    out.push({order:snap(), i, c, lines:[2,3,4], ph:'Placing', swaps, incs,
+      msg:`<span class="eq">nums[${i}] = ${v}, its home is index ${c}\nnums[${i}] != nums[${c}]  →  ${v} != ${there}  →  ${differ}</span>` +
+        (differ ? `Home has a different value, so <b>swap</b> ${v} into its home.` :
+         c === i ? `${v} is already home. Move on with <code>i++</code>.` :
+                   `Index ${c} already holds a <b>${there}</b>. ${v} has nowhere to go, so it's the duplicate. Leave it and <code>i++</code>.`)});
+    if(differ){
+      [a[i], a[c]] = [a[c], a[i]]; swaps++;
+      out.push({order:snap(), i, c, lines:[5], ph:'Placing', swaps, incs, swapPair:[i,c],
+        msg:`<span class="eq">swap(nums[${i}], nums[${c}])  →  [${vals().join(', ')}]</span>${v} is now home at index ${c}. <code>i</code> stays at ${i}, because a new value just landed here.`});
+    } else {
+      i++; incs++;
+      out.push({order:snap(), i: i < a.length ? i : null, c:null, lines:[7], ph:'Placing', swaps, incs,
+        msg: i < a.length ? `<code>i++</code> → i = ${i}.` : `<code>i++</code> → i = ${i}, which equals nums.size(). The while loop ends.`});
+    }
+  }
+  for(let k=0; k<a.length; k++){
+    const v = a[k].v, wrong = v - 1 !== k;
+    out.push({order:snap(), i:k, c:null, lines:[10,11], ph:'Scanning', swaps, incs, scan:k,
+      msg:`<span class="eq">nums[${k}] - 1 != ${k}  →  ${v - 1} != ${k}  →  ${wrong}</span>` + (wrong ? `` : `${v} is home, keep scanning.`)});
+    if(wrong){
+      out.push({order:snap(), i:k, c:null, lines:[12], ph:'Done', swaps, incs, scan:k, found:k,
+        msg:`Index ${k} doesn't hold its own value, so the value sitting here is the one that couldn't find a free home. <b>return ${v}</b>.`});
+      break;
+    }
+  }
+  return out;
+}
+
+function render(nums){
+  N = nums.length;
+  const row = $('row'); row.style.width = (N*W - 8) + 'px'; row.style.height = '140px';
+  let h = '';
+  for(let k=0;k<N;k++) h += `<div class="slot" style="left:${k*W}px"></div><div class="idx" style="left:${k*W}px">${k}</div><div class="want" style="left:${k*W}px">${k===N-1?'spare':'wants '+(k+1)}</div>`;
+  nums.forEach((v,k)=> h += `<div class="box" id="b${k}">${v}</div>`);
+  h += `<div class="ptr i" id="pi"><span>i</span></div><div class="ptr c" id="pc"><span>correct</span></div><div class="swaparc" id="arc"></div>`;
+  row.innerHTML = h;
+  $('code').innerHTML = CODE.map((l,k)=>`<span id="ln${k}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</span>`).join('');
+  S.nums = nums;
+}
+const S = {};
+
+function update(){
+  const f = F[cur], vals = f.order.map(id=>S.nums[id]);
+  f.order.forEach((id,k)=>{
+    const b = $('b'+id);
+    b.style.transform = `translateX(${k*W}px)`;
+    const home = vals[k] - 1 === k;
+    b.classList.toggle('home', home);
+    b.classList.toggle('dup', f.found === k);
+  });
+  const pi = $('pi'), pc = $('pc');
+  if(f.i === null){ pi.style.opacity = 0; } else { pi.style.opacity = 1; pi.style.transform = `translateX(${f.i*W}px)`; }
+  if(f.c === null || f.c === undefined){ pc.style.opacity = 0; } else { pc.style.opacity = 1; pc.style.transform = `translateX(${f.c*W}px) translateY(${f.c===f.i ? 18 : 0}px)`; }
+  const arc = $('arc');
+  if(f.swapPair && f.swapPair[0] !== f.swapPair[1]){
+    const [x,y] = f.swapPair.slice().sort((p,q)=>p-q);
+    arc.style.left = (x*W+26)+'px'; arc.style.width = ((y-x)*W)+'px'; arc.style.opacity = 1;
+  } else arc.style.opacity = 0;
+  CODE.forEach((_,k)=>$('ln'+k).classList.toggle('on', f.lines.includes(k)));
+  $('msg').innerHTML = f.msg;
+  $('phase').textContent = f.ph === 'Placing' ? 'Phase 1 · send values home' : f.ph === 'Scanning' ? 'Phase 2 · scan for the misfit' : 'Found it';
+  $('counter').textContent = `frame ${cur+1} / ${F.length}`;
+  const homeCount = vals.filter((v,k)=>v-1===k).length;
+  $('vars').innerHTML = `<dt>array now</dt><dd>[${vals.join(', ')}]</dd><dt>i</dt><dd>${f.i ?? '—'}</dd><dt>swaps so far</dt><dd>${f.swaps} (≤ n = ${N})</dd><dt>i++ so far</dt><dd>${f.incs} (≤ n = ${N})</dd><dt>values at home</dt><dd>${homeCount} / ${N}</dd>`;
+  $('prev').disabled = cur === 0; $('next').disabled = cur === F.length-1;
+}
+
+function load(nums, key){
+  stop(); F = build(nums); cur = 0; render(nums);
+  document.querySelectorAll('.box,.ptr').forEach(e=>e.style.transition='none');
+  update();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>document.querySelectorAll('.box,.ptr').forEach(e=>e.style.transition='')));
+  document.querySelectorAll('[data-p]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.p === key ? 'true' : 'false'));
+}
+function step(d){ const n = cur+d; if(n<0||n>=F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){ if(timer){ stop(); return; } if(cur===F.length-1){ cur=0; update(); } $('play').textContent='❚❚ Pause'; timer = setInterval(()=>{ if(!step(1)) stop(); }, +$('speed').value); }
+$('next').onclick = ()=>{ stop(); step(1); };
+$('prev').onclick = ()=>{ stop(); step(-1); };
+$('reset').onclick = ()=>{ stop(); cur = 0; update(); };
+$('play').onclick = play;
+$('speed').onchange = ()=>{ if(timer){ stop(); play(); } };
+document.querySelectorAll('[data-p]').forEach(b=>b.onclick = ()=>{ $('err').textContent=''; load(PRESETS[+b.dataset.p], b.dataset.p); });
+$('cf').addEventListener('submit', e=>{
+  e.preventDefault();
+  const v = ($('ci').value.match(/-?\d+/g)||[]).map(Number), n = v.length-1;
+  if(v.length < 2){ $('err').textContent = 'Enter at least 2 numbers, like 1,3,4,2,2.'; return; }
+  if(v.length > 16){ $('err').textContent = 'Keep it to 16 numbers or fewer.'; return; }
+  if(v.some(x=>x<1||x>n)){ $('err').textContent = `With ${v.length} numbers, every value must be between 1 and ${n}.`; return; }
+  $('err').textContent=''; load(v, null);
+});
+document.addEventListener('keydown', e=>{
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key==='ArrowRight'){ stop(); step(1); e.preventDefault(); }
+  else if(e.key==='ArrowLeft'){ stop(); step(-1); e.preventDefault(); }
+  else if(e.key===' '){ play(); e.preventDefault(); }
+});
+load(PRESETS[1], '1');
+</script>
+</body>
+</html>

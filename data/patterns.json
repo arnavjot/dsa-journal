@@ -1,0 +1,21 @@
+{
+  "arrays-hashing": {"spot": "Need to know \"have I seen this before?\", count things, or group things that look alike.", "tool": "unordered_map / unordered_set: trade O(n) space for O(1) lookups."},
+  "two-pointers": {"spot": "Sorted array, pairs/triplets that hit a target, or comparing from both ends.", "tool": "left and right move toward each other; move the side that can improve the answer."},
+  "sliding-window": {"spot": "Longest / shortest / best contiguous subarray or substring with a condition.", "tool": "Grow right every step, shrink left while the window is invalid, record the best."},
+  "stack": {"spot": "Matching pairs, undo/nesting, or \"next greater / smaller element\".", "tool": "Push while it's unresolved, pop when the current item resolves it (monotonic stack)."},
+  "binary-search": {"spot": "Sorted data, or the answer is a number you can test with \"is X enough?\" (yes/no flips once).", "tool": "lo/hi over the answer space; check mid; throw away half each step."},
+  "linked-list": {"spot": "Reorder or merge nodes, find the middle, detect a cycle, or an array secretly acting like a list (i → nums[i]).", "tool": "Dummy head, slow/fast pointers, reverse in place with prev/cur/next."},
+  "trees": {"spot": "Anything on a binary tree: depth, paths, validation, level by level.", "tool": "DFS recursion (what does each child return?) or BFS with a queue for levels."},
+  "tries": {"spot": "Many words, prefix lookups, autocomplete, word search over a dictionary.", "tool": "Node with children[26] and an isEnd flag; walk letter by letter."},
+  "heap": {"spot": "k-th largest / smallest, top-k, most frequent, or always need the current min/max.", "tool": "priority_queue; keep a heap of size k, or two heaps for the median."},
+  "backtracking": {"spot": "Generate all subsets / permutations / combinations, or place things with rules.", "tool": "choose → recurse → un-choose; prune early when a choice can't work."},
+  "graphs": {"spot": "Grid or network: islands, reachability, dependencies, shortest steps.", "tool": "BFS for shortest steps, DFS for flood fill, topo sort for ordering, union-find for components."},
+  "advanced-graphs": {"spot": "Weighted shortest path, minimum spanning tree, or ordering from rules.", "tool": "Dijkstra (heap), Prim/Kruskal, Bellman-Ford for k stops, topo sort."},
+  "dp-1d": {"spot": "Count the ways / min cost / max value, and the answer at i depends on a few earlier answers.", "tool": "Define dp[i], write the recurrence, set base cases, fill left to right."},
+  "dp-2d": {"spot": "Two strings, a grid, or (index, capacity) both matter.", "tool": "dp[i][j] table; each cell from top / left / diagonal."},
+  "greedy": {"spot": "A locally best choice is provably safe (max subarray, jumps, scheduling).", "tool": "Make the best choice now and never look back; prove it with an exchange argument."},
+  "intervals": {"spot": "Ranges [start, end] that overlap, merge, or need rooms.", "tool": "Sort by start (or end), then sweep and compare with the last kept interval."},
+  "math-geometry": {"spot": "Matrix rotation/spiral, digits, powers, or coordinate tricks.", "tool": "Work layer by layer, or with index math; watch overflow."},
+  "bit-manipulation": {"spot": "Single / missing number, count bits, add without +.", "tool": "XOR cancels pairs, n & (n-1) drops the lowest set bit, shifts move bits."},
+  "extra": {"spot": "Problems outside the NeetCode 150 list.", "tool": ""}
+}
