@@ -144,9 +144,17 @@ function route() {
   $$('.top nav a').forEach(a => a.classList.toggle('on', a.dataset.nav === (h === 'revise' || h === 'history' ? h : (h ? '' : 'home'))));
   if (h === 'revise') renderRevise();
   else if (h === 'history') renderHistory();
-  else if (S.bySlug[h]) renderProblem(S.bySlug[h]);
-  else renderHome();
+  else if (S.bySlug[h]) { S.lastSlug = h; renderProblem(S.bySlug[h]); }
+  else { renderHome(); if (scrollToLast()) return; }
   window.scrollTo(0, 0);
+}
+// Back on the home page: show the problem you just left, inside its (open) pattern.
+function scrollToLast() {
+  const a = S.lastSlug && $(`.plist a[href="#${CSS.escape(S.lastSlug)}"]`);
+  if (!a) return false;
+  a.scrollIntoView({ block: 'center' });
+  a.classList.add('last');
+  return true;
 }
 
 /* ---------- home ---------- */
@@ -186,7 +194,8 @@ function renderHome() {
 
 function catCard(c) {
   const st = catStats(c), pat = S.patterns[c.slug] || {};
-  const open = st.solved > 0 && !c.extra ? '' : '';
+  const last = S.lastSlug && S.bySlug[S.lastSlug];
+  const open = last && last.cat === c ? ' open' : '';     // only the pattern you came back from
   const badge = st.weak ? `<span class="pill weak">${st.weak} weak</span>` : st.due ? `<span class="pill due">${st.due} due</span>` : st.solved ? `<span class="pill ok">up to date</span>` : '';
   return `<details class="cat${st.weak ? ' weak' : ''}"${open}>
     <summary>
