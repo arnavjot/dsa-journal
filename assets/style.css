@@ -207,3 +207,23 @@ dialog#info::backdrop{background:rgba(10,14,20,.55)}
 .hljs-title.function_,.hljs-function .hljs-title{color:var(--fn)}
 .hljs-meta{color:var(--com)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* visualizer call-to-action */
+.vizcta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:14px 16px;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--teal) 16%,var(--surface)));
+  border:1.5px solid color-mix(in srgb,var(--accent) 45%,var(--line))}
+.vizcta-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;font-size:18px;
+  color:var(--surface);background:linear-gradient(135deg,var(--accent),var(--teal));animation:vizpulse 2s ease-in-out infinite}
+.vizcta-text{flex:1 1 220px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.vizcta-text b{font-size:16px}
+.vizcta-text span{font-size:13px;color:var(--muted)}
+.vizcta-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn.viz{background:linear-gradient(135deg,var(--accent),var(--teal));color:var(--surface);border:0;padding:11px 20px;font-size:15px;
+  border-radius:11px;box-shadow:0 4px 14px color-mix(in srgb,var(--accent) 35%,transparent);transition:transform .12s,box-shadow .12s}
+.btn.viz:hover{transform:translateY(-1px);box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 45%,transparent)}
+.btn.viz:active{transform:translateY(1px)}
+.btn.big-viz{align-self:flex-start;font-size:16px;padding:12px 22px}
+.vizbadge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;color:var(--surface);
+  background:linear-gradient(135deg,var(--accent),var(--teal));align-self:flex-start}
+@keyframes vizpulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}50%{box-shadow:0 0 0 8px transparent}}
+@media (prefers-reduced-motion:reduce){.vizcta-icon{animation:none}.btn.viz{transition:none}}

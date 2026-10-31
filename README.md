@@ -8,7 +8,7 @@ My NeetCode 150 journal: every problem written up with the 8-step interview scri
 
 - **Patterns** (home): all 18 NeetCode categories with progress, a "spot it" hint for each, and what's due for revision.
 - **Problem pages:** key idea, every approach with time/space (tap **i** for why), code, a visualizer where there is one, the 8 steps, and a quick quiz.
-- **Revise:** pick a pattern, get its most overdue problem, solve it against a timer (Easy 15 / Medium 25 / Hard 40 min), rate yourself. The gap grows 1 → 3 → 7 → 14 → 30 → 60 days.
+- **Revise:** pick a pattern, get its most overdue problem, solve it against a timer (Easy 15 / Medium 25 / Hard 40 min), rate yourself. The gap grows 1 → 3 → 7 → 14 → 30 → 60 days. At most 4 problems are scheduled per day (`DAILY_CAP` in `assets/app.js`); dates shift a little to the quietest nearby day and patterns are mixed, so reviews never pile up on one day.
 - **History:** every timed attempt, average time per pattern.
 - **i button** (top right): the 8-step script, the never-stuck protocol, and a constraints → complexity table.
 

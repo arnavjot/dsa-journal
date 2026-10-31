@@ -1,5 +1,6 @@
 /* DSA Journal — static single-page app. Data lives in data/ and problems/. */
 const INTERVALS = [1, 3, 7, 14, 30, 60];          // days until next review, by box
+const DAILY_CAP = 4;                              // most problems scheduled on any one day
 const LIMIT_MIN = { Easy: 15, Medium: 25, Hard: 40 };
 const STORE_KEY = 'dsa-journal-revisions-v1';
 const STEPS = [
@@ -35,19 +36,72 @@ const fmtSecs = s => `${Math.floor(s / 60)}:${pad(Math.floor(s % 60))}`;
 function localRev() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch { return {}; } }
 function saveLocal(obj) { try { localStorage.setItem(STORE_KEY, JSON.stringify(obj)); } catch {} }
 function allRev() {
-  const out = { ...S.repoRev }, loc = localRev();
+  const out = { ...(S.seeded || {}), ...S.repoRev }, loc = localRev();
   for (const k in loc) if (!out[k] || (loc[k].updated || '') >= (out[k].updated || '')) out[k] = loc[k];
   return out;
 }
 function recOf(p) { return allRev()[p.slug] || { box: 0, due: todayISO(), log: [] }; }
 function dueIn(p) { return daysUntil(recOf(p).due); }
 function lastResult(p) { const l = recOf(p).log || []; return l.length ? l[l.length - 1].r : null; }
+/* ---------- spreading reviews so no day piles up ---------- */
+function dayLoad(skipSlug) {
+  const n = {}, pats = {}, R = allRev();
+  S.all.forEach(q => {
+    const r = R[q.slug]; if (!q.solved || !r || q.slug === skipSlug) return;
+    n[r.due] = (n[r.due] || 0) + 1;
+    (pats[r.due] = pats[r.due] || new Set()).add(q.cat.slug);
+  });
+  return { n, pats };
+}
+// Best day within [lo, hi] days from today: under the daily cap, fewest problems,
+// avoids a second problem from the same pattern, and stays close to the target gap.
+function pickDay(p, target, lo, hi, load) {
+  const today = todayISO();
+  for (let extra = 0; extra <= 60; extra += 7) {
+    let best = null, bestScore = Infinity;
+    for (let o = lo; o <= hi + extra; o++) {
+      const d = addDays(today, o), cnt = load.n[d] || 0;
+      if (cnt >= DAILY_CAP && target > 3) continue;   // short gaps (1–3 days) stay on time even on a busy day
+      const score = cnt * (cnt >= DAILY_CAP ? 3 : 1) + (load.pats[d] && load.pats[d].has(p.cat.slug) ? 2 : 0) + Math.abs(o - target) * 0.3;
+      if (score < bestScore) { bestScore = score; best = d; }
+    }
+    if (best) return best;
+  }
+  return addDays(today, target);
+}
+function nextDue(p, gap, load) {
+  const lo = Math.max(1, Math.round(gap * 0.85)), hi = Math.round(gap * 1.15) + (gap <= 3 ? 1 : 0);
+  return pickDay(p, gap, lo, hi, load);
+}
+// Solved problems with no record yet get a first review date, a few per day, patterns mixed.
+function seedSchedule() {
+  const R = allRev();
+  const groups = S.cats.map(c => c.problems.filter(p => p.solved && !R[p.slug])).filter(g => g.length);
+  if (!groups.length) return;
+  const order = [];
+  for (let i = 0; groups.some(g => i < g.length); i++) groups.forEach(g => { if (i < g.length) order.push(g[i]); });
+  const load = dayLoad(), loc = localRev(), today = todayISO();
+  order.forEach(p => {
+    let due = null;
+    for (let o = 0; o < 400 && !due; o++) {
+      const d = addDays(today, o), cnt = load.n[d] || 0;
+      if (cnt < DAILY_CAP && !(load.pats[d] && load.pats[d].has(p.cat.slug) && cnt < order.length / DAILY_CAP)) due = d;
+    }
+    for (let o = 0; !due; o++) { const d = addDays(today, o); if ((load.n[d] || 0) < DAILY_CAP) due = d; }
+    loc[p.slug] = { box: 0, due, log: [], updated: '0' };
+    load.n[due] = (load.n[due] || 0) + 1;
+    (load.pats[due] = load.pats[due] || new Set()).add(p.cat.slug);
+  });
+  saveLocal(loc);
+  S.seeded = loc;
+}
+
 function rate(p, result, secs) {
   const r = JSON.parse(JSON.stringify(recOf(p)));
   if (result === 'fast') r.box = Math.min((r.box || 0) + 1, INTERVALS.length - 1);
   else if (result === 'fail') r.box = 0;
   else r.box = r.box || 0;
-  r.due = addDays(todayISO(), result === 'fail' ? 1 : INTERVALS[r.box]);
+  r.due = nextDue(p, result === 'fail' ? 1 : INTERVALS[r.box], dayLoad(p.slug));
   r.log = [...(r.log || []), { d: todayISO(), s: Math.round(secs), r: result }];
   r.updated = new Date().toISOString();
   const loc = localRev(); loc[p.slug] = r; saveLocal(loc);
@@ -80,6 +134,7 @@ async function boot() {
     $('#view').innerHTML = `<div class="empty"><b>Couldn't load the data files.</b><br>Open this site through a web server (GitHub Pages, or run <code>npx serve .</code> in the repo folder), not by double-clicking index.html.</div>`;
     return;
   }
+  seedSchedule();
   window.addEventListener('hashchange', route);
   route();
 }
@@ -186,17 +241,22 @@ async function renderProblem(p) {
   if (location.hash.slice(1) !== p.slug) return;
 
   const tabs = meta.approaches.map((a, i) => `<button class="tab" role="tab" data-ap="${i}" aria-selected="${i === meta.approaches.length - 1}">
-      <span class="n">${esc(a.name)}</span><span class="c">${esc(a.time)} time · ${esc(a.space)} space</span>${a.best ? '<span class="star">★ optimal</span>' : ''}</button>`).join('');
+      <span class="n">${esc(a.name)}</span><span class="c">${esc(a.time)} time · ${esc(a.space)} space</span>${a.best ? '<span class="star">★ optimal</span>' : ''}${a.viz ? '<span class="vizbadge">▶ visualizer</span>' : ''}</button>`).join('');
   const panes = meta.approaches.map((a, i) => `<div class="appr" data-pane="${i}" ${i === meta.approaches.length - 1 ? '' : 'hidden'}>
       <div>${esc(a.idea)}</div>
       ${a.warn ? `<div class="warn">${esc(a.warn)}</div>` : ''}
       <div class="cx"><span class="label">Time</span><span class="cxv">${esc(a.time)}</span><span class="label">Space</span><span class="cxv">${esc(a.space)}</span>
         <button class="ibtn" data-why="${i}" aria-expanded="false" title="Why this complexity?">i</button></div>
       <div class="why" data-whyp="${i}" hidden>${esc(a.why || '')}</div>
+      ${a.viz ? `<div class="vizcta" id="vizcta-${i}">
+        <div class="vizcta-icon" aria-hidden="true">▶</div>
+        <div class="vizcta-text"><b>Watch it step by step</b><span>Animated pointers, the code line by line, and the maths at every step.</span></div>
+        <div class="vizcta-btns"><button class="btn viz" data-viz="${i}">▶ Show visualizer</button><a class="btn sm" href="${esc(a.viz)}" target="_blank" rel="noopener">Full page ↗</a></div>
+      </div><div data-vizbox="${i}"></div>` : ''}
       <div class="codebox"><button class="btn sm copy" data-copy="${i}">Copy</button><pre><code class="language-cpp">${esc(codes[i] || '// file missing: ' + a.file)}</code></pre></div>
-      ${a.viz ? `<div><button class="btn" data-viz="${i}">▶ Show step-by-step visualizer</button> <a class="btn sm" href="${esc(a.viz)}" target="_blank" rel="noopener">Open full page ↗</a></div><div data-vizbox="${i}"></div>` : ''}
     </div>`).join('');
 
+  const vizIdx = (() => { let k = -1; meta.approaches.forEach((a, i) => { if (a.viz && (k < 0 || a.best)) k = i; }); return k; })();
   let html = notes ? (window.marked ? marked.parse(notes) : `<pre>${esc(notes)}</pre>`) : '';
   const tmp = document.createElement('div'); tmp.innerHTML = html;
   const heads = $$('h2', tmp); heads.forEach((h, i) => h.id = 'step-' + i);
@@ -204,6 +264,7 @@ async function renderProblem(p) {
 
   v.innerHTML = `${head}
     <div class="key">${esc(meta.keyIdea || '')}</div>
+    ${vizIdx >= 0 ? `<button class="btn viz big-viz" id="jumpViz">▶ Watch the visualizer</button>` : ''}
     ${revCard}
     <section class="card" style="display:flex;flex-direction:column;gap:14px">
       <div class="label">Approaches</div>
@@ -234,10 +295,17 @@ async function renderProblem(p) {
   });
   $$('[data-viz]', v).forEach(b => b.onclick = () => {
     const box = $(`[data-vizbox="${b.dataset.viz}"]`, v);
-    if (box.firstChild) { box.innerHTML = ''; b.textContent = '▶ Show step-by-step visualizer'; return; }
+    if (box.firstChild) { box.innerHTML = ''; b.textContent = '▶ Show visualizer'; return; }
     box.innerHTML = `<iframe class="vizframe" src="${esc(meta.approaches[+b.dataset.viz].viz)}" title="Visualizer"></iframe>`;
     b.textContent = 'Hide visualizer';
   });
+  const jv = $('#jumpViz', v);
+  if (jv) jv.onclick = () => {
+    $(`[data-ap="${vizIdx}"]`, v).click();
+    const b = $(`[data-viz="${vizIdx}"]`, v), box = $(`[data-vizbox="${vizIdx}"]`, v);
+    if (!box.firstChild) b.click();
+    $(`#vizcta-${vizIdx}`, v).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   $$('[data-jump]', v).forEach(a => a.onclick = e => { e.preventDefault(); document.getElementById(a.dataset.jump)?.scrollIntoView({ behavior: 'smooth' }); });
   $$('.opt', v).forEach(b => b.onclick = () => {
     const q = meta.quiz[+b.dataset.q], right = +b.dataset.o === q.answer;
@@ -323,7 +391,7 @@ function renderRevise() {
     <div class="chips">${chips}</div>
     ${body}
     <div class="card"><div class="label" style="margin-bottom:6px">How the schedule works</div>
-      <div class="muted" style="font-size:14px">Each problem has a gap of ${INTERVALS.join(' → ')} days. Solved in time moves it one step longer, slow keeps the same gap, couldn't sends it back to tomorrow. A pattern turns red on the home page when its last attempt failed.</div></div>`;
+      <div class="muted" style="font-size:14px">Each problem has a gap of ${INTERVALS.join(' → ')} days. Solved in time moves it one step longer, slow keeps the same gap, couldn't brings it back in 1–2 days. No more than ${DAILY_CAP} problems are scheduled on one day: the next date can shift a little either side of the gap to a quieter day, and problems from the same pattern are kept on different days. A pattern turns red on the home page when its last attempt failed.</div></div>`;
 
   $$('[data-pat]').forEach(b => b.onclick = () => { S.rev.pattern = b.dataset.pat; resetSession(); renderRevise(); });
   const tb = $('#tbtn'); if (tb) tb.onclick = () => S.rev.running ? pauseTimer() : startTimer();
