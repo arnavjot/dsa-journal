@@ -209,7 +209,7 @@ async function renderProblem(p) {
   const lc = `https://leetcode.com/problems/${p.slug}/`;
   const rec = recOf(p);
   const head = `
-    <a class="crumb" href="#">← ${esc(p.cat.name)}</a>
+    <a class="crumb" href="#"><span class="arr" aria-hidden="true">←</span>${esc(p.cat.name)}</a>
     <div class="ptitle">
       <h1><span class="muted" style="font-family:var(--f-mono);font-weight:600">#${p.id}</span> ${esc(p.title)}</h1>
       <div class="row"><span class="diff ${p.difficulty}">${p.difficulty}</span>
