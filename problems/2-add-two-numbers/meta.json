@@ -1,0 +1,31 @@
+{
+  "id": 2,
+  "title": "Add Two Numbers",
+  "keyIdea": "The digits are stored backwards, so the first nodes are the ones digits. That's the order you add by hand: add column by column, write sum % 10, carry sum / 10 into the next column. Keep going while either list or the carry is left.",
+  "approaches": [
+    {
+      "name": "Convert to numbers",
+      "file": "brute.cpp",
+      "idea": "Read each list into a number, add the two numbers, then write the sum back out as a list, ones digit first.",
+      "time": "O(m + n)", "space": "O(1) extra",
+      "why": "One pass over each list and one pass over the sum's digits.",
+      "warn": "Wrong for big inputs: a list can have 100 digits, but long long only holds about 19. It overflows, so mention it and move on."
+    },
+    {
+      "name": "Column addition with carry",
+      "file": "optimal.cpp",
+      "best": true,
+      "idea": "Walk both lists together. Each step: sum = carry + l1 digit (if any) + l2 digit (if any). Append sum % 10 to the answer, carry = sum / 10. A dummy node means the first digit is appended like every other one.",
+      "time": "O(max(m, n))", "space": "O(1) extra",
+      "why": "One loop iteration per column, and there are at most max(m, n) + 1 columns. Apart from the answer list itself, only sum, carry and a few pointers.",
+      "viz": "viz/add-two-numbers.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why is it handy that the digits are stored in reverse order?", "options": ["The first nodes are the ones digits, so you can add and carry in the same order you walk the lists", "It makes the lists shorter", "It means there's never a carry", "It lets you sort the digits"], "answer": 0},
+    {"q": "What's the largest possible carry?", "options": ["1, because a column is at most 9 + 9 + 1 = 19", "9", "18", "It depends on the list length"], "answer": 0},
+    {"q": "Why does the while loop also check carry != 0?", "options": ["Style only", "When both lists end with a carry left (999 + 1), one more node is needed for that 1", "To skip leading zeros", "To stop early"], "answer": 1},
+    {"q": "l1 has run out but l2 still has digits. What does the code use for l1's digit?", "options": ["It crashes", "Nothing is added, which is the same as adding 0", "It reuses l1's last digit", "It stops the loop"], "answer": 1},
+    {"q": "Why return dummy->next instead of dummy?", "options": ["dummy is a placeholder 0 at the front that isn't part of the answer", "dummy is NULL", "dummy holds the carry", "It's the same thing"], "answer": 0}
+  ]
+}
