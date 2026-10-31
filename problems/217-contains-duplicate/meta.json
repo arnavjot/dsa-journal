@@ -33,5 +33,15 @@
     {"q": "Why is seen.count(num) O(1) on average?", "options": ["The set only looks in the one bucket that num hashes to, not at every stored number", "The set is sorted", "It stops after the first element", "It uses binary search"], "answer": 0},
     {"q": "What does the hash set approach trade for its O(n) time?", "options": ["Nothing", "O(n) extra memory for the set", "It changes the array", "It only works on positive numbers"], "answer": 1},
     {"q": "You can't use extra memory but may change the array. Best option?", "options": ["Hash set", "Sort, then compare neighbours: O(n log n), O(1) extra", "Brute force is the only way", "Use a map"], "answer": 1}
+  ],
+  "steps": [
+    "How big can the array get? Can you change it? Do you need to say which number repeats?",
+    "Try [1,2,3,1] and [1,2,3,4]. When can you stop early?",
+    "Every pair: time? Sorting first: time, and what does it change?",
+    "\"Have I seen this before?\": which container answers that in O(1)?",
+    "Check before insert, or insert before check? Why does the order matter?",
+    "Code the one pass with seen.count and seen.insert.",
+    "Dry-run [1,2,3,1]: what's in seen when i = 3?",
+    "Time and space? How would LC 219 (repeat within distance k) change it?"
   ]
 }

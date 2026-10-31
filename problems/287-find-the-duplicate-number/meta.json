@@ -34,5 +34,15 @@
     {"q": "Where are slow and fast when phase 1 ends?", "options": ["At the duplicate", "Somewhere inside the loop, usually not at its start", "At index 0", "At the last index"], "answer": 1},
     {"q": "Why does phase 2 meet exactly at the loop's start?", "options": ["Because fast is faster", "L + x = k·C, so walking L steps from the meeting point finishes full laps and lands on the start", "Because the array is sorted", "It's a coincidence for small arrays"], "answer": 1},
     {"q": "Why is cyclic sort not the final answer for LC 287?", "options": ["It's O(n²)", "It uses extra space", "It modifies the array, which the problem forbids", "It fails when the duplicate repeats many times"], "answer": 2}
+  ],
+  "steps": [
+    "Can you change the array? Is extra space allowed? n + 1 numbers, each from 1 to n?",
+    "Try [1,3,4,2,2]. Why must at least one duplicate exist?",
+    "Pairs, sorting, hash set: which rule does each one break?",
+    "Read i → nums[i] as a \"next\" pointer: what shape do you get?",
+    "Phase 1: slow and fast start at 0. Phase 2: who restarts, and where do they meet?",
+    "Code both phases; say why starting at index 0 is always safe.",
+    "Dry-run [1,3,4,2,2]: the meeting point, then the cycle start.",
+    "Why is the cycle start the duplicate? Time and space?"
   ]
 }

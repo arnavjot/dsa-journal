@@ -36,6 +36,8 @@ My NeetCode 150 journal: every problem written up with the 8-step interview scri
 
 To add a visualizer, put an HTML file in `viz/` and set `"viz": "viz/your-file.html"` on that approach.
 
+To give a problem its own 8-step prompts in **Revise**, add `"steps": [ ...8 questions... ]` to its `meta.json` (see `problems/_template/meta.json`). Problems without them use the general checklist.
+
 ## Revisions across devices
 
 Revisions save in your browser. To sync: **History → Copy**, paste into `data/revisions.json`, push. On another device, the site starts from that file.

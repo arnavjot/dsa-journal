@@ -24,5 +24,15 @@
     {"q": "Why does the loop check both fast != NULL and fast->next != NULL?", "options": ["Style only", "fast jumps two nodes; if fast->next is NULL then fast->next->next would crash", "To find the middle", "Because slow could be NULL"], "answer": 1},
     {"q": "In phase 2, how far does fast move each iteration?", "options": ["2 nodes", "1 node", "Back to head every time", "It doesn't move"], "answer": 1},
     {"q": "The cycle starts at head (L = 0). What happens right after fast = head?", "options": ["Infinite loop", "fast == slow already, so the while loop is skipped and head is returned", "It returns NULL", "fast needs one full lap first"], "answer": 1}
+  ],
+  "steps": [
+    "Return the node or its value? Can there be no cycle? Can the cycle start at head?",
+    "Draw A→B→C→D→E→F→(back to C). Which node do you return?",
+    "A hash set of visited nodes: time and space?",
+    "Cycle + O(1) memory: which two pointers?",
+    "When does phase 1 end? In phase 2, who goes back to head and how fast does each move?",
+    "Code both phases; say why the loop checks fast and fast->next.",
+    "Dry-run L = 2, C = 4: where do they meet, then where do they meet again?",
+    "Explain L + x = k·C in one sentence. How would you get the cycle length?"
   ]
 }

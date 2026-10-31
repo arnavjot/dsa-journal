@@ -32,5 +32,15 @@
     {"q": "After the loop, freq['c'] = −1. What does that mean?", "options": ["t has one more 'c' than s", "s has one more 'c' than t", "'c' doesn't appear anywhere", "It's an anagram"], "answer": 0},
     {"q": "Why is the space O(1) even though we use an array?", "options": ["It's always 26 ints, whatever the string length", "Arrays don't use memory", "Because we only use one loop", "It isn't O(1)"], "answer": 0},
     {"q": "Follow-up: the strings can contain any Unicode characters. What do you change?", "options": ["Use an unordered_map<char/int, int> instead of freq[26]", "Make the array size 52", "Sort only s", "Nothing, it already works"], "answer": 0}
+  ],
+  "steps": [
+    "Only lowercase a–z? What should happen if the lengths differ?",
+    "Try anagram/nagaram, rat/car and aacc/ccac. Which one fools a \"same letters\" check?",
+    "Sorting both strings: time? Why does it work?",
+    "Same letters, same counts, only 26 letters: what fits better than a hash map?",
+    "How does one array with +1 and −1 replace two? What does s[i] - 'a' give you?",
+    "Code the length check, the counting loop and the zero check.",
+    "Dry-run rat/car: which slot is the first non-zero, and what does its sign mean?",
+    "Time and space? What changes for the Unicode follow-up?"
   ]
 }

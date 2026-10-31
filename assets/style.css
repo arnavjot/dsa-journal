@@ -175,6 +175,9 @@ details[open] .chev{transform:rotate(90deg)}
 .checklist label:hover{background:var(--sunk)}
 .checklist input{margin-top:4px;accent-color:var(--accent);width:16px;height:16px;flex:0 0 auto}
 .checklist input:checked + span{color:var(--muted);text-decoration:line-through}
+.checklist span b{font-weight:600}
+.checklist .prompt{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+.checklist input:checked + span .prompt{text-decoration:none}
 .rate{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 @media (max-width:480px){.rate{grid-template-columns:minmax(0,1fr)}}
 .rate button{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px}

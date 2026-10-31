@@ -14,7 +14,7 @@ const STEPS = [
   'Final complexity + one extension'
 ];
 
-const S = { cats: [], all: [], bySlug: {}, folders: {}, patterns: {}, repoRev: {}, cache: {},
+const S = { cats: [], all: [], bySlug: {}, folders: {}, patterns: {}, repoRev: {}, cache: {}, meta: {},
   rev: { pattern: 'all', cur: null, start: null, acc: 0, running: false, rated: null } };
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -343,6 +343,21 @@ function drawTimer() {
   const tb = $('#tbtn'); if (tb) tb.textContent = S.rev.running ? '❚❚ Pause' : (e > 0 ? '▶ Resume' : '▶ Start timer');
 }
 
+// The 8-step checklist. With a problem's own prompts (meta.json "steps"), each step gets a targeted question under it.
+function stepItems(prompts) {
+  return STEPS.map((s, i) => `<li><label><input type="checkbox" id="st${i}"><span><b>${i + 1}. ${esc(s)}</b>` +
+    (prompts && prompts[i] ? `<small class="prompt">${esc(prompts[i])}</small>` : '') + `</span></label></li>`).join('');
+}
+async function loadTargetedSteps(p) {
+  if (!p || !p.folder) return;
+  let meta;
+  try { meta = S.meta[p.folder] || (S.meta[p.folder] = await getJSON(`problems/${p.folder}/meta.json`)); } catch { return; }
+  const ul = $('#steps');
+  if (!ul || S.rev.cur !== p || !Array.isArray(meta.steps) || meta.steps.length !== STEPS.length) return;
+  ul.innerHTML = stepItems(meta.steps);
+  $('#stepsLabel').textContent = `Run the 8 steps out loud · for #${p.id}`;
+}
+
 function renderRevise() {
   const pats = S.cats.filter(c => c.problems.some(p => p.solved));
   const dueCount = slug => pool(slug).filter(p => dueIn(p) <= 0).length;
@@ -379,8 +394,8 @@ function renderRevise() {
           <button class="r-fail" data-rate="fail"><b>Couldn't solve</b><span>Back to tomorrow</span></button>
         </div></div>
       </div>
-      <div class="card"><div class="label" style="margin-bottom:8px">Run the 8 steps out loud</div>
-        <ul class="checklist">${STEPS.map((s, i) => `<li><label><input type="checkbox" id="st${i}"><span>${i + 1}. ${esc(s)}</span></label></li>`).join('')}</ul>
+      <div class="card"><div class="label" style="margin-bottom:8px" id="stepsLabel">Run the 8 steps out loud</div>
+        <ul class="checklist" id="steps">${stepItems()}</ul>
         <p class="muted" style="font-size:13px;margin:10px 0 0">Stuck? Tap the <b>i</b> button at the top for the never-stuck questions.</p>
       </div>
     </div>`;
@@ -392,6 +407,7 @@ function renderRevise() {
     <div class="card"><div class="label" style="margin-bottom:6px">How the schedule works</div>
       <div class="muted" style="font-size:14px">Each problem has a gap of ${INTERVALS.join(' → ')} days. Solved in time moves it one step longer, slow keeps the same gap, couldn't brings it back in 1–2 days. No more than ${DAILY_CAP} problems are scheduled on one day: the next date can shift a little either side of the gap to a quieter day, and problems from the same pattern are kept on different days. A pattern turns red on the home page when its last attempt failed.</div></div>`;
 
+  loadTargetedSteps(p);
   $$('[data-pat]').forEach(b => b.onclick = () => { S.rev.pattern = b.dataset.pat; resetSession(); renderRevise(); });
   const tb = $('#tbtn'); if (tb) tb.onclick = () => S.rev.running ? pauseTimer() : startTimer();
   const sk = $('#skip'); if (sk) sk.onclick = () => {

@@ -21,5 +21,15 @@
   ],
   "quiz": [
     {"q": "A question that checks the key idea?", "options": ["Right answer", "Wrong", "Wrong", "Wrong"], "answer": 0}
+  ],
+  "steps": [
+    "1. A question about THIS problem for restate + clarify",
+    "2. Which tiny example and edge case to try",
+    "3. Brute force: what and how slow?",
+    "4. The clue that names the pattern",
+    "5. Plan: the one decision to get right",
+    "6. What to say while coding",
+    "7. Which input to dry-run",
+    "8. Complexity + the follow-up problem"
   ]
 }
