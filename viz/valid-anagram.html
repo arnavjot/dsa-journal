@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Valid Anagram Stepper</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — presets, the two strings over the 26 freq bars, controls, then code + numbers side by side */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --plus:#0b8486; --plus-soft:#e0f3f3; --minus:#d9661f; --minus-soft:#fcebdc; --tmp:#7446d1;
+  --hit:#cf2f55; --hit-soft:#fbe4ea; --ok:#0f8a5f; --ok-soft:#e2f5ec;
+  --code-bg:#f0f2f6; --hl:#fff1c2; --look:#fff6d6;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --plus:#3cc3c5; --plus-soft:#163236; --minus:#ff9650; --minus-soft:#3a2716; --tmp:#a98bff;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; --look:#2a2716; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --plus:#3cc3c5; --plus-soft:#163236; --minus:#ff9650; --minus-soft:#3a2716; --tmp:#a98bff;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; --look:#2a2716; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:76ch}
+.sub code,.why code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--tmp);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:640px;height:auto;margin:0 auto}
+
+.cell rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.cell .v{font-family:var(--f-mono);font-weight:700;font-size:17px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cell .i{font-family:var(--f-mono);font-size:11px;fill:var(--muted);text-anchor:middle}
+.cell.done rect{fill:var(--code-bg)}
+.cell.done .v{fill:var(--muted)}
+.cell.cur.s rect{stroke:var(--plus);stroke-width:3;fill:var(--plus-soft)}
+.cell.cur.t rect{stroke:var(--minus);stroke-width:3;fill:var(--minus-soft)}
+.rowlab{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.lenlab{font-family:var(--f-mono);font-size:12px;fill:var(--muted);dominant-baseline:central}
+.lenlab.bad{fill:var(--hit);font-weight:700}
+
+.col rect.bg{fill:transparent;transition:fill .3s}
+.col.look rect.bg{fill:var(--look)}
+.col.look.s rect.bg{fill:var(--plus-soft)} .col.look.t rect.bg{fill:var(--minus-soft)}
+.col.scan rect.bg{fill:var(--look)}
+.col.zero rect.bg{fill:var(--ok-soft)}
+.col.bad rect.bg{fill:var(--hit-soft)}
+.bar{transition:y .35s, height .35s, fill .3s}
+.bar.pos{fill:var(--plus)} .bar.neg{fill:var(--minus)}
+.col.bad .bar{fill:var(--hit)}
+.letter{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.idx{font-family:var(--f-mono);font-size:10px;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.cnt{font-family:var(--f-mono);font-size:13px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.cnt.nz{fill:var(--ink)}
+.col.bad .cnt{fill:var(--hit)}
+.zero-line{stroke:var(--edge);stroke-width:1.5}
+.ann{font-family:var(--f-body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.ann.left{text-anchor:start}
+.ann.strong{font-family:var(--f-mono);font-size:12.5px;font-weight:700}
+.link{fill:none;stroke-width:2;stroke-dasharray:5 4;transition:opacity .3s}
+.link.s{stroke:var(--plus)} .link.t{stroke:var(--minus)}
+.delta{font-family:var(--f-mono);font-size:13px;font-weight:700;text-anchor:middle;dominant-baseline:central;transition:opacity .3s}
+.delta.s{fill:var(--plus)} .delta.t{fill:var(--minus)}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok rect{fill:var(--tmp)}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.verdict{transition:opacity .3s}
+.verdict rect{stroke-width:2}
+.verdict text{font-family:var(--f-mono);font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.verdict.t rect{fill:var(--ok-soft);stroke:var(--ok)} .verdict.t text{fill:var(--ok)}
+.verdict.f rect{fill:var(--hit-soft);stroke:var(--hit)} .verdict.f text{fill:var(--hit)}
+@media (prefers-reduced-motion:reduce){.tok,.bar,.link,.delta,.verdict,.cell rect,.col rect.bg{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre;min-height:1.7em}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--tmp)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.math .dim{color:var(--muted);font-weight:400}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--tmp);padding:2px 0 2px 12px;max-width:80ch;margin:0}
+.why b{color:var(--ink)}
+.why + .why{margin-top:-8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Valid Anagram, step by step</h1>
+    <p class="sub">Two words are anagrams when they use exactly the same letters the same number of times. <code>freq</code> has one slot per letter. Every letter of <code>s</code> pushes its slot <b>up by 1</b>, every letter of <code>t</code> pushes it <b>down by 1</b>. If the letters match, everything cancels and all 26 slots end at <b>0</b>.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--plus)"></i>s[i]: freq +1</span>
+    <span><i class="dot" style="background:var(--minus)"></i>t[i]: freq −1</span>
+    <span><i class="dot" style="background:var(--ok)"></i>checked: 0</span>
+    <span><i class="dot" style="background:var(--hit)"></i>not 0 → not an anagram</span>
+  </div>
+
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+
+  <div class="stage"><svg id="g" role="img" aria-label="Strings s and t on top, the 26 letter counts below as bars"></svg></div>
+
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed">
+      <option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option>
+    </select>
+    <span class="phase" id="phase">Setup</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">The code</div>
+      <pre class="code" id="code"></pre>
+    </div>
+    <div class="card">
+      <div class="label">What just happened</div>
+      <div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div>
+      <dl class="math" id="math"></dl>
+    </div>
+  </div>
+
+  <p class="why"><b>Why <code>s[i] - 'a'</code>:</b> letters are stored as numbers ('a' = 97, 'b' = 98, …). Subtracting 'a' turns 'a'…'z' into 0…25, which is exactly the slot in <code>freq</code>.</p>
+  <p class="why"><b>Why check the lengths first:</b> different lengths can never be anagrams. It also keeps <code>t[i]</code> safe inside the loop, because the loop runs over <code>s.length()</code>.</p>
+  <p class="why"><b>Why one array instead of two:</b> +1 for s and −1 for t means "same letters" shows up as "everything is 0". A slot above 0 means s has extra of that letter; below 0 means t has extra.</p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const L = 'abcdefghijklmnopqrstuvwxyz';
+
+const PRESETS = [
+  {key:'ex1', label:'Example 1: "anagram", "nagaram"', s:'anagram', t:'nagaram'},
+  {key:'ex2', label:'Example 2: "rat", "car"', s:'rat', t:'car'},
+  {key:'listen', label:'"listen", "silent"', s:'listen', t:'silent'},
+  {key:'count', label:'Same letters, wrong counts: "aacc", "ccac"', s:'aacc', t:'ccac'},
+  {key:'len', label:'Different lengths: "ab", "abc"', s:'ab', t:'abc'},
+];
+
+const CODE = [
+  "class Solution {",
+  "public:",
+  "    bool isAnagram(string s, string t) {",
+  "        if (s.length() != t.length()) {",
+  "            return false;",
+  "        }",
+  "",
+  "        int freq[26] = {0};",
+  "        for (int i = 0; i < s.length(); i++) {",
+  "            freq[s[i] - 'a']++;",
+  "            freq[t[i] - 'a']--;",
+  "        }",
+  "",
+  "        for (int i = 0; i < 26; i++) {",
+  "            if (freq[i] != 0) {",
+  "                return false;",
+  "            }",
+  "        }",
+  "",
+  "        return true;",
+  "    }",
+  "};"
+];
+
+/* ---------- frames ---------- */
+const q = c => `'${c}'`;
+const nzList = f => f.map((v, k) => v ? `${L[k]}:${v > 0 ? '+' : ''}${v}` : null).filter(Boolean);
+
+function build(s, t){
+  const F = [], freq = Array(26).fill(0);
+  const base = () => ({freq: freq.slice()});
+  if(s.length !== t.length){
+    F.push({...base(), i:null, lines:[3,4], ph:'Done · false', done:'f', lenBad:true,
+      msg:`<span class="eq">s.length() = ${s.length}, t.length() = ${t.length}\n${s.length} != ${t.length} → return false;</span>Different lengths can't be anagrams: one word has a letter the other doesn't. No counting needed.`});
+    return F;
+  }
+  F.push({...base(), i:null, lines:[3], ph:'Length check', lenOk:true,
+    msg:`<span class="eq">s.length() = ${s.length}, t.length() = ${t.length}\n${s.length} != ${t.length} is false</span>Same length, so they might be anagrams. Keep going.`});
+  F.push({...base(), i:null, lines:[7], ph:'Setup',
+    msg:`<code>int freq[26] = {0};</code> one counter per letter a…z, all starting at 0.`});
+  for(let i = 0; i < s.length; i++){
+    const a = s.charCodeAt(i) - 97; freq[a]++;
+    F.push({...base(), i, who:'s', k:a, lines:[8,9], ph:`i = ${i}`,
+      msg:`<span class="eq">s[${i}] = ${q(s[i])}\n${q(s[i])} - 'a' = ${a}\nfreq[${a}]++  →  freq[${q(s[i])}] = ${freq[a]}</span>`});
+    const b = t.charCodeAt(i) - 97; freq[b]--;
+    F.push({...base(), i, who:'t', k:b, lines:[8,10], ph:`i = ${i}`,
+      msg:`<span class="eq">t[${i}] = ${q(t[i])}\n${q(t[i])} - 'a' = ${b}\nfreq[${b}]--  →  freq[${q(t[i])}] = ${freq[b]}</span>` +
+        (a === b ? `Same letter in both, so it went up and straight back down.` : '')});
+  }
+  // scan: runs of zeros are grouped into one frame each so the 26 checks stay short
+  let k = 0;
+  while(k < 26){
+    if(freq[k] !== 0){
+      F.push({...base(), i:null, scan:k, checked:k, bad:k, lines:[13,14,15], ph:'Done · false', done:'f',
+        msg:`<span class="eq">freq[${k}] = freq[${q(L[k])}] = ${freq[k]}  →  != 0\nreturn false;</span>` +
+          (freq[k] > 0 ? `s has ${freq[k]} more ${q(L[k])} than t` : `t has ${-freq[k]} more ${q(L[k])} than s`) + `, so the letters don't match. Not an anagram.`});
+      return F;
+    }
+    let e = k; while(e + 1 < 26 && freq[e + 1] === 0) e++;
+    F.push({...base(), i:null, scan:k, scanTo:e, checked:e + 1, lines:[13,14], ph:'Checking freq',
+      msg:`<span class="eq">${k === e ? `freq[${k}] (${q(L[k])}) == 0` : `freq[${k}…${e}] ('${L[k]}'…'${L[e]}') are all 0`}  ✓</span>` +
+        (k === e ? '' : `That's ${e - k + 1} checks of the loop, shown together.`)});
+    k = e + 1;
+  }
+  F.push({...base(), i:null, checked:26, lines:[19], ph:'Done · true', done:'t',
+    msg:`<span class="eq">return true;</span>All 26 counts are 0: every letter of s was cancelled by the same letter in t. <b>"${s}" and "${t}" are anagrams.</b>`});
+  return F;
+}
+
+/* ---------- layout & render ---------- */
+const CW = 44, CX0 = 80, SY = 40, TY = 112, CH = 40;     // string cells
+const FW = 30, FX0 = 60;                                // freq columns
+const colX = k => FX0 + k * FW + FW / 2;                // centre of column k
+
+function render(){
+  const {s, t, F} = S;
+  const n = Math.max(s.length, t.length);
+  const maxAbs = Math.max(1, ...F.flatMap(f => f.freq.map(Math.abs)));
+  const unit = Math.min(34, 84 / maxAbs);
+  const ZY = 262 + maxAbs * unit;                        // zero line
+  const letterY = ZY + maxAbs * unit + 18;
+  S.unit = unit; S.ZY = ZY;
+  const W = Math.max(CX0 + n * CW + 120, FX0 + 26 * FW + 20);
+  const H = letterY + 56;
+  let s_ = '';
+  s_ += `<text class="ann left" x="10" y="${SY - 12}">i</text>`;
+  [[s, SY, 's'], [t, TY, 't']].forEach(([str, y, who]) => {
+    s_ += `<text class="rowlab" x="34" y="${y + CH / 2}">${who}</text>`;
+    [...str].forEach((c, i) => {
+      s_ += `<g class="cell ${who}" id="${who}-${i}">` + (who === 's' ? `<text class="i" x="${CX0 + i * CW + CW / 2 - 3}" y="${y - 10}">${i}</text>` : '') +
+        `<rect x="${CX0 + i * CW}" y="${y}" width="${CW - 6}" height="${CH}" rx="8"/><text class="v" x="${CX0 + i * CW + CW / 2 - 3}" y="${y + CH / 2}">${c}</text></g>`;
+    });
+    s_ += `<text class="lenlab" id="len-${who}" x="${CX0 + str.length * CW + 8}" y="${y + CH / 2}">length ${str.length}</text>`;
+  });
+  // freq area
+  for(let k = 0; k < 26; k++){
+    const x = colX(k);
+    s_ += `<g class="col" id="col-${k}"><rect class="bg" x="${x - FW / 2 + 1}" y="${ZY - maxAbs * unit - 8}" width="${FW - 2}" height="${letterY - ZY + maxAbs * unit + 40}" rx="6"/>` +
+      `<rect class="bar pos" id="bar-${k}" x="${x - 9}" y="${ZY}" width="18" height="0" rx="3"/>` +
+      `<text class="letter" x="${x}" y="${letterY}">${L[k]}</text>` +
+      `<text class="idx" x="${x}" y="${letterY + 15}">${k}</text>` +
+      `<text class="cnt" id="cnt-${k}" x="${x}" y="${letterY + 31}">0</text></g>`;
+  }
+  s_ += `<line class="zero-line" x1="${FX0 - 4}" x2="${FX0 + 26 * FW + 4}" y1="${ZY}" y2="${ZY}"/>`;
+  s_ += `<text class="ann left" x="${FX0 - 2}" y="${ZY - maxAbs * unit - 40}">int freq[26] · bars above 0 = extra in s, below 0 = extra in t</text>`;
+  s_ += `<path class="link" id="link" d="" style="opacity:0"/>`;
+  s_ += `<text class="delta" id="delta" x="0" y="0" style="opacity:0"></text>`;
+  s_ += `<g class="tok" id="tok" style="opacity:0"><rect x="-10" y="-10" width="20" height="20" rx="6"/><text x="0" y="0">i</text></g>`;
+  s_ += `<g class="verdict" id="verdict" style="opacity:0"><rect id="vrect" x="0" y="0" width="10" height="34" rx="9"/><text id="vtext" x="0" y="0"></text></g>`;
+  const svg = $('g');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.maxWidth = Math.round(W * 1.2) + 'px';
+  svg.innerHTML = s_;
+  S.W = W; S.letterY = letterY; S.maxAbs = maxAbs;
+  $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
+}
+
+function update(){
+  const f = S.F[cur], {s, t, unit, ZY} = S;
+  // string cells
+  [[s, 's'], [t, 't']].forEach(([str, who]) => [...str].forEach((_, i) => {
+    const c = $(`${who}-${i}`);
+    const isCur = f.i === i && f.who === who;
+    const done = f.i !== null ? (i < f.i || (i === f.i && who === 's' && f.who === 't')) : (f.checked !== undefined || f.done === 't');
+    c.classList.toggle('cur', isCur);
+    c.classList.toggle('done', done && !isCur);
+  }));
+  $('len-s').classList.toggle('bad', !!f.lenBad); $('len-t').classList.toggle('bad', !!f.lenBad);
+  // bars + counts
+  for(let k = 0; k < 26; k++){
+    const v = f.freq[k], bar = $('bar-' + k), h = Math.abs(v) * unit;
+    bar.setAttribute('y', v >= 0 ? ZY - h : ZY);
+    bar.setAttribute('height', h);
+    bar.setAttribute('class', 'bar ' + (v >= 0 ? 'pos' : 'neg'));
+    const cnt = $('cnt-' + k);
+    cnt.textContent = v > 0 ? '+' + v : v;
+    cnt.classList.toggle('nz', v !== 0);
+    const col = $('col-' + k);
+    col.classList.toggle('look', f.k === k && f.i !== null);
+    col.classList.toggle('s', f.k === k && f.who === 's'); col.classList.toggle('t', f.k === k && f.who === 't');
+    const scanning = f.scan !== undefined && k >= f.scan && k <= (f.scanTo ?? f.scan);
+    col.classList.toggle('zero', f.checked !== undefined && k < f.checked && f.bad !== k);
+    col.classList.toggle('scan', scanning && f.bad !== k && !(f.checked !== undefined && k < f.checked));
+    col.classList.toggle('bad', f.bad === k);
+  }
+  // i tag and the dashed link from the current letter to its slot
+  const tok = $('tok'), link = $('link'), delta = $('delta');
+  if(f.i !== null && f.i !== undefined){
+    tok.style.opacity = 1; tok.style.transform = `translate(${CX0 + f.i * CW + CW / 2 - 3}px, ${TY + CH + 18}px)`;   // under t: i points at both strings
+    // "+1" / "−1" above the slot that changed (the slot and the letter share a colour)
+    const x2 = colX(f.k);
+    delta.setAttribute('class', 'delta ' + f.who);
+    delta.textContent = (f.who === 's' ? '+1' : '−1');
+    delta.setAttribute('x', x2); delta.setAttribute('y', ZY - S.maxAbs * unit - 22);
+    delta.style.opacity = 1;
+    link.style.opacity = 0;
+  } else { tok.style.opacity = 0; link.style.opacity = 0; delta.style.opacity = 0; }
+  // verdict pill, right of the strings
+  const vd = $('verdict');
+  if(f.done){
+    const txt = f.done === 't' ? 'return true' : 'return false', w = txt.length * 9.4 + 28;
+    vd.setAttribute('class', 'verdict ' + f.done);
+    $('vtext').textContent = txt;
+    const vx = S.W - 16 - w;
+    $('vrect').setAttribute('x', vx); $('vrect').setAttribute('y', 8); $('vrect').setAttribute('width', w);
+    $('vtext').setAttribute('x', vx + w / 2); $('vtext').setAttribute('y', 25);
+    vd.style.opacity = 1;
+  } else vd.style.opacity = 0;
+
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  $('msg').innerHTML = f.msg;
+  $('phase').textContent = f.ph;
+  $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
+
+  const wait = '<span class="wait">—</span>';
+  const nz = nzList(f.freq);
+  const rows = [
+    ['s, t', `"${s}", "${t}"`],
+    ['lengths', `${s.length} and ${t.length}` + (s.length === t.length ? '  <span class="dim">(equal)</span>' : '  <span class="dim">(different)</span>')],
+    ['i', f.i !== null && f.i !== undefined ? `${f.i}` : wait],
+    ['this step', f.i !== null && f.i !== undefined ? `${f.who}[${f.i}] = '${(f.who === 's' ? s : t)[f.i]}' → slot ${f.k} ${f.who === 's' ? '+1' : '−1'}` : (f.scan !== undefined ? `checking slot${f.scanTo !== undefined && f.scanTo !== f.scan ? `s ${f.scan}…${f.scanTo}` : ` ${f.scan}`}` : wait)],
+    ['non-zero slots', nz.length ? nz.join('  ') : '<span class="dim">none (all 0)</span>'],
+    ['slots checked', f.checked !== undefined ? `${Math.min(f.checked + (f.bad !== undefined ? 1 : 0), 26)} of 26` : wait],
+    ['answer', f.done === 't' ? 'true · anagrams' : f.done === 'f' ? 'false · not anagrams' : '<span class="wait">still checking</span>'],
+  ];
+  $('math').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur === 0;
+  $('next').disabled = cur === S.F.length - 1;
+}
+
+/* ---------- state & controls ---------- */
+let S = null, cur = 0, timer = null;
+
+function load(s, t, key){
+  stop();
+  S = {s, t, F: build(s, t)};
+  cur = 0;
+  render();
+  document.querySelectorAll('.tok,.bar').forEach(el => el.style.transition = 'none');
+  update();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('.tok,.bar').forEach(el => el.style.transition = '')));
+  document.querySelectorAll('[data-preset]').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.preset === key ? 'true' : 'false'));
+}
+
+function onCustom(e){
+  e.preventDefault();
+  const parts = $('customIn').value.split(/[,\s]+/).filter(Boolean);
+  if(parts.length !== 2) return void($('err').textContent = 'Type two words separated by a comma, like listen, silent.');
+  const [s, t] = parts.map(w => w.toLowerCase());
+  if(!/^[a-z]+$/.test(s) || !/^[a-z]+$/.test(t)) return void($('err').textContent = 'Only the letters a–z, like the problem says.');
+  if(s.length > 14 || t.length > 14) return void($('err').textContent = 'Keep each word to 14 letters or fewer so the picture stays readable.');
+  $('err').textContent = '';
+  load(s, t, null);
+}
+
+function step(d){ const n = cur + d; if(n < 0 || n >= S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){
+  if(timer){ stop(); return; }
+  if(cur === S.F.length - 1){ cur = 0; update(); }
+  $('play').textContent = '❚❚ Pause';
+  timer = setInterval(() => { if(!step(1)) stop(); }, +$('speed').value);
+}
+
+$('presets').innerHTML = PRESETS.map(p => `<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+  `<form class="custom" id="customForm"><input id="customIn" placeholder="your own: listen, silent" aria-label="Your own two words"><button class="btn" type="submit">Run</button></form>`;
+document.querySelectorAll('[data-preset]').forEach(btn => btn.onclick = () => { $('err').textContent = ''; const p = PRESETS.find(x => x.key === btn.dataset.preset); load(p.s, p.t, p.key); });
+$('customForm').addEventListener('submit', onCustom);
+$('next').onclick = () => { stop(); step(1); };
+$('prev').onclick = () => { stop(); step(-1); };
+$('reset').onclick = () => { stop(); cur = 0; update(); };
+$('play').onclick = play;
+$('speed').onchange = () => { if(timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); }
+  else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); }
+  else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+
+load(PRESETS[0].s, PRESETS[0].t, PRESETS[0].key);
+</script>
+</body>
+</html>
