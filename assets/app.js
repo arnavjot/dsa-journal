@@ -249,9 +249,8 @@ async function renderProblem(p) {
         <button class="ibtn" data-why="${i}" aria-expanded="false" title="Why this complexity?">i</button></div>
       <div class="why" data-whyp="${i}" hidden>${esc(a.why || '')}</div>
       ${a.viz ? `<div class="vizcta" id="vizcta-${i}">
-        <div class="vizcta-icon" aria-hidden="true">▶</div>
-        <div class="vizcta-text"><b>Watch it step by step</b><span>Animated pointers, the code line by line, and the maths at every step.</span></div>
-        <div class="vizcta-btns"><button class="btn viz" data-viz="${i}">▶ Show visualizer</button><a class="btn sm" href="${esc(a.viz)}" target="_blank" rel="noopener">Full page ↗</a></div>
+        <div class="vizcta-text"><b>Step-by-step visualizer</b><span>Pointers move on the picture while the code highlights line by line.</span></div>
+        <div class="vizcta-btns"><button class="btn primary" data-viz="${i}">▶ Show visualizer</button><a class="btn sm" href="${esc(a.viz)}" target="_blank" rel="noopener">Full page ↗</a></div>
       </div><div data-vizbox="${i}"></div>` : ''}
       <div class="codebox"><button class="btn sm copy" data-copy="${i}">Copy</button><pre><code class="language-cpp">${esc(codes[i] || '// file missing: ' + a.file)}</code></pre></div>
     </div>`).join('');
@@ -264,7 +263,7 @@ async function renderProblem(p) {
 
   v.innerHTML = `${head}
     <div class="key">${esc(meta.keyIdea || '')}</div>
-    ${vizIdx >= 0 ? `<button class="btn viz big-viz" id="jumpViz">▶ Watch the visualizer</button>` : ''}
+    ${vizIdx >= 0 ? `<div><button class="btn sm vizjump" id="jumpViz">▶ Jump to visualizer</button></div>` : ''}
     ${revCard}
     <section class="card" style="display:flex;flex-direction:column;gap:14px">
       <div class="label">Approaches</div>
