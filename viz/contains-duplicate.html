@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contains Duplicate Stepper</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — presets, array strip over the hash set's buckets, controls, then code + numbers side by side */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --cur:#d9661f; --set:#0b8486; --set-soft:#e0f3f3; --tmp:#7446d1; --hit:#cf2f55; --hit-soft:#fbe4ea; --ok:#0f8a5f;
+  --code-bg:#f0f2f6; --hl:#fff1c2; --look:#fff6d6;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --set:#3cc3c5; --set-soft:#163236; --tmp:#a98bff; --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c;
+  --code-bg:#121821; --hl:#3a3418; --look:#2a2716; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --set:#3cc3c5; --set-soft:#163236; --tmp:#a98bff; --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c;
+  --code-bg:#121821; --hl:#3a3418; --look:#2a2716; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:76ch}
+.sub code,.why code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--tmp);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:620px;height:auto;margin:0 auto}
+
+.cell rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.cell .v{font-family:var(--f-mono);font-weight:700;font-size:16px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cell .i{font-family:var(--f-mono);font-size:11px;fill:var(--muted);text-anchor:middle}
+.cell.done rect{fill:var(--set-soft);stroke:var(--set)}
+.cell.cur rect{stroke:var(--cur);stroke-width:3}
+.cell.dup rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.cell.later .v{fill:var(--muted)}
+
+.bucket rect{fill:var(--code-bg);stroke:var(--line);transition:fill .3s, stroke .3s}
+.bucket text{font-family:var(--f-mono);font-size:12px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.bucket.look rect{fill:var(--look);stroke:var(--cur);stroke-width:2}
+.well{fill:none;stroke:var(--line);stroke-dasharray:4 4}
+.well.look{stroke:var(--cur);stroke-dasharray:none;fill:var(--look)}
+.chip{transition:opacity .35s}
+.chip rect{fill:var(--set);transition:fill .3s}
+.chip text{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.chip.fresh rect{fill:var(--tmp)}
+.chip.hit rect{fill:var(--hit)}
+.link{fill:none;stroke:var(--cur);stroke-width:2;stroke-dasharray:5 4;transition:opacity .3s}
+.ann{font-family:var(--f-body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.ann.strong{font-family:var(--f-mono);font-size:12.5px;font-weight:700;fill:var(--cur)}
+.ann.left{text-anchor:start}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok rect{fill:var(--cur)}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.verdict{transition:opacity .3s}
+.verdict rect{stroke-width:2}
+.verdict text{font-family:var(--f-mono);font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.verdict.t rect{fill:var(--hit-soft);stroke:var(--hit)} .verdict.t text{fill:var(--hit)}
+.verdict.f rect{fill:var(--set-soft);stroke:var(--ok)} .verdict.f text{fill:var(--ok)}
+@media (prefers-reduced-motion:reduce){.tok,.chip,.link,.verdict,.cell rect,.bucket rect,.chip rect{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre;min-height:1.7em}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--cur)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.math .dim{color:var(--muted);font-weight:400}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--tmp);padding:2px 0 2px 12px;max-width:80ch;margin:0}
+.why b{color:var(--ink)}
+.why + .why{margin-top:-8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Contains Duplicate, step by step</h1>
+    <p class="sub">Walk the array once. Before keeping a number, ask the set <code>seen</code> "have I met you before?". An <code>unordered_set</code> files every number into a <b>bucket</b> picked from its value, so <code>count()</code> only looks inside one small bucket instead of the whole set. That's why each check is O(1) on average.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--cur)"></i>num (current number) and the bucket being checked</span>
+    <span><i class="dot" style="background:var(--set)"></i>already in seen</span>
+    <span><i class="dot" style="background:var(--tmp)"></i>just inserted</span>
+    <span><i class="dot" style="background:var(--hit)"></i>duplicate found</span>
+  </div>
+
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+
+  <div class="stage"><svg id="g" role="img" aria-label="The array on top, the hash set's buckets below"></svg></div>
+
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed">
+      <option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option>
+    </select>
+    <span class="phase" id="phase">Setup</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">The code</div>
+      <pre class="code" id="code"></pre>
+    </div>
+    <div class="card">
+      <div class="label">What just happened</div>
+      <div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div>
+      <dl class="math" id="math"></dl>
+    </div>
+  </div>
+
+  <p class="why"><b>Why check before inserting:</b> if you inserted first, <code>count()</code> would always find the number you just put in, and every array would look like it has a duplicate.</p>
+  <p class="why"><b>Why it can stop early:</b> one repeat is enough to answer true, so <code>return true</code> happens the moment it's found. Only an array with no repeats is read to the end.</p>
+  <p class="why"><b>About the buckets:</b> this picture uses a fixed 7 buckets (bucket = number mod 7) so it stays small. A real <code>unordered_set</code> adds more buckets as it fills up, which keeps every bucket short. A bucket holding different numbers is normal (1 and 8 both land in bucket 1): <code>count()</code> compares only the few numbers in that one bucket.</p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const B = 7;
+const bucketOf = v => ((v % B) + B) % B;
+
+const PRESETS = [
+  {key:'ex1', label:'Example 1: [1,2,3,1]', nums:[1,2,3,1]},
+  {key:'ex2', label:'Example 2: [1,2,3,4]', nums:[1,2,3,4]},
+  {key:'ex3', label:'Example 3: [1,1,1,3,3,4,3,2,4,2]', nums:[1,1,1,3,3,4,3,2,4,2]},
+  {key:'late', label:'Repeat near the end: 12 numbers', nums:[4,15,9,22,8,30,13,1,17,25,11,9]},
+  {key:'neg', label:'Negatives: [-3,7,0,-10,5]', nums:[-3,7,0,-10,5]},
+];
+
+const CODE = [
+  "class Solution {",
+  "public:",
+  "    bool containsDuplicate(vector<int>& nums) {",
+  "        unordered_set<int> seen;",
+  "",
+  "        for (int num : nums) {",
+  "            if (seen.count(num)) {",
+  "                return true;",
+  "            }",
+  "            seen.insert(num);",
+  "        }",
+  "        return false;",
+  "    }",
+  "};"
+];
+
+/* ---------- frames ---------- */
+const listStr = a => '{' + a.join(', ') + '}';
+
+function build(nums){
+  const F = [], seen = [];            // seen: array indices in insertion order
+  const inSet = () => seen.map(k => nums[k]);
+  F.push({i:null, seen:[], lines:[3], ph:'Setup',
+    msg:`<code>unordered_set&lt;int&gt; seen;</code> starts empty. It will hold every number we've already passed.`});
+  for(let i = 0; i < nums.length; i++){
+    const v = nums[i], b = bucketOf(v);
+    const inBucket = seen.filter(k => bucketOf(nums[k]) === b).map(k => nums[k]);
+    const match = seen.find(k => nums[k] === v);
+    const found = match !== undefined;
+    const compared = inBucket.length ? inBucket.join(', ') : 'nothing there';
+    F.push({i, seen:seen.slice(), b, look:true, match: found ? match : null, lines:[5,6], ph:`i = ${i}`,
+      msg:`<span class="eq">num = nums[${i}] = ${v}\nbucket: ${v} mod ${B} = ${b}\nseen.count(${v}): bucket ${b} holds ${compared}</span>` +
+        (found ? `<b>${v} is there</b>, so <code>count</code> returns 1.` : `${v} isn't there, so <code>count</code> returns 0. Only bucket ${b} was checked, not all ${seen.length} numbers in the set.`)});
+    if(found){
+      F.push({i, seen:seen.slice(), b, match, done:'t', lines:[6,7], ph:'Done · true',
+        msg:`<span class="eq">return true;</span>${v} appears at index ${match} and again at index ${i}. One repeat is enough, so we stop here without reading ${nums.length - 1 - i ? `the last ${nums.length - 1 - i} number${nums.length - 1 - i === 1 ? '' : 's'}` : 'any further'}.`});
+      return F;
+    }
+    seen.push(i);
+    F.push({i, seen:seen.slice(), b, fresh:i, lines:[9], ph:`i = ${i}`,
+      msg:`<span class="eq">seen.insert(${v});</span>${v} goes into bucket ${b}. seen is now ${listStr(inSet())}.`});
+  }
+  F.push({i:null, seen:seen.slice(), done:'f', lines:[11], ph:'Done · false',
+    msg:`<span class="eq">return false;</span>The loop finished: all ${nums.length} numbers were checked and none was already in the set, so <b>every number is different</b>.`});
+  return F;
+}
+
+/* ---------- layout & render ---------- */
+const CW = 56, CX0 = 70, CY = 44, CH = 46;               // array cells
+const BW = 92, BX0 = 70, BY = 200, CHIP_H = 30, CHIP_GAP = 8; // buckets
+const cellX = i => CX0 + i * CW;                          // left edge of cell i
+const bucketX = b => BX0 + b * BW;                        // left edge of bucket b
+
+function render(){
+  const {nums, F} = S;
+  // where each inserted number ends up: its bucket and its slot inside the bucket
+  const last = F[F.length - 1], load = Array(B).fill(0);
+  S.slot = {};
+  last.seen.forEach(k => { const b = bucketOf(nums[k]); S.slot[k] = {b, k: load[b]++}; });
+  const rows = Math.max(3, ...load);
+  const W = Math.max(cellX(nums.length), bucketX(B)) + 40;
+  const chipTop = BY + 40;
+  const H = chipTop + rows * (CHIP_H + CHIP_GAP) + 58;
+  S.chipTop = chipTop;
+  let s = '';
+  s += `<text class="ann left" x="${CX0 - 52}" y="${CY - 10}">i</text>`;
+  s += `<text class="ann left" x="${CX0 - 52}" y="${CY + CH / 2 + 4}">nums</text>`;
+  nums.forEach((v, i) => {
+    s += `<g class="cell" id="cell-${i}"><text class="i" x="${cellX(i) + CW / 2 - 3}" y="${CY - 10}">${i}</text>` +
+         `<rect x="${cellX(i)}" y="${CY}" width="${CW - 6}" height="${CH}" rx="8"/>` +
+         `<text class="v" x="${cellX(i) + CW / 2 - 3}" y="${CY + CH / 2}">${v}</text></g>`;
+  });
+  for(let b = 0; b < B; b++){
+    const x = bucketX(b);
+    s += `<rect class="well" id="well-${b}" x="${x + 2}" y="${BY + 32}" width="${BW - 10}" height="${H - BY - 32 - 36}" rx="10"/>`;
+    s += `<g class="bucket" id="bucket-${b}"><rect x="${x + 2}" y="${BY}" width="${BW - 10}" height="26" rx="7"/><text x="${x + BW / 2 - 3}" y="${BY + 13}">bucket ${b}</text></g>`;
+  }
+  s += `<text class="ann left" x="${BX0 + 2}" y="${H - 12}">unordered_set&lt;int&gt; seen · ${B} buckets (bucket = number mod ${B})</text>`;
+  Object.entries(S.slot).forEach(([k, {b, k: n}]) => {
+    const x = bucketX(b) + BW / 2 - 3, y = chipTop + n * (CHIP_H + CHIP_GAP) + CHIP_H / 2;
+    s += `<g class="chip" id="chip-${k}" style="opacity:0"><rect x="${x - 30}" y="${y - CHIP_H / 2}" width="60" height="${CHIP_H}" rx="8"/><text x="${x}" y="${y}">${nums[k]}</text></g>`;
+  });
+  s += `<path class="link" id="link" d="" style="opacity:0"/>`;
+  s += `<text class="ann strong" id="linklab" x="0" y="0" style="opacity:0"></text>`;
+  s += `<g class="tok" id="tok" style="opacity:0"><rect x="-17" y="-10" width="34" height="20" rx="6"/><text x="0" y="0">num</text></g>`;
+  s += `<g class="verdict" id="verdict" style="opacity:0"><rect id="vrect" x="0" y="0" width="10" height="34" rx="9"/><text id="vtext" x="0" y="0"></text></g>`;
+  const svg = $('g');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.maxWidth = Math.round(W * 1.2) + 'px';
+  svg.innerHTML = s;
+  S.W = W;
+  $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
+}
+
+function update(){
+  const f = S.F[cur], {nums} = S;
+  const inSeen = new Set(f.seen);
+  nums.forEach((_, i) => {
+    const c = $('cell-' + i);
+    c.classList.toggle('done', inSeen.has(i) && i !== f.i);
+    c.classList.toggle('cur', i === f.i && f.done !== 't');
+    c.classList.toggle('dup', f.done === 't' && (i === f.i || i === f.match));
+    c.classList.toggle('later', f.i !== null && i > f.i && f.done !== 'f');
+  });
+  Object.keys(S.slot).forEach(k => {
+    const ch = $('chip-' + k), on = inSeen.has(+k);
+    ch.style.opacity = on ? 1 : 0;
+    ch.classList.toggle('fresh', f.fresh === +k);
+    ch.classList.toggle('hit', f.match === +k);
+  });
+  for(let b = 0; b < B; b++){
+    const on = f.b === b && (f.look || f.done === 't');
+    $('bucket-' + b).classList.toggle('look', on);
+    $('well-' + b).classList.toggle('look', on);
+  }
+  // num tag under the current cell
+  const tok = $('tok');
+  if(f.i !== null && f.done !== 't'){ tok.style.opacity = 1; tok.style.transform = `translate(${cellX(f.i) + CW / 2 - 3}px, ${CY + CH + 18}px)`; }
+  else if(f.done === 't'){ tok.style.opacity = 1; tok.style.transform = `translate(${cellX(f.i) + CW / 2 - 3}px, ${CY + CH + 18}px)`; }
+  else tok.style.opacity = 0;
+  // dashed link: current number → its bucket
+  const link = $('link'), lab = $('linklab');
+  if(f.i !== null && f.b !== undefined){
+    const x1 = cellX(f.i) + CW / 2 - 3, y1 = CY + CH + 30, x2 = bucketX(f.b) + BW / 2 - 3, y2 = BY - 4;
+    link.setAttribute('d', `M${x1},${y1} C${x1},${(y1 + y2) / 2} ${x2},${(y1 + y2) / 2} ${x2},${y2}`);
+    link.setAttribute('marker-end', '');
+    link.style.opacity = 1;
+    const v = nums[f.i];
+    lab.textContent = `${v} mod ${B} = ${f.b}`;
+    const right = (x2 < x1 || x1 < 160) && x1 + 120 < S.W;
+    lab.setAttribute('x', right ? x1 + 26 : x1 - 26);       // next to the num tag, above where the arrow starts
+    lab.style.textAnchor = right ? 'start' : 'end';
+    lab.setAttribute('y', CY + CH + 22);
+    lab.style.opacity = 1;
+  } else { link.style.opacity = 0; lab.style.opacity = 0; }
+  // verdict pill, top right of the bucket area
+  const vd = $('verdict');
+  if(f.done){
+    const txt = f.done === 't' ? 'return true' : 'return false', w = txt.length * 9.4 + 28;
+    vd.setAttribute('class', 'verdict ' + f.done);
+    $('vtext').textContent = txt;
+    const vx = S.W - 20 - w;
+    $('vrect').setAttribute('x', vx); $('vrect').setAttribute('y', BY - 46); $('vrect').setAttribute('width', w);
+    $('vtext').setAttribute('x', vx + w / 2); $('vtext').setAttribute('y', BY - 29);
+    vd.style.opacity = 1;
+  } else vd.style.opacity = 0;
+
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  $('msg').innerHTML = f.msg;
+  $('phase').textContent = f.ph;
+  $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
+
+  const checked = f.i === null ? (f.done ? nums.length : 0) : f.i + 1;
+  const brute = checked * (checked - 1) / 2;
+  const wait = '<span class="wait">—</span>';
+  const rows = [
+    ['nums', `[${nums.join(', ')}]`],
+    ['i, num', f.i !== null ? `${f.i}, ${nums[f.i]}` : wait],
+    ['bucket checked', f.b !== undefined && f.i !== null ? `${nums[f.i]} mod ${B} = ${f.b}` : wait],
+    ['seen', f.seen.length ? `${listStr(f.seen.map(k => nums[k]))}  <span class="dim">(${f.seen.length} number${f.seen.length === 1 ? '' : 's'})</span>` : '<span class="wait">empty</span>'],
+    ['set lookups so far', `${checked}  <span class="dim">(one per number)</span>`],
+    ['brute force would need', `${brute} pair comparison${brute === 1 ? '' : 's'}  <span class="dim">(every pair so far)</span>`],
+    ['answer', f.done === 't' ? `true · ${nums[f.i]} at index ${f.match} and ${f.i}` : f.done === 'f' ? 'false · all different' : '<span class="wait">still looking</span>'],
+  ];
+  $('math').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur === 0;
+  $('next').disabled = cur === S.F.length - 1;
+}
+
+/* ---------- state & controls ---------- */
+let S = null, cur = 0, timer = null;
+
+function load(nums, key){
+  stop();
+  S = {nums, F: build(nums)};
+  cur = 0;
+  render();
+  document.querySelectorAll('.tok').forEach(t => t.style.transition = 'none');
+  update();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('.tok').forEach(t => t.style.transition = '')));
+  document.querySelectorAll('[data-preset]').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.preset === key ? 'true' : 'false'));
+}
+
+function onCustom(e){
+  e.preventDefault();
+  const v = ($('customIn').value.match(/-?\d+/g) || []).map(Number);
+  if(!v.length) return void($('err').textContent = 'Enter some numbers, like 3,1,4,1,5.');
+  if(v.length > 14) return void($('err').textContent = 'Keep it to 14 numbers or fewer so the picture stays readable.');
+  if(v.some(x => Math.abs(x) > 99999)) return void($('err').textContent = 'Keep each number between -99999 and 99999 so it fits in its box.');
+  $('err').textContent = '';
+  load(v, null);
+}
+
+function step(d){ const n = cur + d; if(n < 0 || n >= S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){
+  if(timer){ stop(); return; }
+  if(cur === S.F.length - 1){ cur = 0; update(); }
+  $('play').textContent = '❚❚ Pause';
+  timer = setInterval(() => { if(!step(1)) stop(); }, +$('speed').value);
+}
+
+$('presets').innerHTML = PRESETS.map(p => `<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+  `<form class="custom" id="customForm"><input id="customIn" placeholder="your own: 3,1,4,1,5" aria-label="Your own array"><button class="btn" type="submit">Run</button></form>`;
+document.querySelectorAll('[data-preset]').forEach(btn => btn.onclick = () => { $('err').textContent = ''; const p = PRESETS.find(q => q.key === btn.dataset.preset); load(p.nums, p.key); });
+$('customForm').addEventListener('submit', onCustom);
+$('next').onclick = () => { stop(); step(1); };
+$('prev').onclick = () => { stop(); step(-1); };
+$('reset').onclick = () => { stop(); cur = 0; update(); };
+$('play').onclick = play;
+$('speed').onchange = () => { if(timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); }
+  else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); }
+  else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+
+load(PRESETS[0].nums, PRESETS[0].key);
+</script>
+</body>
+</html>
