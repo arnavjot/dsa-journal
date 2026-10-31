@@ -348,8 +348,8 @@ function layout(A){
     pos[-1] = {x: 60 + A.L*SP + 10, y: cy};
     return {pos, NR, cy, W: 60 + A.L*SP + 80, H: 190, R:0, cx:0};
   }
-  const R = Math.max(78, A.C * 66 / (2*Math.PI));
-  const cx = 60 + A.L*SP + R + 10, cy = R + 72;
+  const R = Math.max(92, A.C * 66 / (2*Math.PI));   // small loops get room for the C label and pointer tags
+  const cx = 60 + (A.L === 0 ? 110 : 0) + A.L*SP + R + 10, cy = R + 72;   // L = 0: room on the left for the cycle-start label
   A.cycle.forEach((n,k)=>{ const t = Math.PI + k*2*Math.PI/A.C; pos[n] = {x:cx + R*Math.cos(t), y:cy + R*Math.sin(t)}; });
   A.tail.forEach((n,i)=>{ pos[n] = {x: cx - R - (A.L - i)*SP, y: cy}; });
   return {pos, R, cx, cy, NR, W: cx + R + 70, H: cy + R + 84};
@@ -387,7 +387,7 @@ function render(){
       const mx = (p.x+q.x)/2, my = (p.y+q.y)/2;
       let [nx,ny] = unit(mx-cx, my-cy);
       if(Math.hypot(mx-cx,my-cy) < 1){ [nx,ny] = unit(-(q.y-p.y), q.x-p.x); }
-      const bulge = A.C <= 2 ? 40 : 14;
+      const bulge = A.C <= 2 ? 84 : 14;   // 2-node loop: arcs clear the C label in the middle
       const qx = mx + nx*bulge, qy = my + ny*bulge;
       const [u1x,u1y] = unit(qx-p.x, qy-p.y), [u2x,u2y] = unit(qx-q.x, qy-q.y);
       edges.push({id:`c${k}`, d:`M${p.x+u1x*NR},${p.y+u1y*NR} Q${qx},${qy} ${q.x+u2x*(NR+3)},${q.y+u2y*(NR+3)}`, cls: k===A.C-1 ? 'in':''});
@@ -402,23 +402,24 @@ function render(){
   });
   if(mode === 'list' && A.tail.length + A.cycle.length > 0){
     const h = pos[G.head];
-    s += `<text class="ann" x="${h.x}" y="${A.L === 0 ? h.y + 62 : h.y - 46}">head</text>`;
+    s += `<text class="ann" x="${h.x - NR - 8}" y="${h.y + 4}" style="text-anchor:end">head</text>`;
   }
   if(A.noCycle){
     s += `<text class="ann" x="${(pos[A.tail[0]].x + pos[-1].x)/2}" y="${cy+62}">no loop: the last node points to NULL</text>`;
   } else {
     if(A.L>0){
       const x0 = pos[A.tail[0]].x, x1 = pos[A.start].x;
-      s += `<path class="edge" d="M${x0},${cy+34} L${x0},${cy+38} L${x1},${cy+38} L${x1},${cy+34}" style="opacity:.6"/>`;
-      s += `<text class="ann" x="${(x0+x1)/2}" y="${cy+54}">road: L = ${A.L} step${A.L>1?'s':''} to the cycle start</text>`;
+      s += `<path class="edge" d="M${x0},${cy+50} L${x0},${cy+54} L${x1},${cy+54} L${x1},${cy+50}" style="opacity:.6"/>`;
+      s += `<text class="ann" x="${(x0+x1)/2}" y="${cy+70}">road: L = ${A.L} step${A.L>1?'s':''} to the cycle start</text>`;
     }
-    s += `<text class="ann big" x="${cx}" y="${cy-10}">C = ${A.C}</text>`;
-    s += `<text class="ann" x="${cx}" y="${cy+10}">cycle length</text>`;
+    s += `<text class="ann big" x="${cx}" y="${cy-2}">C = ${A.C}</text>`;
+    s += `<text class="ann" x="${cx}" y="${cy+16}">cycle length</text>`;
     const sp = pos[A.start];
     const what = mode === 'array' ? `duplicate ${A.start}` : `return ${G.lab(A.start)}`;
-    s += `<text class="ann hit" x="${sp.x}" y="${sp.y - 62}">cycle start</text>`;
-    s += `<text class="ann hit" x="${sp.x}" y="${sp.y - 47}">(${what})</text>`;
-    s += `<text id="xlab" class="ann" x="${cx}" y="${cy+R+58}" style="opacity:0"></text>`;
+    // upper-left of the node: above the road and the pointer tags, clear of the loop's nodes
+    s += `<text class="ann hit" x="${sp.x - 24}" y="${sp.y - 66}" style="text-anchor:end">cycle start</text>`;
+    s += `<text class="ann hit" x="${sp.x - 24}" y="${sp.y - 51}" style="text-anchor:end">(${what})</text>`;
+    s += `<text id="xlab" class="ann" x="${W/2}" y="${cy+R+54}" style="opacity:0"></text>`;
   }
   [['slow','slow'],['fast','fast'],['s2','slow2']].forEach(([k,lab])=>{
     const w = lab.length*7.4+14;
@@ -455,7 +456,9 @@ function setHL(f){
     const x = f.ss - A.L;
     for(let k=0;k<x;k++){ const e = $('hl-c'+(k%A.C)); if(e){ e.setAttribute('class','edge xarc'); e.style.opacity=''; } }
     lab.style.opacity = 1;
-    lab.textContent = `teal = x = ${x} step${x===1?'':'s'} (cycle start → meeting point)` + (f.ph===2 ? `   ·   purple = L = ${A.L} (start → cycle start)` : '');
+    const W2 = S.Lo.W / 2;
+    lab.innerHTML = `<tspan x="${W2}">teal = x = ${x} step${x===1?'':'s'} (cycle start → meeting point)</tspan>` +
+      (f.ph===2 ? `<tspan x="${W2}" dy="17">purple = L = ${A.L} (start → cycle start)</tspan>` : '');
   } else lab.style.opacity = 0;
   if(f.ph === 2){
     for(let i=0;i<A.L;i++){ const e = $('hl-t'+i); if(e){ e.setAttribute('class','edge larc'); e.style.opacity=''; } }
