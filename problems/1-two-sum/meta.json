@@ -1,0 +1,37 @@
+{
+  "id": 1,
+  "title": "Two Sum",
+  "keyIdea": "For each number, the partner it needs is fixed: rem = target − nums[i]. Keep a map of number → index for everything already passed; if rem is in it, that's the pair. Look up first, then save, so a number never pairs with itself.",
+  "approaches": [
+    {
+      "name": "Brute force",
+      "file": "brute.cpp",
+      "idea": "Try every pair (i, j) with i < j and return the first one that adds up to target.",
+      "time": "O(n²)", "space": "O(1)",
+      "why": "n·(n−1)/2 pairs. With n up to 10⁴ that's about 5·10⁷ checks: passes, but it's the answer the interviewer wants you to improve."
+    },
+    {
+      "name": "Sort + two pointers",
+      "file": "two-pointers.cpp",
+      "idea": "Sort (value, index) pairs, then squeeze from both ends: sum too small → move left up, too big → move right down.",
+      "time": "O(n log n)", "space": "O(n)",
+      "why": "Sorting dominates. The pairs vector is needed because sorting would lose the original indices the answer asks for.",
+      "warn": "Only worth it when the array is already sorted (that's LC 167, where it's O(1) space). Here the hash map is simpler and faster."
+    },
+    {
+      "name": "Hash map, one pass",
+      "file": "hash-map.cpp",
+      "best": true,
+      "idea": "Walk once. rem = target − nums[i]. If seen has rem, return {seen[rem], i}. Otherwise save seen[nums[i]] = i.",
+      "time": "O(n)", "space": "O(n)",
+      "why": "Each number does one count() and one insert, both O(1) on average. The map can hold up to n numbers.",
+      "viz": "viz/two-sum.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why does the map store number → index and not index → number?", "options": ["You look up by the number you need (rem) and want back where it was", "It uses less memory", "Indices can repeat", "unordered_map only allows int keys"], "answer": 0},
+    {"q": "Why check seen.count(rem) before seen[nums[i]] = i?", "options": ["So a number can't pair with itself (e.g. 3 with target 6 in [3,2,4])", "It's faster", "The map would overflow", "Order doesn't matter"], "answer": 0},
+    {"q": "nums = [3,3], target = 6. What happens?", "options": ["i=0: 3 not found, save 3→0. i=1: rem 3 found → {0,1}", "Returns {} because duplicates overwrite", "Returns {1,1}", "Crashes"], "answer": 0},
+    {"q": "When is sort + two pointers the better choice?", "options": ["When the array is already sorted (LC 167): O(n) time, O(1) space", "Always", "When numbers are negative", "Never"], "answer": 0}
+  ]
+}

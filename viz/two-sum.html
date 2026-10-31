@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Two Sum Stepper</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — presets, the array over the seen map table, controls, then code + numbers side by side */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --cur:#d9661f; --cur-soft:#fcebdc; --set:#0b8486; --set-soft:#e0f3f3; --tmp:#7446d1; --tmp-soft:#efe9fb;
+  --hit:#cf2f55; --hit-soft:#fbe4ea; --ok:#0f8a5f; --ok-soft:#e2f5ec;
+  --code-bg:#f0f2f6; --hl:#fff1c2; --look:#fff6d6;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --set:#3cc3c5; --set-soft:#163236; --tmp:#a98bff; --tmp-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; --look:#2a2716; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --set:#3cc3c5; --set-soft:#163236; --tmp:#a98bff; --tmp-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; --look:#2a2716; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:76ch}
+.sub code,.why code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--tmp);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:620px;height:auto;margin:0 auto}
+
+.cell rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.cell .v{font-family:var(--f-mono);font-weight:700;font-size:16px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cell .i{font-family:var(--f-mono);font-size:11px;fill:var(--muted);text-anchor:middle}
+.cell.done rect{fill:var(--set-soft);stroke:var(--set)}
+.cell.cur rect{stroke:var(--cur);stroke-width:3;fill:var(--cur-soft)}
+.cell.pair rect{fill:var(--ok-soft);stroke:var(--ok);stroke-width:3}
+.cell.later .v{fill:var(--muted)}
+.ann{font-family:var(--f-body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.ann.left{text-anchor:start}
+.ann.strong{font-family:var(--f-mono);font-size:13px;font-weight:700;fill:var(--cur)}
+.target{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink)}
+
+.mhead rect{fill:var(--code-bg);stroke:var(--line)}
+.mhead text{font-family:var(--f-body);font-size:12px;font-weight:600;fill:var(--muted);dominant-baseline:central}
+.entry{transition:opacity .35s}
+.entry rect{fill:var(--surface);stroke:var(--set);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.entry text{font-family:var(--f-mono);font-size:15px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.entry .k rect{fill:var(--set-soft)}
+.entry.fresh rect{stroke:var(--tmp);stroke-width:2.5}
+.entry.fresh .k rect{fill:var(--tmp-soft)}
+.entry.hit rect{stroke:var(--ok);stroke-width:2.5}
+.entry.hit .k rect{fill:var(--ok-soft)}
+.entry.hit .vv rect{fill:var(--ok-soft)}
+.miss{transition:opacity .3s}
+.miss rect{fill:none;stroke:var(--cur);stroke-width:2;stroke-dasharray:5 4}
+.miss text{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--cur);text-anchor:middle;dominant-baseline:central}
+.miss .note{font-family:var(--f-body);font-size:12px;font-weight:600}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok rect{fill:var(--cur)}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.verdict{transition:opacity .3s}
+.verdict rect{stroke-width:2}
+.verdict text{font-family:var(--f-mono);font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.verdict.t rect{fill:var(--ok-soft);stroke:var(--ok)} .verdict.t text{fill:var(--ok)}
+.verdict.f rect{fill:var(--hit-soft);stroke:var(--hit)} .verdict.f text{fill:var(--hit)}
+@media (prefers-reduced-motion:reduce){.tok,.entry,.miss,.verdict,.cell rect,.entry rect{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre;min-height:1.7em}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--cur)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.math .dim{color:var(--muted);font-weight:400}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--tmp);padding:2px 0 2px 12px;max-width:80ch;margin:0}
+.why b{color:var(--ink)}
+.why + .why{margin-top:-8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Two Sum, step by step</h1>
+    <p class="sub">For each number, work out the partner it needs: <code>rem = target − nums[i]</code>. Then ask the map <code>seen</code> "did I already pass that partner?". If yes, you have the pair. If not, save the current number with its index, so a <b>later</b> number can find it.</p>
+  </header>
+
+  <div class="legend">
+    <span><i class="dot" style="background:var(--cur)"></i>nums[i] and the rem being looked up</span>
+    <span><i class="dot" style="background:var(--set)"></i>already in seen</span>
+    <span><i class="dot" style="background:var(--tmp)"></i>just saved</span>
+    <span><i class="dot" style="background:var(--ok)"></i>the pair</span>
+  </div>
+
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+
+  <div class="stage"><svg id="g" role="img" aria-label="The array on top, the seen map below as number to index"></svg></div>
+
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed">
+      <option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option>
+    </select>
+    <span class="phase" id="phase">Setup</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">The code</div>
+      <pre class="code" id="code"></pre>
+    </div>
+    <div class="card">
+      <div class="label">What just happened</div>
+      <div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div>
+      <dl class="math" id="math"></dl>
+    </div>
+  </div>
+
+  <p class="why"><b>Why look up before saving:</b> a number can't pair with itself. In [3,2,4] with target 6, the 3 needs another 3; the map is still empty, so it isn't fooled into using the same 3 twice.</p>
+  <p class="why"><b>Why the map stores number → index:</b> the answer is two <b>indices</b>, so when you find the partner you need to know where it was. <code>seen[rem]</code> gives exactly that.</p>
+  <p class="why"><b>About the picture:</b> the map is drawn left to right in the order numbers were saved. A real <code>unordered_map</code> keeps no order; it finds a key by hashing it, which is why <code>seen.count(rem)</code> is O(1) on average.</p>
+  <p class="why"><b>Why one pass is enough:</b> whichever number of the pair comes second finds the first one already saved. Try "Repeat number": the second 3 finds the first.</p>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const PRESETS = [
+  {key:'ex1', label:'Example 1: [2,7,11,15], target 9', nums:[2,7,11,15], target:9},
+  {key:'ex2', label:'Example 2: [3,2,4], target 6', nums:[3,2,4], target:6},
+  {key:'ex3', label:'Repeat number: [3,3], target 6', nums:[3,3], target:6},
+  {key:'late', label:'Pair near the end: 8 numbers, target 16', nums:[4,11,-3,8,15,6,1,10], target:16},
+  {key:'neg', label:'Negatives: [-1,-2,-3,-4,-5], target -8', nums:[-1,-2,-3,-4,-5], target:-8},
+];
+
+const CODE = [
+  "class Solution {",
+  "public:",
+  "    vector<int> twoSum(vector<int>& nums, int target) {",
+  "        unordered_map<int,int> seen;",
+  "        for(int i = 0; i < nums.size(); i++) {",
+  "            int rem = target - nums[i];",
+  "            if(seen.count(rem)) {",
+  "                return {seen[rem], i};",
+  "            }",
+  "            seen[nums[i]] = i;",
+  "        }",
+  "        return {};",
+  "    }",
+  "};"
+];
+
+/* ---------- frames ---------- */
+const sub = (a, b) => b < 0 ? `${a} − (${b})` : `${a} − ${b}`;
+
+function build(nums, target){
+  const F = [];
+  const order = [], map = new Map();          // order: keys in first-insert order (for drawing); map: key → index
+  const snap = () => ({order: order.slice(), map: new Map(map)});
+  const show = m => m.size ? '{' + [...m].map(([k, v]) => `${k}→${v}`).join(', ') + '}' : '{}';
+  F.push({...snap(), i:null, lines:[3], ph:'Setup',
+    msg:`<code>unordered_map&lt;int,int&gt; seen;</code> starts empty. Each entry will be <b>number → index where it was</b>.`});
+  for(let i = 0; i < nums.length; i++){
+    const v = nums[i], rem = target - v, has = map.has(rem);
+    F.push({...snap(), i, rem, look:true, hit: has ? rem : null, lines:[4,5,6], ph:`i = ${i}`,
+      msg:`<span class="eq">nums[${i}] = ${v}\nrem = target − nums[i] = ${sub(target, v)} = ${rem}\nseen.count(${rem}) → ${has ? 1 : 0}</span>` +
+        (has ? `<b>${rem} was saved earlier</b>, at index ${map.get(rem)}. ${map.get(rem) !== undefined ? `${nums[map.get(rem)]} + ${v} = ${target}.` : ''}`
+             : `${v} needs a ${rem} to reach ${target}, and no ${rem} has been seen yet.`)});
+    if(has){
+      const j = map.get(rem);
+      F.push({...snap(), i, rem, hit: rem, pair:[j, i], done:'t', lines:[6,7], ph:'Done',
+        msg:`<span class="eq">return {seen[${rem}], ${i}} = {${j}, ${i}};</span>nums[${j}] + nums[${i}] = ${nums[j]} + ${v} = <b>${target}</b>. Found in one pass.`});
+      return F;
+    }
+    const upd = map.has(v);
+    const old = map.get(v);
+    map.set(v, i); if(!upd) order.push(v);
+    F.push({...snap(), i, rem, fresh:v, lines:[9], ph:`i = ${i}`,
+      msg:`<span class="eq">seen[${v}] = ${i};</span>` + (upd ? `${v} was already saved at index ${old}; now it points to ${i}. Either index works as a partner later.` : `Save ${v} with its index ${i}, in case a later number needs it. seen = ${show(map)}.`)});
+  }
+  F.push({...snap(), i:null, done:'f', lines:[11], ph:'Done',
+    msg:`<span class="eq">return {};</span>No two numbers add up to ${target}. (LeetCode promises there is always exactly one answer, so this line only runs on inputs like your own.)`});
+  return F;
+}
+
+/* ---------- layout & render ---------- */
+const CW = 58, CX0 = 80, CY = 40, CH = 46;     // array cells
+const MW = 66, MX0 = 150, MY = 190, MH = 34;   // map columns
+const cellX = i => CX0 + i * CW;
+const mapX = k => MX0 + k * MW;
+
+function render(){
+  const {nums, F, target} = S;
+  const keys = F[F.length - 1].order;                    // every key that ever gets saved
+  S.keyCol = new Map(keys.map((k, c) => [k, c]));
+  const W = Math.max(cellX(nums.length) + 170, mapX(keys.length) + MW + 120, 620);
+  const H = MY + 2 * MH + 52;
+  let s = '';
+  s += `<text class="ann left" x="14" y="${CY - 10}">i</text>`;
+  s += `<text class="ann left" x="14" y="${CY + CH / 2 + 4}">nums</text>`;
+  nums.forEach((v, i) => {
+    s += `<g class="cell" id="cell-${i}"><text class="i" x="${cellX(i) + CW / 2 - 3}" y="${CY - 10}">${i}</text>` +
+      `<rect x="${cellX(i)}" y="${CY}" width="${CW - 6}" height="${CH}" rx="8"/><text class="v" x="${cellX(i) + CW / 2 - 3}" y="${CY + CH / 2}">${v}</text></g>`;
+  });
+  s += `<text class="target" x="${cellX(nums.length) + 14}" y="${CY + CH / 2 + 5}">target = ${target}</text>`;
+  s += `<text class="ann strong" id="remlab" x="0" y="${CY + CH + 22}" style="opacity:0"></text>`;
+  // map table
+  s += `<text class="ann left" x="14" y="${MY - 16}">unordered_map&lt;int,int&gt; seen · shown in the order numbers were saved</text>`;
+  s += `<g class="mhead"><rect x="14" y="${MY}" width="${MX0 - 22}" height="${MH}" rx="7"/><text x="24" y="${MY + MH / 2}">key: number</text>` +
+       `<rect x="14" y="${MY + MH + 4}" width="${MX0 - 22}" height="${MH}" rx="7"/><text x="24" y="${MY + MH * 1.5 + 4}">value: index</text></g>`;
+  keys.forEach((k, c) => {
+    const x = mapX(c);
+    s += `<g class="entry" id="ent-${c}" style="opacity:0"><g class="k"><rect x="${x}" y="${MY}" width="${MW - 6}" height="${MH}" rx="7"/><text x="${x + MW / 2 - 3}" y="${MY + MH / 2}">${k}</text></g>` +
+         `<g class="vv"><rect x="${x}" y="${MY + MH + 4}" width="${MW - 6}" height="${MH}" rx="7"/><text id="entv-${c}" x="${x + MW / 2 - 3}" y="${MY + MH * 1.5 + 4}"></text></g></g>`;
+  });
+  s += `<g class="miss" id="miss" style="opacity:0"><rect id="missr" x="0" y="${MY}" width="${MW - 6}" height="${MH}" rx="7"/><text id="misst" x="0" y="${MY + MH / 2}"></text>` +
+       `<text class="note" id="missn" x="0" y="${MY + MH * 1.5 + 4}">not here</text></g>`;
+  s += `<g class="tok" id="tok" style="opacity:0"><rect x="-10" y="-10" width="20" height="20" rx="6"/><text x="0" y="0">i</text></g>`;
+  s += `<g class="verdict" id="verdict" style="opacity:0"><rect id="vrect" x="0" y="0" width="10" height="34" rx="9"/><text id="vtext" x="0" y="0"></text></g>`;
+  const svg = $('g');
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+  svg.style.maxWidth = Math.round(W * 1.2) + 'px';
+  svg.innerHTML = s;
+  S.W = W;
+  $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
+}
+
+function update(){
+  const f = S.F[cur], {nums, target} = S;
+  nums.forEach((_, i) => {
+    const c = $('cell-' + i);
+    const inPair = f.pair && f.pair.includes(i);
+    c.classList.toggle('pair', !!inPair);
+    c.classList.toggle('cur', i === f.i && !inPair);
+    c.classList.toggle('done', f.i !== null ? i < f.i && !inPair : f.done === 'f');
+    c.classList.toggle('later', f.i !== null && i > f.i);
+  });
+  // map entries
+  S.keyCol.forEach((c, k) => {
+    const on = f.map.has(k), e = $('ent-' + c);
+    e.style.opacity = on ? 1 : 0;
+    $('entv-' + c).textContent = on ? f.map.get(k) : '';
+    e.classList.toggle('fresh', f.fresh === k);
+    e.classList.toggle('hit', f.hit === k);
+  });
+  // a lookup that misses: dashed "rem?" box after the saved entries
+  const miss = $('miss');
+  if(f.look && f.hit === null){
+    const x = mapX(f.order.length);
+    $('missr').setAttribute('x', x);
+    $('misst').setAttribute('x', x + MW / 2 - 3); $('misst').textContent = f.rem + '?';
+    $('missn').setAttribute('x', x + MW / 2 - 3);
+    miss.style.opacity = 1;
+  } else miss.style.opacity = 0;
+  // i tag + rem label under the current cell
+  const tok = $('tok'), lab = $('remlab');
+  if(f.i !== null){
+    const cx = cellX(f.i) + CW / 2 - 3;
+    tok.style.opacity = 1; tok.style.transform = `translate(${cx}px, ${CY + CH + 18}px)`;
+    lab.textContent = `rem = ${sub(target, nums[f.i])} = ${f.rem}`;
+    const right = cx + 200 < S.W;
+    lab.setAttribute('x', right ? cx + 18 : cx - 18);
+    lab.style.textAnchor = right ? 'start' : 'end';
+    lab.style.opacity = 1;
+  } else { tok.style.opacity = 0; lab.style.opacity = 0; }
+  // verdict
+  const vd = $('verdict');
+  if(f.done){
+    const txt = f.done === 't' ? `return {${f.pair[0]}, ${f.pair[1]}}` : 'return {}', w = txt.length * 9.4 + 28;
+    vd.setAttribute('class', 'verdict ' + f.done);
+    $('vtext').textContent = txt;
+    const vx = S.W - 16 - w;
+    $('vrect').setAttribute('x', vx); $('vrect').setAttribute('y', MY - 70); $('vrect').setAttribute('width', w);
+    $('vtext').setAttribute('x', vx + w / 2); $('vtext').setAttribute('y', MY - 53);
+    vd.style.opacity = 1;
+  } else vd.style.opacity = 0;
+
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  $('msg').innerHTML = f.msg;
+  $('phase').textContent = f.ph;
+  $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
+
+  const wait = '<span class="wait">—</span>';
+  const checked = f.i === null ? (f.done ? nums.length : 0) : f.i + 1;
+  const rows = [
+    ['nums, target', `[${nums.join(', ')}], ${target}`],
+    ['i, nums[i]', f.i !== null ? `${f.i}, ${nums[f.i]}` : wait],
+    ['rem (partner needed)', f.i !== null ? `${sub(target, nums[f.i])} = ${f.rem}` : wait],
+    ['seen', f.map.size ? '{' + [...f.map].map(([k, v]) => `${k}→${v}`).join(', ') + '}' : '<span class="wait">empty</span>'],
+    ['map lookups so far', `${checked}  <span class="dim">(one per number)</span>`],
+    ['brute force would need', `${checked * (checked - 1) / 2} pair checks  <span class="dim">(every pair so far)</span>`],
+    ['answer', f.done === 't' ? `{${f.pair[0]}, ${f.pair[1]}} · ${nums[f.pair[0]]} + ${nums[f.pair[1]]} = ${target}` : f.done === 'f' ? '{} · no pair' : '<span class="wait">still looking</span>'],
+  ];
+  $('math').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur === 0;
+  $('next').disabled = cur === S.F.length - 1;
+}
+
+/* ---------- state & controls ---------- */
+let S = null, cur = 0, timer = null;
+
+function load(nums, target, key){
+  stop();
+  S = {nums, target, F: build(nums, target)};
+  cur = 0;
+  render();
+  document.querySelectorAll('.tok').forEach(t => t.style.transition = 'none');
+  update();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('.tok').forEach(t => t.style.transition = '')));
+  document.querySelectorAll('[data-preset]').forEach(btn => btn.setAttribute('aria-pressed', btn.dataset.preset === key ? 'true' : 'false'));
+}
+
+function onCustom(e){
+  e.preventDefault();
+  const m = $('customIn').value.split(/target|=|;|\|/i);
+  const nums = ((m[0] || '').match(/-?\d+/g) || []).map(Number);
+  const tg = ((m.slice(1).join(' ') || '').match(/-?\d+/g) || []).map(Number);
+  if(nums.length < 2 || tg.length !== 1) return void($('err').textContent = 'Write the numbers, then "target" and the target, like 2,7,11,15 target 9.');
+  if(nums.length > 12) return void($('err').textContent = 'Keep it to 12 numbers or fewer so the picture stays readable.');
+  if([...nums, tg[0]].some(x => Math.abs(x) > 9999)) return void($('err').textContent = 'Keep numbers between -9999 and 9999 so they fit in their boxes.');
+  $('err').textContent = '';
+  load(nums, tg[0], null);
+}
+
+function step(d){ const n = cur + d; if(n < 0 || n >= S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){
+  if(timer){ stop(); return; }
+  if(cur === S.F.length - 1){ cur = 0; update(); }
+  $('play').textContent = '❚❚ Pause';
+  timer = setInterval(() => { if(!step(1)) stop(); }, +$('speed').value);
+}
+
+$('presets').innerHTML = PRESETS.map(p => `<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+  `<form class="custom" id="customForm"><input id="customIn" placeholder="your own: 2,7,11,15 target 9" aria-label="Your own numbers and target"><button class="btn" type="submit">Run</button></form>`;
+document.querySelectorAll('[data-preset]').forEach(btn => btn.onclick = () => { $('err').textContent = ''; const p = PRESETS.find(x => x.key === btn.dataset.preset); load(p.nums, p.target, p.key); });
+$('customForm').addEventListener('submit', onCustom);
+$('next').onclick = () => { stop(); step(1); };
+$('prev').onclick = () => { stop(); step(-1); };
+$('reset').onclick = () => { stop(); cur = 0; update(); };
+$('play').onclick = play;
+$('speed').onchange = () => { if(timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); }
+  else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); }
+  else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+
+load(PRESETS[0].nums, PRESETS[0].target, PRESETS[0].key);
+</script>
+</body>
+</html>
