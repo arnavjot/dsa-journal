@@ -1,0 +1,39 @@
+{
+  "id": 121,
+  "title": "Best Time to Buy and Sell Stock",
+  "keyIdea": "If you sell on day i, the best day to have bought is the cheapest day up to i. So walk once, keep mini = cheapest price so far, and track the best prices[i] − mini.",
+  "approaches": [
+    {
+      "name": "Brute force: every (buy, sell) pair",
+      "file": "brute.cpp",
+      "idea": "For every buy day i, try every sell day j ≥ i and keep the biggest prices[j] − prices[i].",
+      "time": "O(n²)", "space": "O(1)",
+      "why": "About n²/2 pairs. With n up to 10⁵ that's ~5·10⁹ checks: Time Limit Exceeded."
+    },
+    {
+      "name": "One pass: cheapest so far",
+      "file": "one-pass.cpp",
+      "best": true,
+      "idea": "For each day: mini = min(mini, price), then profit = max(profit, price − mini). Selling today, the best buy is the lowest price seen up to today.",
+      "time": "O(n)", "space": "O(1)",
+      "why": "One loop, two O(1) updates per day, two int variables.",
+      "viz": "viz/best-time-to-buy-and-sell-stock.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Selling on day i, which buy day is best?", "options": ["The cheapest day from 0 up to i, which is exactly mini", "The cheapest day in the whole array", "Day i − 1", "The most expensive earlier day"], "answer": 0},
+    {"q": "Why can't you just use max(prices) − min(prices)?", "options": ["The min might come after the max, and you can't sell before you buy", "It overflows", "It's O(n²)", "It's actually correct"], "answer": 0},
+    {"q": "prices = [7,6,4,3,1]. What's returned?", "options": ["0: never trading is allowed, and profit starts at 0", "−6", "6", "1"], "answer": 0},
+    {"q": "Why is it safe to update mini before profit on the same day?", "options": ["If today is the new low, today's profit is 0, which never beats the best", "It isn't safe", "Because mini starts at INT_MAX", "Because prices are positive"], "answer": 0}
+  ],
+  "steps": [
+    "One buy and one sell? Must the buy come first? What if prices only go down?",
+    "Do [7,1,5,3,6,4] by hand. Why isn't the answer 7 − 1?",
+    "Every (buy, sell) pair: time, and why does it fail at n = 10⁵?",
+    "If you sell today, which earlier day is the best buy? What single number captures it?",
+    "What do you keep track of, what does each start at, and in which order do you update them?",
+    "Code the one pass, saying \"cheapest so far\" and \"profit if I sell today\".",
+    "Dry-run [3,8,1,5]: does the new low 1 change the answer?",
+    "Time and space? How would LC 122 (as many trades as you like) change it?"
+  ]
+}
