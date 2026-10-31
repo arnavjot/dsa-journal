@@ -241,7 +241,7 @@ async function renderProblem(p) {
   if (location.hash.slice(1) !== p.slug) return;
 
   const tabs = meta.approaches.map((a, i) => `<button class="tab" role="tab" data-ap="${i}" aria-selected="${i === meta.approaches.length - 1}">
-      <span class="n">${esc(a.name)}</span><span class="c">${esc(a.time)} time · ${esc(a.space)} space</span>${a.best ? '<span class="star">★ optimal</span>' : ''}${a.viz ? '<span class="vizbadge">▶ visualizer</span>' : ''}</button>`).join('');
+      <span class="n">${esc(a.name)}</span><span class="c">${esc(a.time)} time · ${esc(a.space)} space</span>${a.best ? '<span class="star">★ optimal</span>' : ''}</button>`).join('');
   const panes = meta.approaches.map((a, i) => `<div class="appr" data-pane="${i}" ${i === meta.approaches.length - 1 ? '' : 'hidden'}>
       <div>${esc(a.idea)}</div>
       ${a.warn ? `<div class="warn">${esc(a.warn)}</div>` : ''}
@@ -255,7 +255,6 @@ async function renderProblem(p) {
       <div class="codebox"><button class="btn sm copy" data-copy="${i}">Copy</button><pre><code class="language-cpp">${esc(codes[i] || '// file missing: ' + a.file)}</code></pre></div>
     </div>`).join('');
 
-  const vizIdx = (() => { let k = -1; meta.approaches.forEach((a, i) => { if (a.viz && (k < 0 || a.best)) k = i; }); return k; })();
   let html = notes ? (window.marked ? marked.parse(notes) : `<pre>${esc(notes)}</pre>`) : '';
   const tmp = document.createElement('div'); tmp.innerHTML = html;
   const heads = $$('h2', tmp); heads.forEach((h, i) => h.id = 'step-' + i);
@@ -263,7 +262,6 @@ async function renderProblem(p) {
 
   v.innerHTML = `${head}
     <div class="key">${esc(meta.keyIdea || '')}</div>
-    ${vizIdx >= 0 ? `<div><button class="btn sm vizjump" id="jumpViz">▶ Jump to visualizer</button></div>` : ''}
     ${revCard}
     <section class="card" style="display:flex;flex-direction:column;gap:14px">
       <div class="label">Approaches</div>
@@ -298,13 +296,6 @@ async function renderProblem(p) {
     box.innerHTML = `<iframe class="vizframe" src="${esc(meta.approaches[+b.dataset.viz].viz)}" title="Visualizer"></iframe>`;
     b.textContent = 'Hide visualizer';
   });
-  const jv = $('#jumpViz', v);
-  if (jv) jv.onclick = () => {
-    $(`[data-ap="${vizIdx}"]`, v).click();
-    const b = $(`[data-viz="${vizIdx}"]`, v), box = $(`[data-vizbox="${vizIdx}"]`, v);
-    if (!box.firstChild) b.click();
-    $(`#vizcta-${vizIdx}`, v).scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
   $$('[data-jump]', v).forEach(a => a.onclick = e => { e.preventDefault(); document.getElementById(a.dataset.jump)?.scrollIntoView({ behavior: 'smooth' }); });
   $$('.opt', v).forEach(b => b.onclick = () => {
     const q = meta.quiz[+b.dataset.q], right = +b.dataset.o === q.answer;
