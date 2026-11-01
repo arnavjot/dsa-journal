@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invert Binary Tree Stepper</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — presets, the tree with the call stack beside it, controls, then code + numbers */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --cur:#d9661f; --cur-soft:#fcebdc; --st:#7446d1; --st-soft:#efe9fb;
+  --hit:#cf2f55; --hit-soft:#fbe4ea; --ok:#0f8a5f; --ok-soft:#e2f5ec;
+  --code-bg:#f0f2f6; --hl:#fff1c2;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --st:#a98bff; --st-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --st:#a98bff; --st-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:76ch}
+.sub code,.why code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--st);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:600px;height:auto;margin:0 auto}
+
+.cell rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.cell .v{font-family:var(--f-mono);font-weight:700;font-size:20px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cell .i{font-family:var(--f-mono);font-size:11px;fill:var(--muted);text-anchor:middle}
+.cell.done rect{fill:var(--code-bg)}
+.cell.later .v{fill:var(--muted)}
+.cell.matched rect{fill:var(--ok-soft);stroke:var(--ok)}
+.cell.cur rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.cell.bad rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.cell.partner rect{stroke:var(--st);stroke-width:3}
+.arc{fill:none;stroke:var(--ok);stroke-width:2;opacity:.5;transition:opacity .3s}
+.arc.now{opacity:1;stroke-width:3}
+.chip{transition:opacity .3s}
+.chip rect{fill:var(--st-soft);stroke:var(--st);stroke-width:1.5}
+.chip text{font-family:var(--f-mono);font-size:18px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.chip.top rect{stroke-width:3}
+.chip.bad rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.chip.fresh rect{fill:var(--st);}
+.chip.fresh text{fill:#fff}
+.chip.ghost rect{fill:none;stroke:var(--ok);stroke-dasharray:4 3}
+.chip.ghost text{fill:var(--ok)}
+.stackbox{fill:none;stroke:var(--line);stroke-width:1.5}
+.ann{font-family:var(--f-body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.ann.left{text-anchor:start}
+.empty{font-family:var(--f-body);font-size:13px;fill:var(--muted);font-style:italic;transition:opacity .3s}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.tok.i rect{fill:var(--cur)} .tok.top rect{fill:var(--st)}
+.verdict{transition:opacity .3s}
+.verdict rect{stroke-width:2}
+.verdict text{font-family:var(--f-mono);font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.verdict.t rect{fill:var(--ok-soft);stroke:var(--ok)} .verdict.t text{fill:var(--ok)}
+.verdict.f rect{fill:var(--hit-soft);stroke:var(--hit)} .verdict.f text{fill:var(--hit)}
+@media (prefers-reduced-motion:reduce){.tok,.arc,.chip,.verdict,.cell rect{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre;min-height:1.7em;width:max-content;min-width:100%;box-sizing:border-box}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--st)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.math .dim{color:var(--muted);font-weight:400}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--st);padding:2px 0 2px 12px;max-width:80ch;margin:0}
+.why b{color:var(--ink)}
+.why + .why{margin-top:-8px}
+.tk rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.tk text{font-family:var(--f-mono);font-size:16px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.tk .i{font-size:11px;font-weight:400;fill:var(--muted)}
+.tk.op rect{fill:var(--st-soft)}
+.tk.done rect{fill:var(--code-bg)} .tk.done text:not(.i){fill:var(--muted)}
+.tk.cur rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.slot rect{fill:var(--st-soft);stroke:var(--st);stroke-width:1.5}
+.slot text{font-family:var(--f-mono);font-size:16px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.slot.fresh rect{fill:var(--st)} .slot.fresh text{fill:#fff}
+.slot.res rect{fill:var(--ok-soft);stroke:var(--ok);stroke-width:3}
+.calc{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink)}
+.calc.b{fill:var(--cur)} .calc.a{fill:var(--st)} .calc.r{fill:var(--ok)}
+.calc.dim{font-family:var(--f-body);font-weight:400;font-size:12px;fill:var(--muted)}
+.tn{transition:transform .5s cubic-bezier(.3,.7,.3,1)}
+.tn circle{fill:var(--surface);stroke:var(--edge);stroke-width:2;transition:fill .3s, stroke .3s}
+.tn text{font-family:var(--f-mono);font-size:15px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.tn.cur circle{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.tn.done circle{fill:var(--ok-soft);stroke:var(--ok)}
+.tn.open circle{stroke:var(--st);stroke-width:2.5}
+.tn.kid circle{fill:var(--st-soft);stroke:var(--st);stroke-width:2.5}
+.te{stroke:var(--edge);stroke-width:2;transition:all .5s cubic-bezier(.3,.7,.3,1)}
+.lr{font-family:var(--f-mono);font-size:10px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.lr.k{fill:var(--st)}
+.cs rect{fill:var(--code-bg);stroke:var(--line)}
+.cs text{font-family:var(--f-mono);font-size:12px;font-weight:700;fill:var(--ink);dominant-baseline:central}
+.cs.top rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:2}
+.cshead{font-family:var(--f-body);font-size:12px;font-weight:600;fill:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Invert Binary Tree, step by step</h1>
+    <p class="sub">Inverting = mirroring the tree left ↔ right. At every node do one tiny job: <b>swap its two children</b>. Then ask the recursion to do the same job inside each child. When every node has swapped its children, the whole tree is mirrored.</p>
+  </header>
+  <div class="legend">
+    <span><i class="dot" style="background:var(--cur)"></i>current call (swapping its children)</span>
+    <span><i class="dot" style="background:var(--st)"></i>the two children just swapped · calls still open</span>
+    <span><i class="dot" style="background:var(--ok)"></i>finished: its whole subtree is inverted</span>
+  </div>
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+  <div class="stage"><svg id="g" role="img" aria-label="The tree, with the recursive calls still open listed beside it"></svg></div>
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed"><option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option></select>
+    <span class="phase" id="phase">Setup</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">The code</div><pre class="code" id="code"></pre></div>
+    <div class="card"><div class="label">What just happened</div><div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div><dl class="math" id="math"></dl></div>
+  </div>
+  <p class="why"><b>Why <code>temp</code>:</b> after <code>root-&gt;left = root-&gt;right</code>, the old left child would be lost. <code>temp</code> keeps it so it can become the new right child. Same idea as swapping two variables.</p>
+  <p class="why"><b>Why it works:</b> mirroring a tree = swap the two subtrees <i>and</i> mirror each of them. The recursion trusts that <code>invertTree(child)</code> mirrors that child completely.</p>
+  <p class="why"><b>The NULL check:</b> a leaf's children are NULL, so those calls return straight away. That's the base case that stops the recursion.</p>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const PRESETS = [
+  {key:'ex1', label:'Example 1: [4,2,7,1,3,6,9]', t:'4,2,7,1,3,6,9'},
+  {key:'ex2', label:'Example 2: [2,1,3]', t:'2,1,3'},
+  {key:'lop', label:'Lopsided: [1,2,null,3,4]', t:'1,2,null,3,4'},
+  {key:'big', label:'Bigger: 10 nodes', t:'8,4,12,2,6,10,14,1,3,5'},
+  {key:'empty', label:'Empty tree: []', t:''},
+];
+const CODE = ["class Solution {","public:","    TreeNode* invertTree(TreeNode* root) {","        if (root == NULL) return NULL; ","        ","        TreeNode* temp = root->left;","        root->left = root->right;","        root->right = temp;","        ","        invertTree(root->left);","        invertTree(root->right);","        ","        return root;        ","    }","};"];
+
+// level-order list (with null) → nodes {val, l, r} by id
+function parseTree(txt){
+  const items = txt.split(/[\s,]+/).filter(Boolean).map(x => /^null$/i.test(x) ? null : +x);
+  if(!items.length || items[0] === null) return {nodes:[], root:null};
+  if(items.some(x => x !== null && !Number.isInteger(x))) throw 'Use whole numbers or null, like 4,2,7,1,3,6,9.';
+  const nodes = [{val:items[0], l:null, r:null}], q = [0];
+  let k = 1;
+  while(q.length && k < items.length){
+    const p = q.shift();
+    for(const side of ['l', 'r']){
+      if(k >= items.length) break;
+      const v = items[k++];
+      if(v !== null){ nodes.push({val:v, l:null, r:null}); nodes[p][side] = nodes.length - 1; q.push(nodes.length - 1); }
+    }
+  }
+  return {nodes, root:0};
+}
+const kids = nodes => nodes.map(n => ({l:n.l, r:n.r}));
+
+function build(T){
+  const F = [], nodes = T.nodes.map(n => ({...n})), stack = [], done = new Set();
+  const snap = o => ({kids: kids(nodes), stack: stack.slice(), done: new Set(done), ...o});
+  if(T.root === null){
+    F.push(snap({cur:null, lines:[2,3], ph:'Done', msg:'<span class="eq">root == NULL → return NULL</span>An empty tree is already its own mirror.'}));
+    return F;
+  }
+  F.push(snap({cur:null, lines:[], ph:'Start', msg:`invertTree(${nodes[0].val}) is called on the root.`}));
+  let swaps = 0;
+  const go = (id, from) => {
+    const n = nodes[id]; stack.push(id);
+    const oldL = n.l, oldR = n.r;
+    const tmp = n.l; n.l = n.r; n.r = tmp; swaps++;
+    const name = x => x === null ? 'NULL' : nodes[x].val;
+    F.push(snap({cur:id, swapped:[oldL, oldR].filter(x => x !== null), swaps, lines:[3,5,6,7], ph:`invertTree(${n.val})`,
+      msg:`<span class="eq">${from}root = ${n.val}, not NULL\ntemp = root->left       (${name(oldL)})\nroot->left = root->right (${name(oldR)})\nroot->right = temp       (${name(oldL)})</span>` +
+        (oldL === null && oldR === null ? `A leaf: both children are NULL, so the swap changes nothing, and both recursive calls will hit the NULL check and return at once.` : `${n.val}'s children have swapped sides. Next: invert inside the new left child, then the new right child.`)}));
+    if(n.l !== null) go(n.l, `invertTree(root->left) from ${n.val}\n`);
+    if(n.r !== null) go(n.r, `invertTree(root->right) from ${n.val}\n`);
+    done.add(id); stack.pop();
+    F.push(snap({cur:id, ret:true, swaps, lines:[9,10,12], ph:`invertTree(${n.val}) returns`,
+      msg:`<span class="eq">return root; // ${n.val}</span>Both children of ${n.val} are fully inverted, so the subtree under ${n.val} is now a mirror image.` + (stack.length ? ` Back to invertTree(${nodes[stack[stack.length - 1]].val}).` : ' That was the root: done.')}));
+  };
+  go(0, '');
+  F[F.length - 1].ph = 'Done';
+  F[F.length - 1].end = true;
+  return F;
+}
+
+const NW = 54, LV = 74, TX0 = 40, TY0 = 50;
+function layout(f){
+  const pos = {}; let x = 0;
+  const walk = (id, d) => { if(id === null) return; walk(f.kids[id].l, d + 1); pos[id] = {x: TX0 + x * NW + NW / 2, y: TY0 + d * LV}; x++; walk(f.kids[id].r, d + 1); };
+  walk(0, 0);
+  return pos;
+}
+function render(){
+  const {T, F} = S, n = T.nodes.length;
+  const depth = id => id === null ? 0 : 1 + Math.max(depth(T.nodes[id].l), depth(T.nodes[id].r));
+  const D = Math.max(1, depth(T.root));
+  S.CSX = TX0 + Math.max(n, 3) * NW + 40;
+  const W = Math.max(S.CSX + 190, 600), H = Math.max(TY0 + (D - 1) * LV + 50, 70 + (D + 1) * 30, 160);
+  let g = `<g id="edges"></g>`;
+  T.nodes.forEach((nd, id) => { g += `<g class="tn" id="tn-${id}"><circle r="20"/><text>${nd.val}</text></g>`; });
+  g += `<text class="cshead" x="${S.CSX}" y="22">call stack (top = running)</text><g id="cs"></g>`;
+  const svg = $('g'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.maxWidth = Math.round(W * 1.3) + 'px'; svg.innerHTML = g;
+  $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
+}
+function update(){
+  const f = S.F[cur], {T} = S;
+  if(T.root !== null){
+    const pos = layout(f);
+    let e = '';
+    f.kids.forEach((k, id) => {
+      [['l', 'L'], ['r', 'R']].forEach(([s, lab]) => {
+        const c = k[s]; if(c === null) return;
+        const a = pos[id], b = pos[c], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+        const isK = f.swapped && f.swapped.includes(c) && id === f.cur && !f.ret;
+        e += `<line class="te" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}"/>` +
+          `<circle cx="${mx + (s === 'l' ? -9 : 9)}" cy="${my - 6}" r="8" fill="var(--surface)"/><text class="lr${isK ? ' k' : ''}" x="${mx + (s === 'l' ? -9 : 9)}" y="${my - 6}">${lab}</text>`;
+      });
+    });
+    $('edges').innerHTML = e;
+    T.nodes.forEach((_, id) => {
+      const el = $('tn-' + id);
+      el.style.transform = `translate(${pos[id].x}px, ${pos[id].y}px)`;
+      el.setAttribute('class', 'tn' + (id === f.cur ? ' cur' : '') + (f.done.has(id) && id !== f.cur ? ' done' : '') + (f.done.has(id) && id === f.cur && f.ret ? ' done' : '') +
+        (f.stack.includes(id) && id !== f.cur ? ' open' : '') + (f.swapped && f.swapped.includes(id) && !f.ret ? ' kid' : ''));
+    });
+  }
+  $('cs').innerHTML = f.stack.length ? f.stack.slice().reverse().map((id, k) => `<g class="cs${k === 0 ? ' top' : ''}"><rect x="${S.CSX}" y="${32 + k * 30}" width="170" height="26" rx="6"/><text x="${S.CSX + 10}" y="${45 + k * 30}">invertTree(${T.nodes[id].val})</text></g>`).join('')
+    : `<text class="ann left" x="${S.CSX}" y="48" style="font-style:italic">${f.end || T.root === null ? 'all calls returned' : 'empty'}</text>`;
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!f.lines.includes(i)));
+  $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
+  const levels = []; if(T.root !== null){ let q = [0]; while(q.length){ levels.push(q.map(i => T.nodes[i].val).join(' ')); q = q.flatMap(i => [f.kids[i].l, f.kids[i].r].filter(x => x !== null)); } }
+  const rows = [
+    ['current call', f.cur !== null && f.cur !== undefined ? `invertTree(${T.nodes[f.cur].val})${f.ret ? ' → returning' : ''}` : '<span class="wait">—</span>'],
+    ['open calls', `${f.stack.length}  <span class="dim">(= current depth + 1)</span>`],
+    ['nodes swapped', `${f.swaps || 0} of ${T.nodes.length}`],
+    ['tree by level', levels.length ? levels.join('  |  ') : '<span class="dim">empty</span>'],
+  ];
+  $('math').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur === 0; $('next').disabled = cur === S.F.length - 1;
+}
+let S = null, cur = 0, timer = null;
+function load(txt, key){
+  stop(); const T = parseTree(txt); S = {T, F: build(T)}; cur = 0; render();
+  document.querySelectorAll('.tn').forEach(el => el.style.transition = 'none'); update();
+  requestAnimationFrame(() => requestAnimationFrame(() => document.querySelectorAll('.tn').forEach(el => el.style.transition = '')));
+  document.querySelectorAll('[data-preset]').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset === key ? 'true' : 'false'));
+}
+function onCustom(e){
+  e.preventDefault();
+  const v = $('customIn').value.replace(/[\[\]]/g, ' ');
+  let T; try { T = parseTree(v); } catch(m){ $('err').textContent = m; return; }
+  if(T.nodes.length > 15) return void($('err').textContent = 'Keep it to 15 nodes or fewer so the tree stays readable.');
+  if(T.nodes.some(nd => Math.abs(nd.val) > 999)) return void($('err').textContent = 'Keep values between -999 and 999 so they fit in the circles.');
+  $('err').textContent = ''; load(v, null);
+}
+function step(d){ const n = cur + d; if(n < 0 || n >= S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){ if(timer){ stop(); return; } if(cur === S.F.length - 1){ cur = 0; update(); } $('play').textContent = '❚❚ Pause'; timer = setInterval(() => { if(!step(1)) stop(); }, +$('speed').value); }
+$('presets').innerHTML = PRESETS.map(p => `<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+  `<form class="custom" id="customForm"><input id="customIn" placeholder="your own (level order): 4,2,7,1,3,null,9" aria-label="Your own tree in level order"><button class="btn" type="submit">Run</button></form>`;
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { $('err').textContent = ''; const x = PRESETS.find(q => q.key === b.dataset.preset); load(x.t, x.key); });
+$('customForm').addEventListener('submit', onCustom);
+$('next').onclick = () => { stop(); step(1); }; $('prev').onclick = () => { stop(); step(-1); };
+$('reset').onclick = () => { stop(); cur = 0; update(); }; $('play').onclick = play;
+$('speed').onchange = () => { if(timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); } else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); } else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+load(PRESETS[0].t, PRESETS[0].key);
+</script>
+</body>
+</html>
