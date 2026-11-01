@@ -49,3 +49,7 @@ npx serve .
 ```
 
 (Double-clicking `index.html` won't work, because the page loads its data files with `fetch`.)
+
+## Daily problems
+
+List the day's problems by LeetCode number in `data/daily.json`, e.g. `{"2026-11-02": [17, 51, 703, 1046, 973]}`. The home page shows today's list, or the next upcoming day.

@@ -123,11 +123,12 @@ async function getText(u) { if (S.cache[u] !== undefined) return S.cache[u]; con
 
 async function boot() {
   try {
-    const [cats, pats, folders, repoRev] = await Promise.all([
+    const [cats, pats, folders, repoRev, daily] = await Promise.all([
       getJSON('data/catalog.json'), getJSON('data/patterns.json'),
-      getJSON('problems/index.json').catch(() => []), getJSON('data/revisions.json').catch(() => ({}))
+      getJSON('problems/index.json').catch(() => []), getJSON('data/revisions.json').catch(() => ({})),
+      getJSON('data/daily.json').catch(() => ({}))
     ]);
-    S.cats = cats; S.patterns = pats; S.repoRev = repoRev || {};
+    S.cats = cats; S.patterns = pats; S.repoRev = repoRev || {}; S.daily = daily || {};
     folders.forEach(f => { const id = parseInt(f, 10); if (id) S.folders[id] = f; });
     cats.forEach(c => c.problems.forEach(p => {
       p.slug = slugify(p.title); p.cat = c; p.folder = S.folders[p.id] || null;
@@ -189,10 +190,29 @@ function renderHome() {
         <div><a class="btn primary" href="#revise">Start timed revision →</a></div>
       </div>
     </section>
+    ${dailyCard()}
     <section style="display:flex;flex-direction:column;gap:12px">
       <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><h2>Patterns</h2><span class="muted" style="font-size:14px">Tap a pattern to see its problems. Red border = you failed one there recently.</span></div>
       <div class="cats">${S.cats.map(catCard).join('')}</div>
     </section>`;
+}
+
+// Daily problems (data/daily.json: { "YYYY-MM-DD": [ids] }). Shows today's list, or the next upcoming day.
+function dailyCard() {
+  const days = Object.keys(S.daily || {}).sort();
+  const day = days.includes(todayISO()) ? todayISO() : days.find(d => d > todayISO());
+  if (!day) return '';
+  const byId = Object.fromEntries(S.all.map(p => [p.id, p]));
+  const list = (S.daily[day] || []).map(id => byId[id]).filter(Boolean);
+  const d = daysUntil(day), when = d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : `In ${d} days`;
+  const done = list.filter(p => p.solved).length;
+  return `<section class="card daily">
+    <div class="daily-head"><div><div class="label">Daily problems</div><h2 style="margin-top:4px">${when} · ${fmtDate(day)}</h2></div>
+      <span class="pill ${done === list.length ? 'ok' : 'soon'}">${done}/${list.length} done</span></div>
+    <ul class="plist daily-list">${list.map(p => `<li class="${p.solved ? '' : 'todo'}"><a href="#${p.slug}">
+      <span class="dot${p.solved ? ' on' : ''}"></span><span class="num">#${p.id}</span><span class="t">${esc(p.title)}</span>
+      <span class="meta"><span class="pill soon">${esc(p.cat.name)}</span><span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span></a></li>`).join('')}</ul>
+  </section>`;
 }
 
 function catCard(c) {

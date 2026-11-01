@@ -235,3 +235,8 @@ dialog#info::backdrop{background:rgba(10,14,20,.55)}
 .logform input,.logform select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .logform .mmss{display:flex;align-items:center;gap:6px;font-weight:400}
 .logform input[type=number]{width:64px}
+
+/* daily problems */
+.daily{display:flex;flex-direction:column;gap:10px;border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
+.daily-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.daily-list{border-top:none;padding:0}

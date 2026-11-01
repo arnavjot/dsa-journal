@@ -145,43 +145,43 @@
     "id": 20,
     "title": "Valid Parentheses",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 155,
     "title": "Min Stack",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 150,
     "title": "Evaluate Reverse Polish Notation",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 22,
     "title": "Generate Parentheses",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 739,
     "title": "Daily Temperatures",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 853,
     "title": "Car Fleet",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 84,
     "title": "Largest Rectangle in Histogram",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
@@ -314,91 +314,91 @@
     "id": 226,
     "title": "Invert Binary Tree",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 104,
     "title": "Maximum Depth of Binary Tree",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 543,
     "title": "Diameter of Binary Tree",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 110,
     "title": "Balanced Binary Tree",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 100,
     "title": "Same Tree",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 572,
     "title": "Subtree of Another Tree",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 235,
     "title": "Lowest Common Ancestor of a Binary Search Tree",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 102,
     "title": "Binary Tree Level Order Traversal",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 199,
     "title": "Binary Tree Right Side View",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 1448,
     "title": "Count Good Nodes in Binary Tree",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 98,
     "title": "Validate Binary Search Tree",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 230,
     "title": "Kth Smallest Element in a BST",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 105,
     "title": "Construct Binary Tree from Preorder and Inorder Traversal",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 124,
     "title": "Binary Tree Maximum Path Sum",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    },
    {
     "id": 297,
     "title": "Serialize and Deserialize Binary Tree",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
@@ -410,19 +410,19 @@
     "id": 208,
     "title": "Implement Trie (Prefix Tree)",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 211,
     "title": "Design Add and Search Words Data Structure",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 212,
     "title": "Word Search II",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
@@ -482,43 +482,43 @@
     "id": 78,
     "title": "Subsets",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 39,
     "title": "Combination Sum",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 40,
     "title": "Combination Sum II",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 46,
     "title": "Permutations",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 90,
     "title": "Subsets II",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 79,
     "title": "Word Search",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 131,
     "title": "Palindrome Partitioning",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 17,
