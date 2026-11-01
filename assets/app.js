@@ -436,6 +436,12 @@ function renderRevise() {
           <button class="r-slow" data-rate="slow"><b>Solved, but slow</b><span>Same gap again</span></button>
           <button class="r-fail" data-rate="fail"><b>Couldn't solve</b><span>Back to tomorrow</span></button>
         </div></div>
+        <form class="logform revlog" id="revLog">
+          <div class="label" style="flex-basis:100%">Didn't use the timer? Log your time</div>
+          <label>Time <span class="mmss"><input type="number" id="rlMin" min="0" max="300" placeholder="10" required aria-label="Minutes"> min <input type="number" id="rlSec" min="0" max="59" placeholder="0" aria-label="Seconds"> s</span></label>
+          <label>Result <select id="rlRes"><option value="fast">Solved in time</option><option value="slow">Solved, but slow</option><option value="fail">Couldn't solve</option></select></label>
+          <button class="btn primary" type="submit">Log</button>
+        </form>
       </div>
       <div class="card"><div class="label" style="margin-bottom:8px" id="stepsLabel">Run the 8 steps out loud</div>
         <ul class="checklist" id="steps">${stepItems()}</ul>
@@ -458,6 +464,18 @@ function renderRevise() {
     const nxt = list[(list.indexOf(S.rev.cur) + 1) % list.length]; resetSession(); S.rev.cur = nxt; renderRevise();
   };
   $$('[data-rate]').forEach(b => b.onclick = () => { const secs = elapsed(); stopTimer(); rate(S.rev.cur, b.dataset.rate, secs); S.rev.rated = b.dataset.rate; renderRevise(); });
+  const rl = $('#revLog');
+  if (rl) {
+    // typing a time picks the matching result: within the target = in time, over it = slow
+    const lim = LIMIT_MIN[S.rev.cur.difficulty] * 60;
+    const guess = () => { const t = (+$('#rlMin').value || 0) * 60 + (+$('#rlSec').value || 0); if ($('#rlRes').value !== 'fail') $('#rlRes').value = t <= lim ? 'fast' : 'slow'; };
+    $('#rlMin').oninput = guess; $('#rlSec').oninput = guess;
+    rl.onsubmit = e => {
+      e.preventDefault();
+      const secs = (+$('#rlMin').value || 0) * 60 + (+$('#rlSec').value || 0), res = $('#rlRes').value;
+      stopTimer(); rate(S.rev.cur, res, secs); S.rev.rated = res; renderRevise();
+    };
+  }
   const np = $('#nextP'); if (np) np.onclick = () => { resetSession(); renderRevise(); };
   drawTimer();
 }

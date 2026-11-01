@@ -240,3 +240,4 @@ dialog#info::backdrop{background:rgba(10,14,20,.55)}
 .daily{display:flex;flex-direction:column;gap:10px;border-color:color-mix(in srgb,var(--accent) 40%,var(--line))}
 .daily-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
 .daily-list{border-top:none;padding:0}
+.revlog{flex-basis:auto;padding-top:12px;border-top:1px solid var(--line)}
