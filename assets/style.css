@@ -226,3 +226,12 @@ dialog#info::backdrop{background:rgba(10,14,20,.55)}
 
 /* the problem you just came back from */
 .plist a.last{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+
+/* manual attempt log */
+.revbox{flex-wrap:wrap}
+.logform{flex-basis:100%;display:flex;flex-wrap:wrap;gap:12px;align-items:end;padding-top:12px;border-top:1px solid var(--line)}
+.logform[hidden]{display:none}
+.logform label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+.logform input,.logform select{font:inherit;font-size:14px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.logform .mmss{display:flex;align-items:center;gap:6px;font-weight:400}
+.logform input[type=number]{width:64px}

@@ -96,13 +96,16 @@ function seedSchedule() {
   S.seeded = loc;
 }
 
-function rate(p, result, secs) {
+// date: the day the attempt happened (defaults to today; the manual log can pass an earlier day)
+function rate(p, result, secs, date = todayISO()) {
   const r = JSON.parse(JSON.stringify(recOf(p)));
   if (result === 'fast') r.box = Math.min((r.box || 0) + 1, INTERVALS.length - 1);
   else if (result === 'fail') r.box = 0;
   else r.box = r.box || 0;
-  r.due = nextDue(p, result === 'fail' ? 1 : INTERVALS[r.box], dayLoad(p.slug));
-  r.log = [...(r.log || []), { d: todayISO(), s: Math.round(secs), r: result }];
+  const gap = result === 'fail' ? 1 : INTERVALS[r.box];
+  const ago = -daysUntil(date);                          // how many days back the attempt was
+  r.due = gap - ago > 0 ? nextDue(p, gap - ago, dayLoad(p.slug)) : todayISO();
+  r.log = [...(r.log || []), { d: date, s: Math.round(secs), r: result }].sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0);
   r.updated = new Date().toISOString();
   const loc = localRev(); loc[p.slug] = r; saveLocal(loc);
   return r;
@@ -231,7 +234,14 @@ async function renderProblem(p) {
     <div class="card revbox">
       <div style="flex:1;min-width:200px"><div class="label">Revision</div>
         <div style="font-size:14px">Next review <b>${fmtDate(rec.due)}</b> · ${(rec.log || []).length} attempt${(rec.log || []).length === 1 ? '' : 's'} logged${(rec.log || []).length ? ` · last: ${resultLabel(rec.log[rec.log.length - 1].r)} in ${fmtSecs(rec.log[rec.log.length - 1].s)}` : ''}</div></div>
-      <button class="btn primary" id="reviseThis">Re-solve with timer</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn" id="logOpen">Log an attempt</button><button class="btn primary" id="reviseThis">Re-solve with timer</button></div>
+      <form class="logform" id="logForm" hidden>
+        <label>Date <input type="date" id="logDate" value="${todayISO()}" max="${todayISO()}" required></label>
+        <label>Time <span class="mmss"><input type="number" id="logMin" min="0" max="300" value="10" required aria-label="Minutes"> min <input type="number" id="logSec" min="0" max="59" value="0" required aria-label="Seconds"> s</span></label>
+        <label>Result <select id="logRes"><option value="fast">Solved in time</option><option value="slow">Solved, but slow</option><option value="fail">Couldn't solve</option></select></label>
+        <button class="btn primary" type="submit">Save</button>
+        <span class="muted" style="font-size:13px">Saved in this browser. Use History → Copy to keep it on GitHub.</span>
+      </form>
     </div>` : '';
   const nav = pnav(p);
 
@@ -319,7 +329,20 @@ function pnav(p) {
   const a = list[i - 1], b = list[i + 1];
   return `<div class="pnav">${a ? `<a class="btn" href="#${a.slug}">← ${esc(a.title)}</a>` : '<span></span>'}${b ? `<a class="btn" href="#${b.slug}">${esc(b.title)} →</a>` : ''}</div>`;
 }
+function bindLogForm(p) {
+  const open = $('#logOpen'), form = $('#logForm');
+  if (!open || !form) return;
+  open.onclick = () => { form.hidden = !form.hidden; };
+  form.onsubmit = e => {
+    e.preventDefault();
+    const date = $('#logDate').value, secs = (+$('#logMin').value || 0) * 60 + (+$('#logSec').value || 0);
+    if (!date || date > todayISO()) return;
+    rate(p, $('#logRes').value, secs, date);
+    renderProblem(p);
+  };
+}
 function bindReviseThis(p) {
+  bindLogForm(p);
   const b = $('#reviseThis'); if (!b) return;
   b.onclick = () => { resetSession(); S.rev.cur = p; location.hash = 'revise'; };
 }
