@@ -1,0 +1,67 @@
+{
+  "id": 543,
+  "title": "Diameter of Binary Tree",
+  "keyIdea": "Every path has one highest node where it bends; there its length is left height + right height (in edges). So compute heights bottom-up like Max Depth, and at every node update diameter = max(diameter, lh + rh).",
+  "approaches": [
+    {
+      "name": "Brute force: heights at every node",
+      "file": "brute.cpp",
+      "idea": "At each node, compute both subtree heights from scratch and check lh + rh; recurse into both children.",
+      "time": "O(n²)",
+      "space": "O(h)",
+      "why": "height() is O(size of subtree) and it's called again at every node: O(n²) on a chain."
+    },
+    {
+      "name": "One pass: height + diameter by reference",
+      "file": "one-pass.cpp",
+      "best": true,
+      "idea": "height() returns 1 + max(lh, rh) as usual, and on the way updates diameter with lh + rh.",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Each height is computed once and reused by its parent.",
+      "viz": "viz/diameter-of-binary-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is the path through a node lh + rh (not lh + rh + 1)?",
+      "options": [
+        "Diameter counts edges; heights count nodes below, which equals the edges on each side from this node",
+        "It should be + 1",
+        "Because the root isn't counted",
+        "Because NULL is −1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Does the diameter have to pass through the root?",
+      "options": [
+        "No: it bends at whichever node gives the biggest lh + rh",
+        "Yes, always",
+        "Only in balanced trees",
+        "Only if the root has two children"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is diameter passed by reference?",
+      "options": [
+        "The function already returns the height, so the diameter is updated on the side",
+        "References are faster",
+        "To avoid recursion",
+        "It doesn't need to be"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Diameter in nodes or edges? Must it pass through the root? What's the answer for one node?",
+    "Do [1,2,3,4,5] by hand. Which path is longest?",
+    "Computing heights from scratch at every node: why O(n²)?",
+    "\"Longest path bends at some node\": what two numbers at that node give its length?",
+    "What does your helper return, and what does it update on the side?",
+    "Code it, saying \"return height, record lh + rh\".",
+    "Dry-run a tree where the longest path skips the root.",
+    "Time and space? How does Binary Tree Maximum Path Sum (LC 124) use the same trick?"
+  ]
+}

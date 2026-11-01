@@ -3,6 +3,9 @@
  "2-add-two-numbers",
  "20-valid-parentheses",
  "84-largest-rectangle-in-histogram",
+ "100-same-tree",
+ "104-maximum-depth-of-binary-tree",
+ "110-balanced-binary-tree",
  "121-best-time-to-buy-and-sell-stock",
  "125-valid-palindrome",
  "142-linked-list-cycle-ii",
@@ -13,6 +16,7 @@
  "226-invert-binary-tree",
  "242-valid-anagram",
  "287-find-the-duplicate-number",
+ "543-diameter-of-binary-tree",
  "704-binary-search",
  "739-daily-temperatures",
  "853-car-fleet"
