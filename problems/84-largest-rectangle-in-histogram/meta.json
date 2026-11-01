@@ -1,0 +1,46 @@
+{
+  "id": 84,
+  "title": "Largest Rectangle in Histogram",
+  "keyIdea": "The best rectangle using bar k at full height stretches left and right until the first shorter bar on each side. A rising monotonic stack finds both: when a shorter bar i arrives, the popped bar's right limit is i − 1 and its left limit is just after the new stack top. Each bar is pushed and popped once.",
+  "approaches": [
+    {
+      "name": "Brute force: every range",
+      "file": "brute.cpp",
+      "idea": "For every start i, extend j to the right keeping the minimum height; area = min × width.",
+      "time": "O(n²)", "space": "O(1)",
+      "why": "n²/2 ranges, O(1) each with a running minimum. ~5·10⁹ at n = 10⁵."
+    },
+    {
+      "name": "Previous + next smaller (two passes)",
+      "file": "prev-next-smaller.cpp",
+      "idea": "For each bar find the index of the previous smaller bar and the next smaller bar with monotonic stacks; width = next − prev − 1, area = height × width.",
+      "time": "O(n)", "space": "O(n)",
+      "why": "Two stack passes plus one loop, each O(n). Needs two extra arrays of size n."
+    },
+    {
+      "name": "One-pass monotonic stack",
+      "file": "one-pass-stack.cpp",
+      "best": true,
+      "idea": "Keep indices with rising heights. When heights[i] is shorter than the top, pop and measure: height × (i − 1 − new top), or × i if the stack is empty. Finally pop the rest with i = n.",
+      "time": "O(n)", "space": "O(n)",
+      "why": "Every index is pushed once and popped once, and each pop does O(1) work.",
+      "viz": "viz/largest-rectangle-in-histogram.html"
+    }
+  ],
+  "quiz": [
+    {"q": "When a bar is popped because heights[i] is shorter, where does its rectangle end on the right?", "options": ["At i − 1: bar i is the first shorter bar to its right", "At i", "At the end of the array", "At the stack top"], "answer": 0},
+    {"q": "After popping, the stack is empty. What's the width?", "options": ["i: nothing on the left is shorter, so it spans 0 … i − 1", "1", "i − 1", "0"], "answer": 0},
+    {"q": "Why is there a final loop with i = heights.size()?", "options": ["Bars still on the stack never met a shorter bar, so they stretch to the right edge", "To reset the stack", "To handle negative heights", "It isn't needed"], "answer": 0},
+    {"q": "heights = [1,2,3,4,5]. What's the answer?", "options": ["9 (3 × 3, or 4 × 2 is 8, 5 × 1 is 5, 2 × 4 is 8, 1 × 5 is 5)", "15", "5", "10"], "answer": 0}
+  ],
+  "steps": [
+    "Widths are all 1? Can heights be 0? How big can n get, and what does that rule out?",
+    "Do [2,1,5,6,2,3] by hand. Which bars make the rectangle of 10?",
+    "Every range with a running minimum: time? Why too slow?",
+    "Each bar's best rectangle stretches until a shorter bar on each side: which pattern finds \"nearest smaller\"?",
+    "When exactly do you pop, and how do you get the left and right limits of the popped bar?",
+    "Code it, saying \"right limit i − 1, left limit after the new top\".",
+    "Dry-run [1,2,3,4,5]: nothing pops in the loop. What happens in the final clean-up?",
+    "Why O(n)? How does LC 85 (Maximal Rectangle) reuse this on each row of a matrix?"
+  ]
+}
