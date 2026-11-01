@@ -160,12 +160,6 @@
     "solved": true
    },
    {
-    "id": 22,
-    "title": "Generate Parentheses",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
     "id": 739,
     "title": "Daily Temperatures",
     "difficulty": "Medium",
@@ -427,6 +421,72 @@
   ]
  },
  {
+  "name": "Backtracking",
+  "slug": "backtracking",
+  "problems": [
+   {
+    "id": 78,
+    "title": "Subsets",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 39,
+    "title": "Combination Sum",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 40,
+    "title": "Combination Sum II",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 46,
+    "title": "Permutations",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 90,
+    "title": "Subsets II",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 22,
+    "title": "Generate Parentheses",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 79,
+    "title": "Word Search",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 131,
+    "title": "Palindrome Partitioning",
+    "difficulty": "Medium",
+    "solved": true
+   },
+   {
+    "id": 17,
+    "title": "Letter Combinations of a Phone Number",
+    "difficulty": "Medium",
+    "solved": false
+   },
+   {
+    "id": 51,
+    "title": "N-Queens",
+    "difficulty": "Hard",
+    "solved": false
+   }
+  ]
+ },
+ {
   "name": "Heap / Priority Queue",
   "slug": "heap",
   "problems": [
@@ -469,66 +529,6 @@
    {
     "id": 295,
     "title": "Find Median from Data Stream",
-    "difficulty": "Hard",
-    "solved": false
-   }
-  ]
- },
- {
-  "name": "Backtracking",
-  "slug": "backtracking",
-  "problems": [
-   {
-    "id": 78,
-    "title": "Subsets",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 39,
-    "title": "Combination Sum",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 40,
-    "title": "Combination Sum II",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 46,
-    "title": "Permutations",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 90,
-    "title": "Subsets II",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 79,
-    "title": "Word Search",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 131,
-    "title": "Palindrome Partitioning",
-    "difficulty": "Medium",
-    "solved": true
-   },
-   {
-    "id": 17,
-    "title": "Letter Combinations of a Phone Number",
-    "difficulty": "Medium",
-    "solved": false
-   },
-   {
-    "id": 51,
-    "title": "N-Queens",
     "difficulty": "Hard",
     "solved": false
    }
