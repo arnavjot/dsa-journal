@@ -1,0 +1,67 @@
+{
+  "id": 102,
+  "title": "Binary Tree Level Order Traversal",
+  "keyIdea": "BFS with a queue visits nodes level by level. At the start of each round, size = q.size() is exactly the number of nodes on the current level: pop that many into one vector, pushing their children for the next round.",
+  "approaches": [
+    {
+      "name": "DFS with depth",
+      "file": "dfs.cpp",
+      "idea": "Recurse left then right, carrying depth; append each node to ans[depth], creating the level when depth is new.",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Each node once; the call stack is the height. Left-before-right keeps each level in order."
+    },
+    {
+      "name": "BFS with a queue",
+      "file": "bfs.cpp",
+      "best": true,
+      "idea": "Push root. While the queue isn't empty: size = q.size(); pop size nodes into level, pushing their children; add level to ans.",
+      "time": "O(n)",
+      "space": "O(w)",
+      "why": "Each node is pushed and popped once. The queue holds at most about one level (w = widest level).",
+      "viz": "viz/binary-tree-level-order-traversal.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why save size = q.size() before the inner loop?",
+      "options": [
+        "Children are pushed during the loop, so the size changes; saving it marks where the level ends",
+        "For speed",
+        "To skip NULL nodes",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why a queue and not a stack?",
+      "options": [
+        "First in, first out finishes a whole level before the next one",
+        "Stacks can't hold pointers",
+        "Queues are faster",
+        "Either works the same"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Maximum queue size for a full tree of n nodes?",
+      "options": [
+        "About n/2: the last level",
+        "n",
+        "log n",
+        "1"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Return values grouped by level, left to right? What for an empty tree?",
+    "Do [3,9,20,null,null,15,7] by hand: what's in the queue after each level?",
+    "Could DFS do it? What would you pass down?",
+    "\"Level by level\": which data structure keeps that order?",
+    "How do you know where one level ends and the next begins?",
+    "Code it, saying \"save size, pop size, push kids\".",
+    "Dry-run the lopsided tree [1,2,null,3,4,null,5].",
+    "Time and space? How would you return levels bottom-up (LC 107) or zigzag (LC 103)?"
+  ]
+}
