@@ -1,0 +1,67 @@
+{
+  "id": 238,
+  "title": "Product of Array Except Self",
+  "keyIdea": "answer[i] = (product of everything left of i) × (product of everything right of i). Fill res with left products in one pass, then sweep from the right with a running suffix product and multiply it in. No division, O(1) extra space.",
+  "approaches": [
+    {
+      "name": "Prefix and suffix arrays",
+      "file": "prefix-suffix-arrays.cpp",
+      "idea": "pref[i] = product left of i, suf[i] = product right of i, res[i] = pref[i] × suf[i].",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Three linear passes; two extra arrays of size n."
+    },
+    {
+      "name": "Output array + running suffix",
+      "file": "output-array.cpp",
+      "best": true,
+      "idea": "res[i] = res[i−1] × nums[i−1] (left products). Then from the right: res[i] *= suffix; suffix *= nums[i].",
+      "time": "O(n)",
+      "space": "O(1) extra",
+      "why": "Two passes. The output array doesn't count as extra space, and the right side is one variable.",
+      "viz": "viz/product-of-array-except-self.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why not divide the total product by nums[i]?",
+      "options": [
+        "It breaks when nums[i] is 0 (and the problem forbids division)",
+        "Division is slow",
+        "It overflows",
+        "It works fine"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does res hold after the first pass?",
+      "options": [
+        "The product of everything to the left of each index",
+        "The final answer",
+        "The suffix products",
+        "The total product"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is it O(1) extra space?",
+      "options": [
+        "res is the output; the right side is a single suffix variable",
+        "It uses no arrays at all",
+        "Because n is small",
+        "It isn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is division allowed? Can there be zeros? Does the output array count as extra space?",
+    "Do [1,2,3,4] by hand as left product × right product.",
+    "Two nested loops (multiply everything but i): time?",
+    "\"Everything except i\" = left part × right part: which running products do you need?",
+    "What does pass 1 store, and what does pass 2 carry?",
+    "Code it, saying \"left products first, then multiply in the right\".",
+    "Dry-run [2,3,0,4]: where do the zeros come from?",
+    "Time and space? What if division were allowed and there were two zeros?"
+  ]
+}
