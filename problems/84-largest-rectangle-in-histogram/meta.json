@@ -15,7 +15,8 @@
       "file": "prev-next-smaller.cpp",
       "idea": "For each bar find the index of the previous smaller bar and the next smaller bar with monotonic stacks; width = next − prev − 1, area = height × width.",
       "time": "O(n)", "space": "O(n)",
-      "why": "Two stack passes plus one loop, each O(n). Needs two extra arrays of size n."
+      "why": "Two stack passes plus one loop, each O(n). Needs two extra arrays of size n.",
+      "viz": "viz/largest-rectangle-two-pass.html"
     },
     {
       "name": "One-pass monotonic stack",

@@ -292,12 +292,12 @@ function update(){
   const matched = new Set(f.pairs.flat());
   for(let i = 0; i < n; i++){
     const c = $('cell-' + i);
-    c.classList.toggle('cur', i === f.i && f.bad !== i);
-    c.classList.toggle('bad', i === f.bad || i === f.badTop || (f.leftover && f.st.includes(i)));
-    c.classList.toggle('matched', matched.has(i) && i !== f.i);
-    c.classList.toggle('partner', i === f.partner);
-    c.classList.toggle('done', f.i !== null && i < f.i && !matched.has(i));
-    c.classList.toggle('later', f.i !== null && i > f.i);
+    c.classList.toggle('cur', !!(i === f.i && f.bad !== i));
+    c.classList.toggle('bad', !!(i === f.bad || i === f.badTop || (f.leftover && f.st.includes(i))));
+    c.classList.toggle('matched', !!(matched.has(i) && i !== f.i));
+    c.classList.toggle('partner', !!(i === f.partner));
+    c.classList.toggle('done', !!(f.i !== null && i < f.i && !matched.has(i)));
+    c.classList.toggle('later', !!(f.i !== null && i > f.i));
   }
   document.querySelectorAll('.arc').forEach(a => { a.style.opacity = 0; a.classList.remove('now'); });
   f.pairs.forEach(([a]) => { $('arc-' + a).style.opacity = ''; });
@@ -328,7 +328,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

@@ -271,11 +271,11 @@ function update(){
   for(let i = 0; i < n; i++){
     const c = $('cell-' + i);
     const inCmp = f.cmp && (f.cmp[0] === i || f.cmp[1] === i);
-    c.classList.toggle('skip', f.skipped.has(i));
-    c.classList.toggle('matched', matched.has(i) && !inCmp);
+    c.classList.toggle('skip', !!(f.skipped.has(i)));
+    c.classList.toggle('matched', !!(matched.has(i) && !inCmp));
     c.classList.toggle('bad', !!(f.bad && inCmp));
-    c.classList.toggle('atL', !f.bad && !f.done && i === f.l && !(f.cmp && matched.has(i)));
-    c.classList.toggle('atR', !f.bad && !f.done && i === f.r && i !== f.l && !(f.cmp && matched.has(i)));
+    c.classList.toggle('atL', !!(!f.bad && !f.done && i === f.l && !(f.cmp && matched.has(i))));
+    c.classList.toggle('atR', !!(!f.bad && !f.done && i === f.r && i !== f.l && !(f.cmp && matched.has(i))));
   }
   document.querySelectorAll('.arc').forEach(a => { a.style.opacity = 0; a.classList.remove('now', 'bad'); });
   f.pairs.forEach(([a, b]) => { const el = $(`arc-${a}-${b}`); el.style.opacity = ''; });
@@ -298,7 +298,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

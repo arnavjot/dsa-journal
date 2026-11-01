@@ -271,21 +271,21 @@ function update(){
   const inSeen = new Set(f.seen);
   nums.forEach((_, i) => {
     const c = $('cell-' + i);
-    c.classList.toggle('done', inSeen.has(i) && i !== f.i);
-    c.classList.toggle('cur', i === f.i && f.done !== 't');
-    c.classList.toggle('dup', f.done === 't' && (i === f.i || i === f.match));
-    c.classList.toggle('later', f.i !== null && i > f.i && f.done !== 'f');
+    c.classList.toggle('done', !!(inSeen.has(i) && i !== f.i));
+    c.classList.toggle('cur', !!(i === f.i && f.done !== 't'));
+    c.classList.toggle('dup', !!(f.done === 't' && (i === f.i || i === f.match)));
+    c.classList.toggle('later', !!(f.i !== null && i > f.i && f.done !== 'f'));
   });
   Object.keys(S.slot).forEach(k => {
     const ch = $('chip-' + k), on = inSeen.has(+k);
     ch.style.opacity = on ? 1 : 0;
-    ch.classList.toggle('fresh', f.fresh === +k);
-    ch.classList.toggle('hit', f.match === +k);
+    ch.classList.toggle('fresh', !!(f.fresh === +k));
+    ch.classList.toggle('hit', !!(f.match === +k));
   });
   for(let b = 0; b < B; b++){
     const on = f.b === b && (f.look || f.done === 't');
-    $('bucket-' + b).classList.toggle('look', on);
-    $('well-' + b).classList.toggle('look', on);
+    $('bucket-' + b).classList.toggle('look', !!(on));
+    $('well-' + b).classList.toggle('look', !!(on));
   }
   // num tag under the current cell
   const tok = $('tok');
@@ -319,7 +319,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

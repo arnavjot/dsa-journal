@@ -275,18 +275,18 @@ function update(){
   nums.forEach((_, i) => {
     const c = $('cell-' + i);
     const inPair = f.pair && f.pair.includes(i);
-    c.classList.toggle('pair', !!inPair);
-    c.classList.toggle('cur', i === f.i && !inPair);
-    c.classList.toggle('done', f.i !== null ? i < f.i && !inPair : f.done === 'f');
-    c.classList.toggle('later', f.i !== null && i > f.i);
+    c.classList.toggle('pair', !!(!!inPair));
+    c.classList.toggle('cur', !!(i === f.i && !inPair));
+    c.classList.toggle('done', !!(f.i !== null ? i < f.i && !inPair : f.done === 'f'));
+    c.classList.toggle('later', !!(f.i !== null && i > f.i));
   });
   // map entries
   S.keyCol.forEach((c, k) => {
     const on = f.map.has(k), e = $('ent-' + c);
     e.style.opacity = on ? 1 : 0;
     $('entv-' + c).textContent = on ? f.map.get(k) : '';
-    e.classList.toggle('fresh', f.fresh === k);
-    e.classList.toggle('hit', f.hit === k);
+    e.classList.toggle('fresh', !!(f.fresh === k));
+    e.classList.toggle('hit', !!(f.hit === k));
   });
   // a lookup that misses: dashed "rem?" box after the saved entries
   const miss = $('miss');
@@ -320,7 +320,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

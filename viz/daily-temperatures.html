@@ -238,12 +238,12 @@ function update(){
   const f = S.F[cur], {t} = S, n = t.length, wait = new Set(f.st);
   t.forEach((v, i) => {
     const d = $('day-' + i);
-    d.classList.toggle('cur', i === f.i && f.prev === undefined || (i === f.i && f.prev !== undefined));
-    d.classList.toggle('waiting', wait.has(i) && i !== f.i);
-    d.classList.toggle('answered', f.set.has(i) && i !== f.prev);
-    d.classList.toggle('popnow', i === f.prev);
-    d.classList.toggle('later', f.i !== null && i > f.i);
-    const a = $('ans-' + i); a.classList.toggle('set', f.set.has(i)); a.classList.toggle('now', i === f.prev);
+    d.classList.toggle('cur', !!(i === f.i && f.prev === undefined || (i === f.i && f.prev !== undefined)));
+    d.classList.toggle('waiting', !!(wait.has(i) && i !== f.i));
+    d.classList.toggle('answered', !!(f.set.has(i) && i !== f.prev));
+    d.classList.toggle('popnow', !!(i === f.prev));
+    d.classList.toggle('later', !!(f.i !== null && i > f.i));
+    const a = $('ans-' + i); a.classList.toggle('set', !!(f.set.has(i))); a.classList.toggle('now', !!(i === f.prev));
     $('anst-' + i).textContent = f.ans[i];
   });
   // arrows for every answered day (current one bold): from the day's bar up and over to the warmer day
@@ -261,7 +261,7 @@ function update(){
   $('chips').innerHTML = c || `<text class="ann left" x="${DX0}" y="${S.SY + 19}" style="font-style:italic">empty</text>`;
   const ti = $('tok-i');
   if(f.i !== null){ ti.style.opacity = 1; ti.style.transform = `translate(${dx(f.i)}px, ${S.base + 26}px)`; ti.style.opacity = 0; } else ti.style.opacity = 0;
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   const rows = [
     ['i, temperatures[i]', f.i !== null ? `${f.i}, ${t[f.i]}` : '<span class="wait">—</span>'],

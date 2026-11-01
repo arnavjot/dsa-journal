@@ -253,10 +253,10 @@ function update(){
   const f = S.F[cur], {h} = S, inSt = new Set(f.st);
   h.forEach((_, i) => {
     const d = $('day-' + i);
-    d.classList.toggle('cur', i === f.i);
-    d.classList.toggle('instack', inSt.has(i) && i !== f.i);
-    d.classList.toggle('done', f.done.has(i) && i !== f.popped);
-    d.classList.toggle('popnow', i === f.popped);
+    d.classList.toggle('cur', !!(i === f.i));
+    d.classList.toggle('instack', !!(inSt.has(i) && i !== f.i));
+    d.classList.toggle('done', !!(f.done.has(i) && i !== f.popped));
+    d.classList.toggle('popnow', !!(i === f.popped));
   });
   box('best', f.bestR); box('now', f.rect);
   const bl = $('blab'), rl = $('rlab');
@@ -267,7 +267,7 @@ function update(){
   let c = f.st.map((d, k) => `<g class="chipi${d === f.fresh ? ' fresh' : ''}"><rect x="${DX0 + k * (cw + 6)}" y="${S.SY}" width="${cw}" height="30" rx="7"/><text x="${DX0 + k * (cw + 6) + cw / 2}" y="${S.SY + 15}">${d}: h${h[d]}</text></g>`).join('');
   if(f.popped !== undefined){ const k = f.st.length; c += `<g class="chipi gone"><rect x="${DX0 + k * (cw + 6)}" y="${S.SY}" width="${cw}" height="30" rx="7"/><text x="${DX0 + k * (cw + 6) + cw / 2}" y="${S.SY + 15}">${f.popped}: h${h[f.popped]}</text></g>`; }
   $('chips').innerHTML = c || `<text class="ann left" x="${DX0}" y="${S.SY + 19}" style="font-style:italic">empty</text>`;
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   const rows = [
     ['i', f.iv !== undefined ? `${f.iv}${f.flush ? ' (right edge)' : ''}` : f.i !== null ? `${f.i}` : '<span class="wait">—</span>'],

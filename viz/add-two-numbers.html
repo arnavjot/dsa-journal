@@ -315,8 +315,8 @@ function update(){
     const on = k <= f.res.length;
     $('rn-' + k).style.opacity = on ? 1 : 0;
     $('ra-' + k).style.opacity = on ? 1 : 0;
-    $('rn-' + k).classList.toggle('fresh', !!f.made && k === f.res.length);
-    $('rn-' + k).classList.toggle('final', !!f.done);
+    $('rn-' + k).classList.toggle('fresh', !!(!!f.made && k === f.res.length));
+    $('rn-' + k).classList.toggle('final', !!(!!f.done));
   }
   // carry sits above the column it will be added into
   const cg = $('carry');
@@ -327,10 +327,10 @@ function update(){
     cg.style.opacity = 1;
     move('carry', X(showCol), Y.carry);
     $('carryv').textContent = val;
-    cg.classList.toggle('zero', val === 0);
+    cg.classList.toggle('zero', !!(val === 0));
   }
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph === 'Setup' ? 'Setup' : f.done ? 'Done · return dummy->next' : `${f.ph} · ${place(f.col)}`;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

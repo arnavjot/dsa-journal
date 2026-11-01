@@ -249,10 +249,10 @@ function update(){
   const f = S.F[cur], {nums, target} = S, n = nums.length;
   nums.forEach((_, i) => {
     const c = $('cell-' + i), found = f.done === 't' && (i === f.l || i === f.r);
-    c.classList.toggle('out', i < f.l || i > f.r);
-    c.classList.toggle('found', found);
-    c.classList.toggle('atL', !found && i === f.l && f.l <= f.r && f.done !== 'f');
-    c.classList.toggle('atR', !found && i === f.r && f.l < f.r);
+    c.classList.toggle('out', !!(i < f.l || i > f.r));
+    c.classList.toggle('found', !!(found));
+    c.classList.toggle('atL', !!(!found && i === f.l && f.l <= f.r && f.done !== 'f'));
+    c.classList.toggle('atR', !!(!found && i === f.r && f.l < f.r));
   });
   const rg = $('range'), left = f.r - f.l + 1;
   if(left > 0 && f.done !== 'f'){ rg.setAttribute('x', CX0 + f.l * CW - 5); rg.setAttribute('width', left * CW + 4); rg.style.opacity = 1; }
@@ -281,7 +281,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

@@ -309,10 +309,10 @@ function update(){
     const c = $(`${who}-${i}`);
     const isCur = f.i === i && f.who === who;
     const done = f.i !== null ? (i < f.i || (i === f.i && who === 's' && f.who === 't')) : (f.checked !== undefined || f.done === 't');
-    c.classList.toggle('cur', isCur);
-    c.classList.toggle('done', done && !isCur);
+    c.classList.toggle('cur', !!(isCur));
+    c.classList.toggle('done', !!(done && !isCur));
   }));
-  $('len-s').classList.toggle('bad', !!f.lenBad); $('len-t').classList.toggle('bad', !!f.lenBad);
+  $('len-s').classList.toggle('bad', !!(!!f.lenBad)); $('len-t').classList.toggle('bad', !!(!!f.lenBad));
   // bars + counts
   for(let k = 0; k < 26; k++){
     const v = f.freq[k], bar = $('bar-' + k), h = Math.abs(v) * unit;
@@ -321,14 +321,14 @@ function update(){
     bar.setAttribute('class', 'bar ' + (v >= 0 ? 'pos' : 'neg'));
     const cnt = $('cnt-' + k);
     cnt.textContent = v > 0 ? '+' + v : v;
-    cnt.classList.toggle('nz', v !== 0);
+    cnt.classList.toggle('nz', !!(v !== 0));
     const col = $('col-' + k);
-    col.classList.toggle('look', f.k === k && f.i !== null);
-    col.classList.toggle('s', f.k === k && f.who === 's'); col.classList.toggle('t', f.k === k && f.who === 't');
+    col.classList.toggle('look', !!(f.k === k && f.i !== null));
+    col.classList.toggle('s', !!(f.k === k && f.who === 's')); col.classList.toggle('t', !!(f.k === k && f.who === 't'));
     const scanning = f.scan !== undefined && k >= f.scan && k <= (f.scanTo ?? f.scan);
-    col.classList.toggle('zero', f.checked !== undefined && k < f.checked && f.bad !== k);
-    col.classList.toggle('scan', scanning && f.bad !== k && !(f.checked !== undefined && k < f.checked));
-    col.classList.toggle('bad', f.bad === k);
+    col.classList.toggle('zero', !!(f.checked !== undefined && k < f.checked && f.bad !== k));
+    col.classList.toggle('scan', !!(scanning && f.bad !== k && !(f.checked !== undefined && k < f.checked)));
+    col.classList.toggle('bad', !!(f.bad === k));
   }
   // i tag and the dashed link from the current letter to its slot
   const tok = $('tok'), link = $('link'), delta = $('delta');
@@ -354,7 +354,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

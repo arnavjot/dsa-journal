@@ -244,10 +244,10 @@ function update(){
   const upto = f.i === null ? (f.done ? p.length - 1 : -1) : f.i;
   p.forEach((v, i) => {
     const d = $('day-' + i);
-    d.classList.toggle('past', i < upto || (f.done && i <= upto));
-    d.classList.toggle('cur', i === f.i);
-    d.classList.toggle('isMin', i === f.miniDay && upto >= 0);
-    d.classList.toggle('later', i > upto);
+    d.classList.toggle('past', !!(i < upto || (f.done && i <= upto)));
+    d.classList.toggle('cur', !!(i === f.i));
+    d.classList.toggle('isMin', !!(i === f.miniDay && upto >= 0));
+    d.classList.toggle('later', !!(i > upto));
     const gain = $('gain-' + i);
     if(i === f.i && f.today > 0){ gain.setAttribute('y', py(v)); gain.setAttribute('height', py(f.mini) - py(v)); gain.style.opacity = ''; }
     else { gain.style.opacity = 0; }
@@ -256,7 +256,7 @@ function update(){
   const gl = $('gainlab');
   if(f.i !== null){
     gl.textContent = f.today > 0 ? `+${f.today}` : '+0';
-    gl.classList.toggle('zero', f.today <= 0);
+    gl.classList.toggle('zero', !!(f.today <= 0));
     gl.setAttribute('x', dx(f.i)); gl.setAttribute('y', py(p[f.i]) - 26);
     gl.style.opacity = 1;
   } else gl.style.opacity = 0;
@@ -285,7 +285,7 @@ function update(){
     vd.style.opacity = 1;
   } else vd.style.opacity = 0;
 
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph;
   $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;

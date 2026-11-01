@@ -470,7 +470,7 @@ function update(){
   placeTok('slow', f.slow, 'up');
   placeTok('fast', f.fast, 'down');
   placeTok('s2', f.s2, 'down');
-  $('tok-fast').classList.toggle('walk', !!f.walk);
+  $('tok-fast').classList.toggle('walk', !!(!!f.walk));
   setHL(f);
   if(mode === 'array'){
     G.nums.forEach((v,i)=>{
@@ -481,7 +481,7 @@ function update(){
       $('cell-'+i).querySelector('.marks').innerHTML = m.map(c=>`<i class="${c}"></i>`).join('');
     });
   }
-  MODES[mode].code.forEach((_,i)=>$('ln-'+i).classList.toggle('on', f.lines.includes(i)));
+  MODES[mode].code.forEach((_,i)=>$('ln-'+i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.end ? 'No cycle · return NULL' : f.ph===1 ? 'Phase 1 · find the loop' : (f.done ? 'Done · found the start' : 'Phase 2 · find the start');
   $('counter').textContent = `frame ${cur+1} / ${S.F.length}`;

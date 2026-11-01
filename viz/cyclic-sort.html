@@ -202,8 +202,8 @@ function update(){
     const b = $('b'+id);
     b.style.transform = `translateX(${k*W}px)`;
     const home = vals[k] - 1 === k;
-    b.classList.toggle('home', home);
-    b.classList.toggle('dup', f.found === k);
+    b.classList.toggle('home', !!(home));
+    b.classList.toggle('dup', !!(f.found === k));
   });
   const pi = $('pi'), pc = $('pc');
   if(f.i === null){ pi.style.opacity = 0; } else { pi.style.opacity = 1; pi.style.transform = `translateX(${f.i*W}px)`; }
@@ -213,7 +213,7 @@ function update(){
     const [x,y] = f.swapPair.slice().sort((p,q)=>p-q);
     arc.style.left = (x*W+26)+'px'; arc.style.width = ((y-x)*W)+'px'; arc.style.opacity = 1;
   } else arc.style.opacity = 0;
-  CODE.forEach((_,k)=>$('ln'+k).classList.toggle('on', f.lines.includes(k)));
+  CODE.forEach((_,k)=>$('ln'+k).classList.toggle('on', !!(f.lines.includes(k))));
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph === 'Placing' ? 'Phase 1 · send values home' : f.ph === 'Scanning' ? 'Phase 2 · scan for the misfit' : 'Found it';
   $('counter').textContent = `frame ${cur+1} / ${F.length}`;

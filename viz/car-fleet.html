@@ -264,7 +264,7 @@ function update(){
   $('chips').innerHTML = f.st.length ? f.st.map((x, k) => `<g class="fchip f${x.f % 6}${f.fresh && k === f.st.length - 1 ? ' fresh' : ''}"><rect x="${CX0 + k * 96}" y="${S.stY}" width="88" height="34" rx="8"/><text x="${CX0 + k * 96 + 44}" y="${S.stY + 17}">${fmt(x.t)}</text></g>`).join('') +
       `<text class="cmpl" x="${CX0 + f.st.length * 96 + 6}" y="${S.stY + 22}">${f.done ? `→ ${f.st.length} fleet${f.st.length === 1 ? '' : 's'}` : '← top'}</text>`
     : `<text class="ann left" x="${CX0}" y="${S.stY + 21}" style="font-style:italic">empty</text>`;
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   const c = cur_i !== null ? cars[cur_i] : null;
   const rows = [

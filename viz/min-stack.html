@@ -247,7 +247,7 @@ const rowY = d => S.BOT - (d + 1) * (RH + 4);
 function update(){
   const f = S.F[cur], {ops} = S;
   ops.forEach((_, k) => {
-    const el = $('op-' + k); el.classList.toggle('cur', k === f.k); el.classList.toggle('done', f.k === null ? cur > 0 : k < f.k);
+    const el = $('op-' + k); el.classList.toggle('cur', !!(k === f.k)); el.classList.toggle('done', !!(f.k === null ? cur > 0 : k < f.k));
     $('ret-' + k).textContent = k in f.rets ? `→ ${f.rets[k]}` : '';
   });
   const list = f.st.map((r, d) => ({...r, d})); if(f.gone) list.push({...f.gone, d:f.st.length, gone:true});
@@ -265,7 +265,7 @@ function update(){
   if(f.st.length){ tt.style.opacity = 1; tt.style.transform = `translate(${SX + 2 * RW + 64}px, ${rowY(f.st.length - 1) + RH / 2}px)`; } else tt.style.opacity = 0;
   const rb = $('retbig');
   if(f.hot){ rb.textContent = `returns ${f.rets[f.k]}`; rb.setAttribute('y', rowY(f.st.length - 1) + RH / 2 + 30); rb.setAttribute('x', SX + 2 * RW + 26); rb.style.opacity = 1; } else rb.style.opacity = 0;
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   const t = f.st[f.st.length - 1];
   const rows = [

@@ -216,7 +216,7 @@ function render(){
 const rowY = d => S.BOT - (d + 1) * (RH + 4);
 function update(){
   const f = S.F[cur], {tk} = S;
-  tk.forEach((_, k) => { const el = $('tk-' + k); el.classList.toggle('cur', k === f.k); el.classList.toggle('done', f.k === null ? cur > 0 : k < f.k); });
+  tk.forEach((_, k) => { const el = $('tk-' + k); el.classList.toggle('cur', !!(k === f.k)); el.classList.toggle('done', !!(f.k === null ? cur > 0 : k < f.k)); });
   const n = f.st.length;
   $('slots').innerHTML = f.st.map((v, d) => {
     const top = d === n - 1, cls = 'slot' + (top && f.fresh ? ' fresh' : '') + (top && (f.op || f.done) ? ' res' : '');
@@ -233,7 +233,7 @@ function update(){
   } else $('calc').innerHTML = '';
   const tt = $('tok-top');
   if(n){ tt.style.opacity = 1; tt.style.transform = `translate(${SX + SW + 32}px, ${rowY(n - 1) + RH / 2}px)`; } else tt.style.opacity = 0;
-  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', f.lines.includes(i)));
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines.includes(i))));
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   const rows = [
     ['token', f.k !== null ? `"${tk[f.k]}"` : '<span class="wait">—</span>'],
