@@ -255,6 +255,7 @@ function drawBars(b){
 const DRAW = {row: drawRow, panel: drawPanel, bars: drawBars, note: b => `<div class="vblock vnote">${b.t}</div>`};
 
 
+const LE = (t, after = -1) => { const i = CODE.findIndex((l, k) => k > after && l.trim() === t); if(i < 0) throw new Error('no exact line: ' + t); return i; };
 function readCustom(t){
   const p = t.split(/;|\|/); if(p.length !== 2) throw 'Write nums ; target, like 4,5,6,7,0,1,2 ; 0';
   const v = ints(p[0]), tg = ints(p[1]); if(!v.length || tg.length !== 1) throw 'Need some numbers and one target.';
@@ -284,7 +285,7 @@ function prepare([a, target]){
     const goLeft = leftSorted ? inside : !inside;
     const lines = [L('while (low <= high)'), L('int mid'), L('if (nums[mid] == target)'), L('if (nums[low] <= nums[mid])')];
     if(leftSorted) lines.push(L('if (nums[low] <= target'), inside ? L('high = mid - 1') : L('low = mid + 1'));
-    else { const el = L('else {'); lines.push(el, L('if (nums[mid] <= target', el), inside ? L('low = mid + 1', el) : L('high = mid - 1', el)); }
+    else { const el = LE('else {'); lines.push(el, L('if (nums[mid] <= target', el), inside ? L('low = mid + 1', el) : L('high = mid - 1', el)); }
     F.push({blocks: [vr(mid, sorted), bars(mid, sorted)], lines, ph: `Look ${looks}`,
       msg: `<span class="eq">mid = (${low} + ${high}) / 2 = ${mid}, nums[mid] = ${a[mid]} != ${target}\n` +
         (leftSorted ? `nums[low] = ${a[low]} <= ${a[mid]} → left half ${low}…${mid} is sorted\nis ${a[low]} <= ${target} <= ${a[mid]}? ${inside ? 'yes' : 'no'}` : `nums[low] = ${a[low]} > ${a[mid]} → right half ${mid}…${high} is sorted\nis ${a[mid]} <= ${target} <= ${a[high]}? ${inside ? 'yes' : 'no'}`) +

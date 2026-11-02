@@ -251,7 +251,7 @@ function prepare(input){
     }
     lvl++;
   }
-  F.push({stack: [], badge: {...badge}, cls: {...cls}, lines: [L('return result')], ph: 'Done', msg: `<span class="eq">return [${res.join(', ')}]</span>`, rows: [['answer', `[${res.join(', ')}]`]]});
+  F.push({stack: [], badge: {...badge}, cls: {...cls}, lines: [L('return result;', L('while (!q.empty())'))], ph: 'Done', msg: `<span class="eq">return [${res.join(', ')}]</span>`, rows: [['answer', `[${res.join(', ')}]`]]});
   return P;
 }
 

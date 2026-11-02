@@ -255,6 +255,7 @@ function drawBars(b){
 const DRAW = {row: drawRow, panel: drawPanel, bars: drawBars, note: b => `<div class="vblock vnote">${b.t}</div>`};
 
 
+const LE = (t, after = -1) => { const i = CODE.findIndex((l, k) => k > after && l.trim() === t); if(i < 0) throw new Error('no exact line: ' + t); return i; };
 function readCustom(t){
   const p = t.split(/;|\|/); if(p.length !== 2) throw 'Write nums ; target, like 4,5,6,7,0,1,2 ; 0';
   const v = ints(p[0]), tg = ints(p[1]); if(!v.length || tg.length !== 1) throw 'Need some numbers and one target.';

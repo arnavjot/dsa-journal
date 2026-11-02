@@ -246,7 +246,7 @@ function drawBars(b){
     s += `<rect class="vbar ${b.cls[i] || ''}" x="${x(i) + 5}" y="${y(v)}" width="${BW - 10}" height="${Math.max(0, base - y(v))}" rx="3"/>`;
     const w = (b.water || [])[i] || 0;
     if(w > 0) s += `<rect class="vwater" x="${x(i) + 5}" y="${y(v + w)}" width="${BW - 10}" height="${w * k}"/>`;
-    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
+    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${b.lab ? b.lab[i] : v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
     (b.tags[i] || []).forEach((t, r) => { const w2 = t.t.length * 7 + 12; s += `<g class="vbt ${t.c || ''}" transform="translate(${x(i) + BW / 2},${base + 32 + r * 22})"><rect x="${-w2 / 2}" y="-9" width="${w2}" height="18" rx="5"/><text>${esc(t.t)}</text></g>`; });
   });
   (b.lines || []).forEach(l => { s += `<line class="vline ${l.c}" x1="${x(l.from)}" x2="${x(l.to) + BW}" y1="${y(l.y)}" y2="${y(l.y)}"/><text class="vlinelab ${l.c}" x="${l.c === 'a' ? x(l.from) - 4 : x(l.to) + BW + 4}" y="${y(l.y) - 4}" style="text-anchor:${l.c === 'a' ? 'end' : 'start'}">${esc(l.t)}</text>`; });
@@ -264,7 +264,7 @@ function prepare(nums){
   const lr = (cur, run) => row('number line', line.map(String), j => { const v = line[j]; if(v === '…') return 'ghost'; if(run && v >= run[0] && v <= run[1]) return v === cur ? 'cur' : 'ok'; if(v === cur) return 'cur'; return has.has(v) ? 'sel' : 'dim'; }, {}, {idx: false});
   const sr = k => row('set (loop order)', st, j => j === k ? 'cur' : k !== null && j < k ? 'dim' : '', {}, {idx: false});
   let longest = 0;
-  F.push({blocks: [row('nums', nums), sr(null), lr(null)], lines: [L('unordered_set<int> st'), L('int longest')], ph: 'Set', msg: `The set drops duplicates: ${st.length} distinct number${st.length === 1 ? '' : 's'}. Faded cells on the number line are missing numbers.`, math: [['longest', '0']]});
+  F.push({blocks: [row('nums', nums), sr(null), lr(null)], lines: [L('unordered_set<int> st'), L('int longest = 0')], ph: 'Set', msg: `The set drops duplicates: ${st.length} distinct number${st.length === 1 ? '' : 's'}. Faded cells on the number line are missing numbers.`, math: [['longest', '0']]});
   st.forEach((num, k) => {
     if(has.has(num - 1)){
       F.push({blocks: [sr(k), lr(num)], lines: [L('for (int num'), L('st.find(num - 1)')], ph: `num = ${num}`, msg: `<span class="eq">${num - 1} is in the set → skip</span>${num} is in the middle of a run that starts lower. It'll be counted from that start.`, math: [['longest', `${longest}`]]});

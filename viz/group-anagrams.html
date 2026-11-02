@@ -246,7 +246,7 @@ function drawBars(b){
     s += `<rect class="vbar ${b.cls[i] || ''}" x="${x(i) + 5}" y="${y(v)}" width="${BW - 10}" height="${Math.max(0, base - y(v))}" rx="3"/>`;
     const w = (b.water || [])[i] || 0;
     if(w > 0) s += `<rect class="vwater" x="${x(i) + 5}" y="${y(v + w)}" width="${BW - 10}" height="${w * k}"/>`;
-    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
+    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${b.lab ? b.lab[i] : v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
     (b.tags[i] || []).forEach((t, r) => { const w2 = t.t.length * 7 + 12; s += `<g class="vbt ${t.c || ''}" transform="translate(${x(i) + BW / 2},${base + 32 + r * 22})"><rect x="${-w2 / 2}" y="-9" width="${w2}" height="18" rx="5"/><text>${esc(t.t)}</text></g>`; });
   });
   (b.lines || []).forEach(l => { s += `<line class="vline ${l.c}" x1="${x(l.from)}" x2="${x(l.to) + BW}" y1="${y(l.y)}" y2="${y(l.y)}"/><text class="vlinelab ${l.c}" x="${l.c === 'a' ? x(l.from) - 4 : x(l.to) + BW + 4}" y="${y(l.y) - 4}" style="text-anchor:${l.c === 'a' ? 'end' : 'start'}">${esc(l.t)}</text>`; });
@@ -273,7 +273,7 @@ function prepare(words){
     const f = sig(w), key = f.join('#') + '#', isNew = !groups.has(key);
     if(isNew) groups.set(key, []); groups.get(key).push(w);
     F.push({blocks: [wr(i), row('freq', f, j => f[j] ? 'sel' : 'dim', {}, {sm: true, idxLabels: [...'abcdefghijklmnopqrstuvwxyz']}), note(`key = "${key.slice(0, 30)}…" (${short(key)})`), gp(key)],
-      lines: [L('for (int i = 0; i < strs'), L('string key'), L('freq[ch'), L('signature += to_string'), L('groups[key]')], ph: `word ${i}`,
+      lines: [L('for (int i = 0; i < strs'), L('string key = '), L('freq[ch'), L('signature += to_string'), L('groups[key]')], ph: `word ${i}`,
       msg: `<span class="eq">signature("${w}") → ${short(key)}\ngroups[key].push_back("${w}")</span>` + (isNew ? 'A new key, so a new group starts.' : `Same key as an earlier word: <b>it joins that group</b>.`),
       math: [['word', `"${w}"`], ['letters', short(key)], ['groups so far', `${groups.size}`]]});
   });

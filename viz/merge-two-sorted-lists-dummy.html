@@ -279,7 +279,7 @@ function prepare([A, B]){
   }
   const rest = i < A.length ? 1 : 2, tail = rest === 1 ? A.slice(i) : B.slice(j);
   merged.push(...tail); if(rest === 1) i = A.length; else j = B.length;
-  F.push({blocks: bl(false), lines: rest === 1 ? [L('if (list1 != NULL)'), L('temp->next = list1;', L('if (list1 != NULL)'))] : [L('if (list1 != NULL)'), L('else'), L('temp->next = list2;', L('else'))], ph: 'Attach rest',
+  F.push({blocks: bl(false), lines: rest === 1 ? [L('if (list1 != NULL)'), L('temp->next = list1;', L('if (list1 != NULL)'))] : [L('if (list1 != NULL)'), CODE.findIndex(l => l.trim() === 'else'), L('temp->next = list2;', CODE.findIndex(l => l.trim() === 'else'))], ph: 'Attach rest',
     msg: `<span class="eq">temp->next = list${rest}${tail.length ? `  (${tail.join(' → ')})` : '  (NULL)'}</span>` + (tail.length ? 'The leftover list is already sorted: one pointer attaches it all.' : 'Both lists are used up.'), math: [['merged', listStr(merged)]]});
   F.push({blocks: bl(false), lines: [L('return dummy->next')], ph: 'Done', msg: `<span class="eq">return dummy->next  // ${merged.length ? merged.join(' → ') : 'NULL'}</span>Skip the fake node.`, math: [['answer', listStr(merged)]]});
   return F;
