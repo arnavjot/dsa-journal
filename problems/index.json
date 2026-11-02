@@ -32,6 +32,7 @@
  "271-encode-and-decode-strings",
  "287-find-the-duplicate-number",
  "347-top-k-frequent-elements",
+ "424-longest-repeating-character-replacement",
  "543-diameter-of-binary-tree",
  "572-subtree-of-another-tree",
  "704-binary-search",
