@@ -46,6 +46,34 @@ Return **4**.
 
 Extensions (same pattern): **LC 1011 Ship Packages Within D Days**, **LC 410 Split Array Largest Sum**, **LC 1482**.
 
+## Where `(pile + mid - 1) / mid` comes from
+
+I need pile ÷ speed **rounded up** (a leftover banana still costs a whole hour), but `int / int` in C++ rounds **down**.
+
+1. **Plain version first:**
+
+   ```cpp
+   hours += pile / mid;            // full hours (rounds down)
+   if (pile % mid != 0) hours++;   // any leftover → one more hour
+   ```
+
+   Careful: `+=`, not `=` (that would overwrite the total) and not `int hours = …` (that makes a new variable inside the loop).
+
+2. **Can I drop the `if`?** Add something to `pile` so rounding down lands where rounding up would.
+
+3. **Test tiny numbers** (speed 3):
+
+   | pile | want | must add |
+   |---|---|---|
+   | 6 (exact) | 2 | at most 2 (adding 3 → 9/3 = 3, too many) |
+   | 7 (remainder 1) | 3 | at least 2 (7 + 2 = 9 → 3) |
+
+   The only value that works for both is 2 = **mid − 1**.
+
+4. **Why:** a remainder is 1 … mid − 1. Adding mid − 1 pushes even remainder 1 to the next multiple; an exact fit stays just short. Adding a full `mid` would add an hour **every** time.
+
+Same idiom anywhere you divide into groups: pages, trips, boxes. `ceil((double)a / b)` also works but can be off for huge numbers.
+
 ## What confused me / what clicked
 
 - You binary search the **speed**, not the piles.

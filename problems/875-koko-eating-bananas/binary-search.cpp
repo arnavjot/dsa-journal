@@ -11,7 +11,11 @@ public:
             long long hours = 0;
 
             for (int pile : piles) {
-                hours += (pile + mid - 1) / mid;
+                hours += (pile + mid - 1) / mid; // ceil(pile / mid) in one line
+
+                // simpler version
+                // hours += pile / mid;        
+                // if (pile % mid != 0) hours++;
             }
 
             if (hours <= h) {
