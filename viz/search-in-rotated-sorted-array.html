@@ -283,12 +283,12 @@ function prepare([a, target]){
     const sorted = leftSorted ? [low, mid] : [mid, high];
     const inside = leftSorted ? (a[low] <= target && target <= a[mid]) : (a[mid] <= target && target <= a[high]);
     const goLeft = leftSorted ? inside : !inside;
-    const lines = [L('while (low <= high)'), L('int mid'), L('if (nums[mid] == target)'), L('if (nums[low] <= nums[mid])')];
-    if(leftSorted) lines.push(L('if (nums[low] <= target'), inside ? L('high = mid - 1') : L('low = mid + 1'));
-    else { const el = LE('else {'); lines.push(el, L('if (nums[mid] <= target', el), inside ? L('low = mid + 1', el) : L('high = mid - 1', el)); }
+    const lines = [L('while (low <= high)'), L('int mid')].concat(leftSorted ? [L('if (nums[low] <= nums[mid])')] : []);
+    if(leftSorted){ const ci = L('if (nums[low] <= target'); lines.push(inside ? ci : L('} else {', ci), inside ? L('high = mid - 1', ci) : L('low = mid + 1', ci)); }
+    else { const el = LE('else {'), ci = L('if (nums[mid] <= target', el); lines.push(el, inside ? ci : L('} else {', ci), inside ? L('low = mid + 1', ci) : L('high = mid - 1', ci)); }
     F.push({blocks: [vr(mid, sorted), bars(mid, sorted)], lines, ph: `Look ${looks}`,
       msg: `<span class="eq">mid = (${low} + ${high}) / 2 = ${mid}, nums[mid] = ${a[mid]} != ${target}\n` +
-        (leftSorted ? `nums[low] = ${a[low]} <= ${a[mid]} → left half ${low}…${mid} is sorted\nis ${a[low]} <= ${target} <= ${a[mid]}? ${inside ? 'yes' : 'no'}` : `nums[low] = ${a[low]} > ${a[mid]} → right half ${mid}…${high} is sorted\nis ${a[mid]} <= ${target} <= ${a[high]}? ${inside ? 'yes' : 'no'}`) +
+        (leftSorted ? `nums[low] = ${a[low]} <= ${a[mid]} → left half ${low}…${mid} is sorted\nis ${a[low]} <= ${target} <= ${a[mid]}? ${inside ? 'yes' : 'no'}` : `nums[low] = ${a[low]} > ${a[mid]} → skip the if, go to else: right half ${mid}…${high} is sorted\nis ${a[mid]} <= ${target} <= ${a[high]}? ${inside ? 'yes' : 'no'}`) +
         ` → ${goLeft ? `high = ${mid - 1}` : `low = ${mid + 1}`}</span>` +
         (inside ? `${target} fits inside the sorted half, so search there.` : `${target} can't be in the sorted half (it's outside its range), so it must be in the other half if anywhere.`),
       math: [['low, mid, high', `${low}, ${mid}, ${high}`], ['sorted half', `${sorted[0]}…${sorted[1]}`]]});
