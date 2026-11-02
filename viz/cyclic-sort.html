@@ -214,6 +214,7 @@ function update(){
     arc.style.left = (x*W+26)+'px'; arc.style.width = ((y-x)*W)+'px'; arc.style.opacity = 1;
   } else arc.style.opacity = 0;
   CODE.forEach((_,k)=>$('ln'+k).classList.toggle('on', !!(f.lines.includes(k))));
+  fixBranches();
   $('msg').innerHTML = f.msg;
   $('phase').textContent = f.ph === 'Placing' ? 'Phase 1 · send values home' : f.ph === 'Scanning' ? 'Phase 2 · scan for the misfit' : 'Found it';
   $('counter').textContent = `frame ${cur+1} / ${F.length}`;
@@ -253,6 +254,31 @@ document.addEventListener('keydown', e=>{
   else if(e.key===' '){ play(); e.preventDefault(); }
 });
 load(PRESETS[1], '1');
+// Only light an if-line when its body actually runs: if the else part runs, or execution goes past it, the condition was false.
+function fixBranches(){
+  const sp = [...document.querySelectorAll('#code span')]; if(!sp.length) return;
+  const code = sp.map(s => s.textContent), ind = l => l.match(/^\s*/)[0].length, on = i => sp[i].classList.contains('on');
+  const strip = l => l.replace(/\/\/.*$/, '');
+  for(let h = 0; h < code.length; h++){
+    if(!/^(\}\s*)?(else\s+)?if\s*\(/.test(code[h].trim())) continue;
+    let depth = 0, he = h, started = false;
+    for(let k = h; k < code.length; k++){ for(const ch of strip(code[k])){ if(ch === '('){ depth++; started = true; } else if(ch === ')') depth--; } he = k; if(started && depth <= 0) break; }
+    const tail = strip(code[he]).trim(), d = ind(code[h]);
+    const oneLine = !/\{\s*$/.test(tail) && /;\s*$/.test(tail);
+    let k = he + 1; const body = [];
+    if(!oneLine) while(k < code.length && (!code[k].trim() || ind(code[k]) > d)){ if(code[k].trim()) body.push(k); k++; }
+    let e = k; if(e < code.length && ind(code[e]) === d && /^\}\s*$/.test(code[e].trim())) e++;
+    const els = [], et = e < code.length ? code[e].trim() : '';
+    if(e < code.length && ind(code[e]) === d && /^(\}\s*)?else\b/.test(et) && !/^(\}\s*)?else\s+if\b/.test(et)){
+      els.push(e); let j = e + 1; while(j < code.length && (!code[j].trim() || ind(code[j]) > d)){ if(code[j].trim()) els.push(j); j++; }
+    }
+    const hdr = []; for(let x = h; x <= he; x++) hdr.push(x);
+    if(!hdr.some(on)) continue;
+    const bOn = body.some(on), eOn = els.some(on);
+    const off = oneLine ? eOn : (!bOn && (eOn || (body.length > 0 && sp.some((_, x) => x > he && !body.includes(x) && on(x)))));
+    if(off) hdr.forEach(x => sp[x].classList.remove('on'));
+  }
+}
 </script>
 </body>
 </html>

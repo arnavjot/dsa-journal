@@ -246,7 +246,7 @@ function drawBars(b){
     s += `<rect class="vbar ${b.cls[i] || ''}" x="${x(i) + 5}" y="${y(v)}" width="${BW - 10}" height="${Math.max(0, base - y(v))}" rx="3"/>`;
     const w = (b.water || [])[i] || 0;
     if(w > 0) s += `<rect class="vwater" x="${x(i) + 5}" y="${y(v + w)}" width="${BW - 10}" height="${w * k}"/>`;
-    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
+    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${b.lab ? b.lab[i] : v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
     (b.tags[i] || []).forEach((t, r) => { const w2 = t.t.length * 7 + 12; s += `<g class="vbt ${t.c || ''}" transform="translate(${x(i) + BW / 2},${base + 32 + r * 22})"><rect x="${-w2 / 2}" y="-9" width="${w2}" height="18" rx="5"/><text>${esc(t.t)}</text></g>`; });
   });
   (b.lines || []).forEach(l => { s += `<line class="vline ${l.c}" x1="${x(l.from)}" x2="${x(l.to) + BW}" y1="${y(l.y)}" y2="${y(l.y)}"/><text class="vlinelab ${l.c}" x="${l.c === 'a' ? x(l.from) - 4 : x(l.to) + BW + 4}" y="${y(l.y) - 4}" style="text-anchor:${l.c === 'a' ? 'end' : 'start'}">${esc(l.t)}</text>`; });
@@ -279,6 +279,7 @@ function update(){
   const f = S.F[cur];
   $('g').innerHTML = f.blocks.map(b => DRAW[b.kind](b)).join('');
   CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines || []).includes(i)));
+  fixBranches();
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   $('math').innerHTML = (f.math || []).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   $('prev').disabled = cur === 0; $('next').disabled = cur === S.F.length - 1;
@@ -310,6 +311,31 @@ document.addEventListener('keydown', e => {
   if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); } else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); } else if(e.key === ' '){ play(); e.preventDefault(); }
 });
 load(PRESETS[0].input, PRESETS[0].key);
+// Only light an if-line when its body actually runs: if the else part runs, or execution goes past it, the condition was false.
+function fixBranches(){
+  const sp = [...document.querySelectorAll('#code span')]; if(!sp.length) return;
+  const code = sp.map(s => s.textContent), ind = l => l.match(/^\s*/)[0].length, on = i => sp[i].classList.contains('on');
+  const strip = l => l.replace(/\/\/.*$/, '');
+  for(let h = 0; h < code.length; h++){
+    if(!/^(\}\s*)?(else\s+)?if\s*\(/.test(code[h].trim())) continue;
+    let depth = 0, he = h, started = false;
+    for(let k = h; k < code.length; k++){ for(const ch of strip(code[k])){ if(ch === '('){ depth++; started = true; } else if(ch === ')') depth--; } he = k; if(started && depth <= 0) break; }
+    const tail = strip(code[he]).trim(), d = ind(code[h]);
+    const oneLine = !/\{\s*$/.test(tail) && /;\s*$/.test(tail);
+    let k = he + 1; const body = [];
+    if(!oneLine) while(k < code.length && (!code[k].trim() || ind(code[k]) > d)){ if(code[k].trim()) body.push(k); k++; }
+    let e = k; if(e < code.length && ind(code[e]) === d && /^\}\s*$/.test(code[e].trim())) e++;
+    const els = [], et = e < code.length ? code[e].trim() : '';
+    if(e < code.length && ind(code[e]) === d && /^(\}\s*)?else\b/.test(et) && !/^(\}\s*)?else\s+if\b/.test(et)){
+      els.push(e); let j = e + 1; while(j < code.length && (!code[j].trim() || ind(code[j]) > d)){ if(code[j].trim()) els.push(j); j++; }
+    }
+    const hdr = []; for(let x = h; x <= he; x++) hdr.push(x);
+    if(!hdr.some(on)) continue;
+    const bOn = body.some(on), eOn = els.some(on);
+    const off = oneLine ? eOn : (!bOn && (eOn || (body.length > 0 && sp.some((_, x) => x > he && !body.includes(x) && on(x)))));
+    if(off) hdr.forEach(x => sp[x].classList.remove('on'));
+  }
+}
 </script>
 </body>
 </html>

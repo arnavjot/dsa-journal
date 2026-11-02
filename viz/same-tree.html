@@ -303,7 +303,7 @@ function render(){
   let g = `<g id="edges"></g>`;
   (P.labels || []).forEach(l => { g += `<text class="treelab" x="${l.x}" y="18">${l.text}</text>`; });
   P.nodes.forEach(n => { g += `<g class="tn${n.ghost ? ' ghost' : ''}" id="tn-${n.id}" style="transform:translate(${n.x}px,${n.y}px)"><circle r="20"/><text>${n.ghost ? 'null' : n.val}</text></g>`; });
-  g += `<g id="badges"></g><text class="cshead" x="${S.CSX}" y="22">call stack (top = running)</text><g id="cs"></g>`;
+  g += `<g id="badges"></g><text class="cshead" x="${S.CSX}" y="22">${P.csTitle || 'call stack (top = running)'}</text><g id="cs"></g>`;
   const svg = $('g'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.maxWidth = Math.round(W * 1.3) + 'px'; svg.innerHTML = g;
   S.pos = Object.fromEntries(P.nodes.map(n => [n.id, n]));
   $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
@@ -328,8 +328,9 @@ function update(){
   }).join('');
   const st = f.stack || [];
   $('cs').innerHTML = st.length ? st.slice().reverse().map((s, k) => `<g class="cs${k === 0 ? ' top' : ''}"><rect x="${S.CSX}" y="${32 + k * 30}" width="196" height="26" rx="6"/><text x="${S.CSX + 10}" y="${45 + k * 30}">${P.callName(s)}</text></g>`).join('')
-    : `<text class="ann left" x="${S.CSX}" y="48" style="font-style:italic">${cur ? 'all calls returned' : 'not started'}</text>`;
+    : `<text class="ann left" x="${S.CSX}" y="48" style="font-style:italic">${P.csEmpty ? P.csEmpty(cur) : cur ? 'all calls returned' : 'not started'}</text>`;
   CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!f.lines.includes(i)));
+  fixBranches();
   $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
   $('math').innerHTML = (f.rows || []).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   $('prev').disabled = cur === 0; $('next').disabled = cur === S.F.length - 1;
@@ -359,6 +360,31 @@ document.addEventListener('keydown', e => {
   if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); } else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); } else if(e.key === ' '){ play(); e.preventDefault(); }
 });
 load(PRESETS[0].input, PRESETS[0].key);
+// Only light an if-line when its body actually runs: if the else part runs, or execution goes past it, the condition was false.
+function fixBranches(){
+  const sp = [...document.querySelectorAll('#code span')]; if(!sp.length) return;
+  const code = sp.map(s => s.textContent), ind = l => l.match(/^\s*/)[0].length, on = i => sp[i].classList.contains('on');
+  const strip = l => l.replace(/\/\/.*$/, '');
+  for(let h = 0; h < code.length; h++){
+    if(!/^(\}\s*)?(else\s+)?if\s*\(/.test(code[h].trim())) continue;
+    let depth = 0, he = h, started = false;
+    for(let k = h; k < code.length; k++){ for(const ch of strip(code[k])){ if(ch === '('){ depth++; started = true; } else if(ch === ')') depth--; } he = k; if(started && depth <= 0) break; }
+    const tail = strip(code[he]).trim(), d = ind(code[h]);
+    const oneLine = !/\{\s*$/.test(tail) && /;\s*$/.test(tail);
+    let k = he + 1; const body = [];
+    if(!oneLine) while(k < code.length && (!code[k].trim() || ind(code[k]) > d)){ if(code[k].trim()) body.push(k); k++; }
+    let e = k; if(e < code.length && ind(code[e]) === d && /^\}\s*$/.test(code[e].trim())) e++;
+    const els = [], et = e < code.length ? code[e].trim() : '';
+    if(e < code.length && ind(code[e]) === d && /^(\}\s*)?else\b/.test(et) && !/^(\}\s*)?else\s+if\b/.test(et)){
+      els.push(e); let j = e + 1; while(j < code.length && (!code[j].trim() || ind(code[j]) > d)){ if(code[j].trim()) els.push(j); j++; }
+    }
+    const hdr = []; for(let x = h; x <= he; x++) hdr.push(x);
+    if(!hdr.some(on)) continue;
+    const bOn = body.some(on), eOn = els.some(on);
+    const off = oneLine ? eOn : (!bOn && (eOn || (body.length > 0 && sp.some((_, x) => x > he && !body.includes(x) && on(x)))));
+    if(off) hdr.forEach(x => sp[x].classList.remove('on'));
+  }
+}
 </script>
 </body>
 </html>
