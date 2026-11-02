@@ -30,6 +30,7 @@
  "199-binary-tree-right-side-view",
  "217-contains-duplicate",
  "226-invert-binary-tree",
+ "230-kth-smallest-element-in-a-bst",
  "235-lowest-common-ancestor-of-a-binary-search-tree",
  "238-product-of-array-except-self",
  "239-sliding-window-maximum",

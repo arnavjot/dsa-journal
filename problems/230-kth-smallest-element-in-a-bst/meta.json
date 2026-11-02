@@ -1,0 +1,86 @@
+{
+  "id": 230,
+  "title": "Kth Smallest Element in a BST",
+  "keyIdea": "In-order traversal (left, node, right) of a BST visits values in sorted order. Count down k at each visit; the node where k hits 0 is the answer. Stop early: once found, pass it straight up.",
+  "approaches": [
+    {
+      "name": "In-order into a list",
+      "file": "inorder-list.cpp",
+      "idea": "Collect every value in-order (sorted), return vals[k − 1].",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Always visits every node and stores them all."
+    },
+    {
+      "name": "Iterative in-order with a stack",
+      "file": "iterative-stack.cpp",
+      "idea": "Push while going left; pop = next smallest; k--; at 0 return; else go to its right child.",
+      "time": "O(h + k)",
+      "space": "O(h)",
+      "why": "Stops after k pops; the stack holds at most one root-to-leaf path.",
+      "viz": "viz/kth-smallest-element-in-a-bst-iterative.html"
+    },
+    {
+      "name": "Recursive in-order, stop early",
+      "file": "recursive-inorder.cpp",
+      "best": true,
+      "idea": "left = recurse(left). -1 → this node is next: k--, if k == 0 return it; else recurse right. Not -1 → found below, return it.",
+      "time": "O(h + k)",
+      "space": "O(h)",
+      "why": "Walks down to the smallest (h) then visits only k nodes before returning.",
+      "viz": "viz/kth-smallest-element-in-a-bst.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does in-order give the values in sorted order?",
+      "options": [
+        "In a BST everything left is smaller and everything right is bigger, so left → node → right goes smallest to biggest",
+        "Because it's a full tree",
+        "It only works for balanced trees",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is k passed as int& in your code?",
+      "options": [
+        "All calls must share one counter; by value each call would count on its own copy",
+        "To make it faster",
+        "LeetCode requires it",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is -1 safe as 'not found yet'?",
+      "options": [
+        "Node values are 0…10⁴, so -1 can never be a real answer",
+        "Because k is positive",
+        "Because the tree is a BST",
+        "It isn't safe"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does 'return left;' do when left != -1?",
+      "options": [
+        "The answer was found in the left subtree; pass it up without visiting this node or its right side",
+        "Restarts the search",
+        "Returns the left child",
+        "Decrements k"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is k always valid (1…n)? Can values repeat? What range are the values?",
+    "Find the 3rd smallest in [5,3,6,2,4,null,null,1] by hand. What order did you read the values in?",
+    "Collect everything in-order into a list: time and space?",
+    "\"k-th smallest in a BST\": which traversal gives sorted order?",
+    "How do you count without a list? How do you stop as soon as you find it?",
+    "Code it, saying \"in-order, count down k, pass the answer up\".",
+    "Dry-run [3,1,4,null,2], k = 1: which calls run, where does k hit 0?",
+    "Time and space? Follow-up: if the tree changes often, store subtree sizes in each node."
+  ]
+}
