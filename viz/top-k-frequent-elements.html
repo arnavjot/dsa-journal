@@ -220,7 +220,7 @@ const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>
 const ints = s => (String(s).match(/-?\d+/g) || []).map(Number);
 const listStr = a => '[' + a.join(', ') + ']';
 // blocks
-const row = (label, vals, cls = () => '', tags = {}, opt = {}) => ({kind:'row', label, vals, cls: vals.map((v, i) => cls(i, v) || ''), tags, opt});
+const row = (label, vals, cls = () => '', tags = {}, opt = {}) => ({kind:'row', label, vals: vals.slice(), cls: vals.map((v, i) => cls(i, v) || ''), tags: JSON.parse(JSON.stringify(tags)), opt});   // snapshot: later pushes must not change earlier frames
 const panel = (title, items, empty = 'empty') => ({kind:'panel', title, items, empty});
 const note = t => ({kind:'note', t});
 
