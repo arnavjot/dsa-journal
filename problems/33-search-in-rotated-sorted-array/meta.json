@@ -1,0 +1,86 @@
+{
+  "id": 33,
+  "title": "Search in Rotated Sorted Array",
+  "keyIdea": "Cut at mid and one half is always sorted (the array drops only once). nums[low] <= nums[mid] → left half sorted, else right half. If target lies between the sorted half's two ends, search that half; otherwise search the other half.",
+  "approaches": [
+    {
+      "name": "Scan everything",
+      "file": "linear.cpp",
+      "idea": "Check every index.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Correct, but the problem asks for O(log n)."
+    },
+    {
+      "name": "Find the pivot, then binary search one part",
+      "file": "pivot-then-search.cpp",
+      "idea": "Find the minimum's index like LC 153. Both sides of it are sorted: if nums[pivot] <= target <= nums[n − 1] search pivot…n−1, else 0…pivot−1.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "Two binary searches, log n each. Easier to reason about, a bit more code.",
+      "viz": "viz/search-in-rotated-sorted-array-pivot.html"
+    },
+    {
+      "name": "One pass: check the sorted half",
+      "file": "one-pass.cpp",
+      "best": true,
+      "idea": "mid == target → done. nums[low] <= nums[mid] → left sorted: target in [nums[low], nums[mid]] → high = mid − 1, else low = mid + 1. Otherwise right sorted: target in [nums[mid], nums[high]] → low = mid + 1, else high = mid − 1.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "One binary search; each step throws away half.",
+      "viz": "viz/search-in-rotated-sorted-array.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is at least one half always sorted?",
+      "options": [
+        "The array drops only once, so the drop is on one side of mid and the other side has none",
+        "Because the array is sorted",
+        "Because mid is the minimum",
+        "It isn't always"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Left half is sorted but target is NOT between nums[low] and nums[mid]. What next?",
+      "options": [
+        "low = mid + 1: it can only be in the right half",
+        "high = mid − 1",
+        "return -1",
+        "Search both halves"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why check the range only in the sorted half?",
+      "options": [
+        "Only in a sorted range does 'between its ends' prove target is inside; the other half may wrap around",
+        "It's faster",
+        "The other half is empty",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why nums[low] <= nums[mid] and not < ?",
+      "options": [
+        "When low == mid the left half is one element, which is sorted",
+        "To handle duplicates",
+        "To avoid overflow",
+        "It makes no difference"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are values unique? Could it be unrotated? What do you return if target is missing?",
+    "Search 0 and 5 in [4,5,6,7,0,1,2] by hand. Which half is sorted at the first mid?",
+    "Scanning everything: time, and why isn't it enough?",
+    "\"Rotated sorted + O(log n)\": which pattern, and what is always true about the two halves?",
+    "How do you tell which half is sorted? How do you decide where target is?",
+    "Code it, saying \"find the sorted half, is target inside it?\".",
+    "Dry-run [5,1,3], target 3: low, mid, high at each step?",
+    "Time and space? How would the pivot-first version (LC 153 + binary search) work?"
+  ]
+}
