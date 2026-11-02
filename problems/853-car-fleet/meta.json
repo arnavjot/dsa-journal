@@ -7,24 +7,63 @@
       "name": "Sort + counter",
       "file": "no-stack.cpp",
       "idea": "Same order and comparison, but keep only the latest fleet's arrival time in one variable instead of a stack.",
-      "time": "O(n log n)", "space": "O(n)",
-      "why": "Sorting dominates. Only the fleet directly ahead matters, so a single variable is enough; the pairs vector is still O(n)."
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "Sorting dominates. Only the fleet directly ahead matters, so a single variable is enough; the pairs vector is still O(n).",
+      "viz": "viz/car-fleet-no-stack.html"
     },
     {
       "name": "Sort + stack of fleet times",
       "file": "stack.cpp",
       "best": true,
       "idea": "Sort by position, closest to the target first. Push a car's time only if it's greater than st.top(); st.size() is the number of fleets.",
-      "time": "O(n log n)", "space": "O(n)",
+      "time": "O(n log n)",
+      "space": "O(n)",
       "why": "The sort is O(n log n); the loop is O(n) with at most one push per car.",
       "viz": "viz/car-fleet.html"
     }
   ],
   "quiz": [
-    {"q": "Why go from the car closest to the target backwards?", "options": ["A car can only be slowed by cars ahead of it, so those must be decided first", "It's faster to sort that way", "To find the fastest car", "Order doesn't matter"], "answer": 0},
-    {"q": "Why compare arrival times instead of speeds?", "options": ["A fast car far behind can still arrive later; time combines distance and speed", "Speeds can be equal", "Times are integers", "It's the same thing"], "answer": 0},
-    {"q": "A car's time equals the fleet ahead's time exactly. What happens?", "options": ["It joins that fleet: they reach the target together, which counts as one fleet", "It starts a new fleet", "It passes the fleet", "Undefined"], "answer": 0},
-    {"q": "Why isn't anything ever popped from the stack?", "options": ["A joining car takes the fleet's slower time, so the top stays correct", "Stacks can't pop", "Because times only decrease", "It should pop"], "answer": 0}
+    {
+      "q": "Why go from the car closest to the target backwards?",
+      "options": [
+        "A car can only be slowed by cars ahead of it, so those must be decided first",
+        "It's faster to sort that way",
+        "To find the fastest car",
+        "Order doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why compare arrival times instead of speeds?",
+      "options": [
+        "A fast car far behind can still arrive later; time combines distance and speed",
+        "Speeds can be equal",
+        "Times are integers",
+        "It's the same thing"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "A car's time equals the fleet ahead's time exactly. What happens?",
+      "options": [
+        "It joins that fleet: they reach the target together, which counts as one fleet",
+        "It starts a new fleet",
+        "It passes the fleet",
+        "Undefined"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why isn't anything ever popped from the stack?",
+      "options": [
+        "A joining car takes the fleet's slower time, so the top stays correct",
+        "Stacks can't pop",
+        "Because times only decrease",
+        "It should pop"
+      ],
+      "answer": 0
+    }
   ],
   "steps": [
     "Can a car pass another? What if two cars meet exactly at the target? Are positions distinct?",

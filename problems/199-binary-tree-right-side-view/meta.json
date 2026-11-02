@@ -9,7 +9,8 @@
       "idea": "Level-order with a queue; the node popped last in each level (i == levelSize − 1) is visible.",
       "time": "O(n)",
       "space": "O(w)",
-      "why": "Every node is visited once; the queue holds about one level."
+      "why": "Every node is visited once; the queue holds about one level.",
+      "viz": "viz/binary-tree-right-side-view-bfs.html"
     },
     {
       "name": "DFS right-first with depth",

@@ -9,7 +9,8 @@
       "idea": "pref[i] = product left of i, suf[i] = product right of i, res[i] = pref[i] × suf[i].",
       "time": "O(n)",
       "space": "O(n)",
-      "why": "Three linear passes; two extra arrays of size n."
+      "why": "Three linear passes; two extra arrays of size n.",
+      "viz": "viz/product-of-array-except-self-arrays.html"
     },
     {
       "name": "Output array + running suffix",

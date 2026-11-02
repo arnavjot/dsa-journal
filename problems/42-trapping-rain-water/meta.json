@@ -9,7 +9,8 @@
       "idea": "leftMax[i] and rightMax[i] = tallest bar at/left of i and at/right of i; water += min of the two − height[i].",
       "time": "O(n)",
       "space": "O(n)",
-      "why": "Three linear passes and two arrays of size n."
+      "why": "Three linear passes and two arrays of size n.",
+      "viz": "viz/trapping-rain-water-arrays.html"
     },
     {
       "name": "Two pointers with leftMax / rightMax",

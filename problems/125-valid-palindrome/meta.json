@@ -7,24 +7,63 @@
       "name": "Clean, then compare with reverse",
       "file": "clean-reverse.cpp",
       "idea": "Build a new string with only the letters and digits, lower-cased. It's a palindrome if it equals its own reverse.",
-      "time": "O(n)", "space": "O(n)",
-      "why": "One pass to build the cleaned string, one to reverse it, one to compare. Two extra strings of up to n characters."
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One pass to build the cleaned string, one to reverse it, one to compare. Two extra strings of up to n characters.",
+      "viz": "viz/valid-palindrome-clean-reverse.html"
     },
     {
       "name": "Two pointers, skip in place",
       "file": "two-pointers.cpp",
       "best": true,
       "idea": "left from the start, right from the end. Each skips non-alphanumerics, then compare tolower(s[left]) and tolower(s[right]). Mismatch → false. Match → both move inward.",
-      "time": "O(n)", "space": "O(1)",
+      "time": "O(n)",
+      "space": "O(1)",
       "why": "left only moves right and right only moves left, so together they touch each character at most once. Only two int variables.",
       "viz": "viz/valid-palindrome.html"
     }
   ],
   "quiz": [
-    {"q": "Why do the inner skip loops also check left < right?", "options": ["So a string of only punctuation can't push left past the end, and the pointers don't cross while skipping", "Style only", "To skip uppercase letters", "To make it O(1) space"], "answer": 0},
-    {"q": "s = \"0P\". What's the answer?", "options": ["false: both are alphanumeric and '0' != 'p'", "true: digits are ignored", "true: it's only two characters", "It crashes"], "answer": 0},
-    {"q": "s = \" \" (one space). What's the answer?", "options": ["true: after skipping there's nothing left, and empty counts as a palindrome", "false", "It crashes", "Undefined"], "answer": 0},
-    {"q": "Why is the two-pointer version O(n) even with loops inside a loop?", "options": ["left and right only ever move inward, so each character is visited at most once in total", "The inner loops run at most once", "It isn't, it's O(n²)", "Because of tolower"], "answer": 0}
+    {
+      "q": "Why do the inner skip loops also check left < right?",
+      "options": [
+        "So a string of only punctuation can't push left past the end, and the pointers don't cross while skipping",
+        "Style only",
+        "To skip uppercase letters",
+        "To make it O(1) space"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "s = \"0P\". What's the answer?",
+      "options": [
+        "false: both are alphanumeric and '0' != 'p'",
+        "true: digits are ignored",
+        "true: it's only two characters",
+        "It crashes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "s = \" \" (one space). What's the answer?",
+      "options": [
+        "true: after skipping there's nothing left, and empty counts as a palindrome",
+        "false",
+        "It crashes",
+        "Undefined"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the two-pointer version O(n) even with loops inside a loop?",
+      "options": [
+        "left and right only ever move inward, so each character is visited at most once in total",
+        "The inner loops run at most once",
+        "It isn't, it's O(n²)",
+        "Because of tolower"
+      ],
+      "answer": 0
+    }
   ],
   "steps": [
     "Which characters count? Is 'A' the same as 'a'? Do digits count? What about an empty or all-space string?",

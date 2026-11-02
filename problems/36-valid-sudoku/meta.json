@@ -9,7 +9,8 @@
       "idea": "For each i, check row i, column i and box i with fresh 9-slot counters.",
       "time": "O(81)",
       "space": "O(9)",
-      "why": "Each cell is read three times; only 9-slot arrays at a time."
+      "why": "Each cell is read three times; only 9-slot arrays at a time.",
+      "viz": "viz/valid-sudoku-three-passes.html"
     },
     {
       "name": "One pass with 27 sets",

@@ -9,7 +9,8 @@
       "idea": "Queue pairs of nodes at the same position; any mismatch in presence or value → false.",
       "time": "O(n)",
       "space": "O(w)",
-      "why": "Each pair is checked once; the queue holds about one level."
+      "why": "Each pair is checked once; the queue holds about one level.",
+      "viz": "viz/same-tree-bfs.html"
     },
     {
       "name": "Recursion",

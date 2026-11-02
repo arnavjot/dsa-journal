@@ -9,7 +9,8 @@
       "idea": "Same comparisons, but every value is copied into a new ListNode, and both leftovers are copied in loops.",
       "time": "O(m + n)",
       "space": "O(m + n)",
-      "why": "Creates m + n new nodes instead of reusing the existing ones."
+      "why": "Creates m + n new nodes instead of reusing the existing ones.",
+      "viz": "viz/merge-two-sorted-lists-copy.html"
     },
     {
       "name": "Dummy node (Kunal's)",
@@ -17,7 +18,8 @@
       "idea": "Start from a fake node so the first splice is like every other; return dummy->next.",
       "time": "O(m + n)",
       "space": "O(1)",
-      "why": "Relinks nodes; one extra node for convenience."
+      "why": "Relinks nodes; one extra node for convenience.",
+      "viz": "viz/merge-two-sorted-lists-dummy.html"
     },
     {
       "name": "Pick the real head first (your better version)",

@@ -9,7 +9,8 @@
       "idea": "Recurse left then right, carrying depth; append each node to ans[depth], creating the level when depth is new.",
       "time": "O(n)",
       "space": "O(h)",
-      "why": "Each node once; the call stack is the height. Left-before-right keeps each level in order."
+      "why": "Each node once; the call stack is the height. Left-before-right keeps each level in order.",
+      "viz": "viz/binary-tree-level-order-traversal-dfs.html"
     },
     {
       "name": "BFS with a queue",

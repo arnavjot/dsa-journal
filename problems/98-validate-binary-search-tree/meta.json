@@ -9,7 +9,8 @@
       "idea": "validate(node, low, high): node must be strictly inside (low, high). Left child gets (low, node), right child gets (node, high). Start with (LONG_MIN, LONG_MAX).",
       "time": "O(n)",
       "space": "O(h)",
-      "why": "Each node is checked once; stops at the first bad node. long bounds avoid problems when a value is INT_MIN or INT_MAX."
+      "why": "Each node is checked once; stops at the first bad node. long bounds avoid problems when a value is INT_MIN or INT_MAX.",
+      "viz": "viz/validate-binary-search-tree-bounds.html"
     },
     {
       "name": "In-order list must be increasing",

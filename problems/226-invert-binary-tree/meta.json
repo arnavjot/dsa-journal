@@ -7,24 +7,63 @@
       "name": "BFS with a queue",
       "file": "bfs.cpp",
       "idea": "Visit nodes level by level with a queue; swap each node's children, then queue them.",
-      "time": "O(n)", "space": "O(w)",
-      "why": "Each node is visited once. The queue holds at most one level, w = the widest level (up to ~n/2 in a full tree)."
+      "time": "O(n)",
+      "space": "O(w)",
+      "why": "Each node is visited once. The queue holds at most one level, w = the widest level (up to ~n/2 in a full tree).",
+      "viz": "viz/invert-binary-tree-bfs.html"
     },
     {
       "name": "Recursion (DFS)",
       "file": "recursive.cpp",
       "best": true,
       "idea": "NULL → return. Otherwise swap root->left and root->right with temp, then invertTree on both children, and return root.",
-      "time": "O(n)", "space": "O(h)",
+      "time": "O(n)",
+      "space": "O(h)",
       "why": "Each node is visited once. The call stack is as deep as the tree height h: O(log n) when balanced, O(n) for a chain.",
       "viz": "viz/invert-binary-tree.html"
     }
   ],
   "quiz": [
-    {"q": "Why is temp needed?", "options": ["After root->left = root->right, the old left child would be lost", "To count the nodes", "To return it later", "It isn't needed"], "answer": 0},
-    {"q": "Does it matter if you swap before or after the recursive calls?", "options": ["No: either way every node's children get swapped exactly once", "Yes, swapping after breaks it", "Yes, swapping before breaks it", "Only for big trees"], "answer": 0},
-    {"q": "What is the base case?", "options": ["root == NULL → return NULL", "A leaf → return 0", "The root", "There isn't one"], "answer": 0},
-    {"q": "Space used by the recursive version?", "options": ["O(h): the call stack is as deep as the tree", "O(1)", "O(n²)", "O(log n) always"], "answer": 0}
+    {
+      "q": "Why is temp needed?",
+      "options": [
+        "After root->left = root->right, the old left child would be lost",
+        "To count the nodes",
+        "To return it later",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Does it matter if you swap before or after the recursive calls?",
+      "options": [
+        "No: either way every node's children get swapped exactly once",
+        "Yes, swapping after breaks it",
+        "Yes, swapping before breaks it",
+        "Only for big trees"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the base case?",
+      "options": [
+        "root == NULL → return NULL",
+        "A leaf → return 0",
+        "The root",
+        "There isn't one"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Space used by the recursive version?",
+      "options": [
+        "O(h): the call stack is as deep as the tree",
+        "O(1)",
+        "O(n²)",
+        "O(log n) always"
+      ],
+      "answer": 0
+    }
   ],
   "steps": [
     "What does \"invert\" mean exactly? What should an empty tree return? Do you build a new tree or change this one?",

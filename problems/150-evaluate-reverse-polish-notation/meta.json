@@ -7,24 +7,63 @@
       "name": "Recursion from the end",
       "file": "recursion.cpp",
       "idea": "The last token is the outermost operator. Recursively evaluate its right operand (the tokens just before it), then its left operand.",
-      "time": "O(n)", "space": "O(n)",
-      "why": "Each token is read once. The recursion can go n levels deep for a long chain, which uses the call stack instead of an explicit one."
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each token is read once. The recursion can go n levels deep for a long chain, which uses the call stack instead of an explicit one.",
+      "viz": "viz/evaluate-reverse-polish-notation-recursion.html"
     },
     {
       "name": "Stack",
       "file": "stack.cpp",
       "best": true,
       "idea": "Number → push. Operator → b = pop, a = pop, push a op b. Return the top at the end.",
-      "time": "O(n)", "space": "O(n)",
+      "time": "O(n)",
+      "space": "O(n)",
       "why": "One pass; every token is pushed or causes two pops and one push. The stack holds at most about n/2 + 1 numbers.",
       "viz": "viz/evaluate-reverse-polish-notation.html"
     }
   ],
   "quiz": [
-    {"q": "Tokens \"4 2 -\". Which is a and which is b?", "options": ["b = 2 (popped first), a = 4, result 4 − 2 = 2", "a = 2, b = 4, result −2", "Order doesn't matter", "It throws an error"], "answer": 0},
-    {"q": "What does C++ give for 7 / −3?", "options": ["−2: int division cuts toward zero", "−3", "−2.33", "2"], "answer": 0},
-    {"q": "Why is a stack the right structure?", "options": ["An operator always uses the two most recent unused values (last in, first out)", "To sort the numbers", "To count operators", "Because recursion isn't allowed"], "answer": 0},
-    {"q": "For a valid expression, how many numbers are left on the stack at the end?", "options": ["Exactly 1", "0", "2", "It depends on the length"], "answer": 0}
+    {
+      "q": "Tokens \"4 2 -\". Which is a and which is b?",
+      "options": [
+        "b = 2 (popped first), a = 4, result 4 − 2 = 2",
+        "a = 2, b = 4, result −2",
+        "Order doesn't matter",
+        "It throws an error"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does C++ give for 7 / −3?",
+      "options": [
+        "−2: int division cuts toward zero",
+        "−3",
+        "−2.33",
+        "2"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is a stack the right structure?",
+      "options": [
+        "An operator always uses the two most recent unused values (last in, first out)",
+        "To sort the numbers",
+        "To count operators",
+        "Because recursion isn't allowed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "For a valid expression, how many numbers are left on the stack at the end?",
+      "options": [
+        "Exactly 1",
+        "0",
+        "2",
+        "It depends on the length"
+      ],
+      "answer": 0
+    }
   ],
   "steps": [
     "Which operators appear? Is the input always valid? How should division round?",

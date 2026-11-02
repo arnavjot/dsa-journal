@@ -9,7 +9,8 @@
       "idea": "Walk level by level with a queue; each full level processed adds 1.",
       "time": "O(n)",
       "space": "O(w)",
-      "why": "Every node is queued once. The queue holds one level at a time, at most the widest level w."
+      "why": "Every node is queued once. The queue holds one level at a time, at most the widest level w.",
+      "viz": "viz/maximum-depth-of-binary-tree-bfs.html"
     },
     {
       "name": "Recursion (post-order)",

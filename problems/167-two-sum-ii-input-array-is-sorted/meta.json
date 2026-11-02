@@ -7,39 +7,80 @@
       "name": "Brute force",
       "file": "brute.cpp",
       "idea": "Try every pair i < j.",
-      "time": "O(n²)", "space": "O(1)",
+      "time": "O(n²)",
+      "space": "O(1)",
       "why": "n·(n−1)/2 pairs: ~4.5·10⁸ at n = 3·10⁴. Ignores the sorting."
     },
     {
       "name": "Binary search for each partner",
       "file": "binary-search.cpp",
       "idea": "For each i, binary-search the part to its right for target − numbers[i].",
-      "time": "O(n log n)", "space": "O(1)",
+      "time": "O(n log n)",
+      "space": "O(1)",
       "why": "n binary searches of O(log n) each. Uses the sorting, but only half as well as two pointers."
     },
     {
       "name": "Hash map (Two Sum I)",
       "file": "hash-map.cpp",
       "idea": "Same one pass as Two Sum I: look up target − numbers[i], then save numbers[i] → i.",
-      "time": "O(n)", "space": "O(n)",
+      "time": "O(n)",
+      "space": "O(n)",
       "why": "One pass with O(1) map operations, but the map can grow to n entries.",
-      "warn": "The problem asks for constant extra space, so this doesn't meet the requirement."
+      "warn": "The problem asks for constant extra space, so this doesn't meet the requirement.",
+      "viz": "viz/two-sum-ii-hash-map.html"
     },
     {
       "name": "Two pointers",
       "file": "two-pointers.cpp",
       "best": true,
       "idea": "left = 0, right = n − 1. Sum == target → return {left + 1, right + 1}. Sum < target → left++. Sum > target → right--.",
-      "time": "O(n)", "space": "O(1)",
+      "time": "O(n)",
+      "space": "O(1)",
       "why": "Each step moves one pointer inward, so at most n − 1 steps. Two int variables.",
       "viz": "viz/two-sum-ii.html"
     }
   ],
   "quiz": [
-    {"q": "Sum is too small. Why is it safe to move left (and never look at numbers[left] again)?", "options": ["Even with the biggest number still in range it's too small, so numbers[left] can't pair with anything left", "Because left is smaller than right", "Because the answer is always in the middle", "It isn't safe, it can skip the answer"], "answer": 0},
-    {"q": "Why return {left + 1, right + 1}?", "options": ["The problem numbers positions from 1", "To skip the pair already checked", "To avoid returning 0", "Because left and right moved after the check"], "answer": 0},
-    {"q": "Why not reuse the hash map from Two Sum I?", "options": ["It uses O(n) extra space, and this problem asks for O(1)", "It gives wrong answers on sorted input", "It's O(n²)", "Hash maps can't store negatives"], "answer": 0},
-    {"q": "What's the most comparisons two pointers can make on n numbers?", "options": ["n − 1: each comparison rules out one number", "n²", "log n", "n / 2"], "answer": 0}
+    {
+      "q": "Sum is too small. Why is it safe to move left (and never look at numbers[left] again)?",
+      "options": [
+        "Even with the biggest number still in range it's too small, so numbers[left] can't pair with anything left",
+        "Because left is smaller than right",
+        "Because the answer is always in the middle",
+        "It isn't safe, it can skip the answer"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why return {left + 1, right + 1}?",
+      "options": [
+        "The problem numbers positions from 1",
+        "To skip the pair already checked",
+        "To avoid returning 0",
+        "Because left and right moved after the check"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why not reuse the hash map from Two Sum I?",
+      "options": [
+        "It uses O(n) extra space, and this problem asks for O(1)",
+        "It gives wrong answers on sorted input",
+        "It's O(n²)",
+        "Hash maps can't store negatives"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What's the most comparisons two pointers can make on n numbers?",
+      "options": [
+        "n − 1: each comparison rules out one number",
+        "n²",
+        "log n",
+        "n / 2"
+      ],
+      "answer": 0
+    }
   ],
   "steps": [
     "Sorted which way? 1-indexed or 0-indexed answer? Can you use the same element twice? What extra space is allowed?",
