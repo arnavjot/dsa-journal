@@ -1,0 +1,78 @@
+{
+  "id": 138,
+  "title": "Copy List with Random Pointer",
+  "keyIdea": "Map every original node to its copy. Walk the list; for next and random, get the copy from the map (creating it on first need), and link the copies. Return the copy of head.",
+  "approaches": [
+    {
+      "name": "Two passes with a map",
+      "file": "two-pass-map.cpp",
+      "idea": "Pass 1: create a copy of every node in the map. Pass 2: copy->next = map[next], copy->random = map[random].",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Two walks over the list; the map holds n pairs.",
+      "viz": "viz/copy-list-with-random-pointer-two-pass.html"
+    },
+    {
+      "name": "One pass, create copies on demand",
+      "file": "single-pass-map.cpp",
+      "best": true,
+      "idea": "For each node, if next / random has no copy yet, create it; then link this node's copy to them.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One walk; each copy is created exactly once, the first time it is needed.",
+      "viz": "viz/copy-list-with-random-pointer.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does the map store?",
+      "options": [
+        "original node → its copy",
+        "value → node",
+        "index → value",
+        "copy → original value"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why check nodes.find(...) == nodes.end() before new Node?",
+      "options": [
+        "So each original gets exactly one copy; a second copy would break the links",
+        "To save time only",
+        "To skip NULL",
+        "Because maps can't overwrite"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can't you just copy next pointers first and random later without a map?",
+      "options": [
+        "random can point to any node, and you need a quick way to find that node's copy",
+        "random is always NULL",
+        "random only points forward",
+        "You can, it's fine"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Can the O(n) extra space be avoided?",
+      "options": [
+        "Yes: interleave copies (A → A' → B → B'), set randoms, then split the lists",
+        "No, a map is always needed",
+        "Only with recursion",
+        "Only if values are unique"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What is a \"deep copy\" here? Can random point to itself or be NULL? Can values repeat?",
+    "Draw [[7,null],[13,0],[11,4]]: which copy pointers must you set?",
+    "Two passes with a map: what happens in each pass?",
+    "\"Copy a graph-like structure\": what lookup do you need?",
+    "How do you handle a random that points ahead to a node not copied yet?",
+    "Code it, saying \"map original → copy, create on demand\".",
+    "Dry-run [[1,1],[2,1]]: which copies exist after each step?",
+    "Time and space? How does the O(1)-space interleaving trick work?"
+  ]
+}

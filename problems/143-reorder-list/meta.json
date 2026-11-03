@@ -1,0 +1,78 @@
+{
+  "id": 143,
+  "title": "Reorder List",
+  "keyIdea": "Three known pieces: find the middle (fast/slow), reverse the second half, then weave the two halves one node at a time. Only next pointers change; O(1) space.",
+  "approaches": [
+    {
+      "name": "Array of nodes + two indices",
+      "file": "array-of-nodes.cpp",
+      "idea": "Store all nodes in a vector; link nodes[i] → nodes[j] → nodes[i+1] … moving i, j inward; the meeting node gets next = NULL.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One pass to collect, one to relink, but the vector holds every node.",
+      "viz": "viz/reorder-list-array.html"
+    },
+    {
+      "name": "Middle + reverse + merge",
+      "file": "reverse-and-merge.cpp",
+      "best": true,
+      "idea": "mid = middleNode(head); hs = reverseList(mid); weave hf and hs with temp; finally hf->next = NULL if hf remains.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Each step is a single pass over (part of) the list with a few pointers.",
+      "viz": "viz/reorder-list.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why reverse the second half?",
+      "options": [
+        "The order needs the last node, then the second-to-last…; reversed, they come from the front one by one",
+        "To find the middle",
+        "To sort the list",
+        "To remove duplicates"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is temp saved before each relink?",
+      "options": [
+        "Changing hf->next (or hs->next) cuts that node off from the rest of its half",
+        "To count nodes",
+        "To free memory",
+        "It is not needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does the final \"if(hf != NULL) hf->next = NULL\" do?",
+      "options": [
+        "Makes the last node of the new order point to NULL, so the list ends",
+        "Deletes a node",
+        "Reverses again",
+        "Finds the middle"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Space of the array version vs this one?",
+      "options": [
+        "O(n) vs O(1)",
+        "O(1) vs O(n)",
+        "Both O(1)",
+        "Both O(n)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can you return a new list, or must you relink in place? What about 1 or 2 nodes?",
+    "Reorder [1,2,3,4,5] by hand: what pattern do the positions follow?",
+    "Store the nodes in an array and use two indices: time and space?",
+    "\"Last, second-to-last… in O(1) space\": which three building blocks?",
+    "Which middle does middleNode return for an even length, and does it matter?",
+    "Code it, saying \"middle, reverse, weave\".",
+    "Dry-run [1,2,3,4]: hf, hs and the links after each weave step?",
+    "Time and space? Which earlier problems did you reuse (LC 876, 206, 21)?"
+  ]
+}
