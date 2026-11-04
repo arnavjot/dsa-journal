@@ -420,5 +420,44 @@ function fixBranches(){
   }
 }
 </script>
+<style id="split-css">
+@media (min-width:880px){
+  .wrap.split-on{max-width:1380px}
+  .split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
+  .split-right{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto;border-radius:12px}
+  .split-right pre.code{font-size:11.5px}
+}
+.split-left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.split-left > *{margin-top:0;margin-bottom:0}
+.split-right{min-width:0}
+@media (max-width:879px){.split-right{margin-top:12px}}
+</style>
+<script id="split-js">
+// Side-by-side layout: picture + controls + explanation on the left, the code on the right.
+// Only moves existing elements (ids and event handlers stay the same).
+(function(){
+  const code = document.getElementById('code'), msg = document.getElementById('msg');
+  const stage = document.querySelector('.stage'), controls = document.querySelector('.controls');
+  if(!code || !msg || !stage || !controls || document.querySelector('.split')) return;
+  const codeCard = code.closest('.card'), msgCard = msg.closest('.card');
+  if(!codeCard || !msgCard || codeCard === msgCard) return;
+  const grid = codeCard.parentElement;
+  const split = document.createElement('div'), left = document.createElement('div'), right = document.createElement('div');
+  split.className = 'split'; left.className = 'split-left'; right.className = 'split-right';
+  stage.parentElement.insertBefore(split, stage);
+  left.append(stage, controls, msgCard); right.append(codeCard); split.append(left, right);
+  if(grid && grid.classList.contains('grid') && !grid.children.length) grid.remove();
+  const wrap = split.closest('.wrap'); if(wrap) wrap.classList.add('split-on');
+  // keep the highlighted line in view inside the code panel (only scrolls the panel, never the page)
+  let pending = false;
+  const follow = () => { pending = false;
+    if(right.scrollHeight <= right.clientHeight + 2) return;
+    const on = code.querySelector('span.on'); if(!on) return;
+    const box = right.getBoundingClientRect(), r = on.getBoundingClientRect();
+    if(r.top < box.top + 40 || r.bottom > box.bottom - 40) right.scrollTop += (r.top - box.top) - box.height / 3;
+  };
+  new MutationObserver(() => { if(!pending){ pending = true; requestAnimationFrame(follow); } }).observe(code, {subtree: true, attributes: true, attributeFilter: ['class'], childList: true});
+})();
+</script>
 </body>
 </html>
