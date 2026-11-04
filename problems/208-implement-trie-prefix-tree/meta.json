@@ -1,0 +1,77 @@
+{
+  "id": 208,
+  "title": "Implement Trie (Prefix Tree)",
+  "keyIdea": "Each node has 26 child links and a flag \"a word ends here\". insert walks the letters, creating missing nodes, then sets the flag. search needs the full path and the flag; startsWith only needs the full path.",
+  "approaches": [
+    {
+      "name": "Hash sets of words and prefixes",
+      "file": "hash-set.cpp",
+      "idea": "Store every word, and every prefix of every word, in two sets.",
+      "time": "insert O(L²), search O(L)",
+      "space": "O(total L²)",
+      "why": "Each insert creates and hashes L prefixes of length up to L."
+    },
+    {
+      "name": "Trie with 26 links per node",
+      "file": "array-of-26.cpp",
+      "best": true,
+      "idea": "links[ch − 'a'] moves down one letter; flag marks word ends.",
+      "time": "O(L) per call",
+      "space": "O(total letters × 26)",
+      "why": "One step per letter; shared prefixes share nodes.",
+      "viz": "viz/implement-trie-prefix-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "After insert(\"apple\"), why is search(\"app\") false?",
+      "options": [
+        "The path a-p-p exists, but no word ends there: its flag is false",
+        "\"app\" is not a prefix",
+        "search only checks the first letter",
+        "Because startsWith was not called"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the only difference between search and startsWith?",
+      "options": [
+        "search returns node->flag at the end; startsWith returns true",
+        "startsWith creates nodes",
+        "search walks backwards",
+        "None"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does ch − 'a' compute?",
+      "options": [
+        "The letter's slot 0…25 in links",
+        "The ASCII code",
+        "The word length",
+        "The depth"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does a trie save work for words with a common prefix?",
+      "options": [
+        "They share the same nodes for that prefix",
+        "It sorts them",
+        "It compresses letters",
+        "It hashes them"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Only lowercase a–z? What should search return for a prefix that was never inserted as a word?",
+    "Draw the trie after inserting apple and app. Which nodes have the flag?",
+    "Store words in a hash set: how would startsWith work, and what does it cost?",
+    "\"Many words, prefix queries\": which data structure?",
+    "What does a node store? What do insert, search and startsWith each do?",
+    "Code it, saying \"walk the letters; insert creates, search checks the flag\".",
+    "Dry-run insert car, insert cat, search ca, startsWith ca.",
+    "Time per call and space? How would you add delete or count words with a prefix?"
+  ]
+}
