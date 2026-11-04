@@ -21,8 +21,10 @@
  "100-same-tree",
  "102-binary-tree-level-order-traversal",
  "104-maximum-depth-of-binary-tree",
+ "105-construct-binary-tree-from-preorder-and-inorder-traversal",
  "110-balanced-binary-tree",
  "121-best-time-to-buy-and-sell-stock",
+ "124-binary-tree-maximum-path-sum",
  "125-valid-palindrome",
  "128-longest-consecutive-sequence",
  "138-copy-list-with-random-pointer",
@@ -45,6 +47,7 @@
  "242-valid-anagram",
  "271-encode-and-decode-strings",
  "287-find-the-duplicate-number",
+ "297-serialize-and-deserialize-binary-tree",
  "347-top-k-frequent-elements",
  "424-longest-repeating-character-replacement",
  "543-diameter-of-binary-tree",
@@ -54,5 +57,6 @@
  "739-daily-temperatures",
  "853-car-fleet",
  "875-koko-eating-bananas",
- "981-time-based-key-value-store"
+ "981-time-based-key-value-store",
+ "1448-count-good-nodes-in-binary-tree"
 ]

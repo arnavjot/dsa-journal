@@ -1,0 +1,69 @@
+{
+  "id": 1448,
+  "title": "Count Good Nodes in Binary Tree",
+  "keyIdea": "Carry the largest value seen on the path from the root (maxValue) down a DFS. A node is good when val >= maxValue; pass max(maxValue, val) to its children and add up the counts.",
+  "approaches": [
+    {
+      "name": "DFS carrying the max so far",
+      "file": "dfs-max-so-far.cpp",
+      "best": true,
+      "idea": "dfs(node, maxValue): count 1 if val >= maxValue, then recurse into both children with max(maxValue, val).",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Each node visited once; the stack is as deep as the tree.",
+      "viz": "viz/count-good-nodes-in-binary-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is one number (maxValue) enough to decide if a node is good?",
+      "options": [
+        "\"Nothing on the path is bigger\" means val >= the biggest value on the path",
+        "Because the tree is a BST",
+        "Because values are unique",
+        "It isn't enough"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why >= and not >?",
+      "options": [
+        "A value equal to the path max is still good (nothing is strictly bigger)",
+        "To skip duplicates",
+        "> would crash",
+        "No difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why start with INT_MIN?",
+      "options": [
+        "The root has nothing above it, so it must always count as good",
+        "To handle NULL",
+        "INT_MIN is the answer for empty trees",
+        "For speed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is passed to the children?",
+      "options": [
+        "max(maxValue, root->val)",
+        "root->val",
+        "maxValue unchanged",
+        "The count"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What is a \"good\" node exactly? Does the root count? Can values be negative?",
+    "Mark the good nodes in [3,1,4,3,null,1,5] by hand.",
+    "Check every node against its whole path: time?",
+    "\"Something about the path from the root\" → what do you pass down the DFS?",
+    "When is a node good, and what do you pass to its children?",
+    "Code it, saying \"carry the max, good if val >= max\".",
+    "Dry-run [3,3,null,4,2]: maxValue at each node?",
+    "Time and space? Could you do it with BFS carrying (node, max) pairs?"
+  ]
+}
