@@ -1,0 +1,77 @@
+{
+  "id": 25,
+  "title": "Reverse Nodes in k-Group",
+  "keyIdea": "Dummy before head; bef = node before the current group. Check k nodes exist (kthNode); if not, stop. Reverse in place by moving the node after start to the group front k − 1 times. Then bef = start (the old first node is now last).",
+  "approaches": [
+    {
+      "name": "Recursion with getLength",
+      "file": "recursive.cpp",
+      "idea": "If at least k nodes remain, reverse the first k, recurse on the rest and attach it to the old head.",
+      "time": "O(n²/k)",
+      "space": "O(n/k)",
+      "why": "getLength walks the whole remaining list in every call; one call per group on the stack. Counting only k nodes ahead would make it O(n)."
+    },
+    {
+      "name": "Iterative with a dummy node",
+      "file": "iterative.cpp",
+      "best": true,
+      "idea": "kthNode walks k steps from bef. Full group → start = bef->next, curr = start->next; k − 1 times: start->next = curr->next, curr->next = bef->next, bef->next = curr, curr = start->next. Then bef = start.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Each node is visited a constant number of times; only a few pointers.",
+      "viz": "viz/reverse-nodes-in-k-group.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why check that k nodes exist before reversing?",
+      "options": [
+        "A last group with fewer than k nodes must stay in its original order",
+        "To find the middle",
+        "To count k",
+        "It is not needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What do the three lines in the inner loop do?",
+      "options": [
+        "Take curr out, point it at the group front, make it the new front",
+        "Swap two values",
+        "Delete curr",
+        "Reverse the whole list"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why bef = start after a group?",
+      "options": [
+        "start was the group's first node and is now its last, so it sits right before the next group",
+        "To restart from head",
+        "start is the new head",
+        "To end the loop"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the commented recursive version slower than O(n)?",
+      "options": [
+        "getLength walks the entire remaining list in every call",
+        "Recursion is always O(n²)",
+        "It reverses twice",
+        "It uses a dummy node"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What happens to a last group shorter than k? What if k = 1?",
+    "Reverse [1,2,3,4,5] with k = 2 and k = 3 by hand.",
+    "Copy values into an array, reverse chunks, write back: time and space?",
+    "\"Reverse fixed-size parts in place\": which pointers do you need to keep?",
+    "How do you check a full group exists? What are bef, start and curr?",
+    "Code it, saying \"check k, move curr to the front k − 1 times, bef = start\".",
+    "Dry-run [1,2,3,4,5], k = 3: the links after each move?",
+    "Time and space? Why does a dummy node help here?"
+  ]
+}
