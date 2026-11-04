@@ -1,0 +1,77 @@
+{
+  "id": 90,
+  "title": "Subsets II",
+  "keyIdea": "Sort, then backtrack: each call saves current first, then for i from index: skip a value equal to the previous one at the same level (i > index && nums[i] == nums[i − 1]); push, recurse with i + 1, pop.",
+  "approaches": [
+    {
+      "name": "All subsets, then a set",
+      "file": "all-subsets-then-set.cpp",
+      "idea": "Sort, generate all 2ⁿ subsets with a bitmask, keep them in a set.",
+      "time": "O(n·2ⁿ·log)",
+      "space": "O(n·2ⁿ)",
+      "why": "Builds every repeated subset and pays for the set."
+    },
+    {
+      "name": "Sorted backtracking, skip duplicates",
+      "file": "sorted-skip-duplicates.cpp",
+      "best": true,
+      "idea": "Save current; for i from index: skip equal-at-this-level; push, dfs(i + 1), pop.",
+      "time": "O(n·2ⁿ)",
+      "space": "O(n) recursion",
+      "why": "Each distinct subset is generated exactly once.",
+      "viz": "viz/subsets-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why save current at the start of each call?",
+      "options": [
+        "Every call's current subset is a new answer, including the empty one",
+        "To skip duplicates",
+        "To end recursion",
+        "It must be at the end"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the skip condition i > index and not i > 0?",
+      "options": [
+        "The first copy at each level is allowed; only further copies at the same level repeat subsets",
+        "i > 0 is the same",
+        "To allow reuse",
+        "To sort"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why sort first?",
+      "options": [
+        "So equal values are adjacent and the skip check works",
+        "To return sorted subsets",
+        "For speed only",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many subsets does [1,2,2] have?",
+      "options": [
+        "6",
+        "8",
+        "4",
+        "7"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can nums have duplicates? May the answer repeat a subset?",
+    "List the subsets of [1,2,2] by hand. Which ones would plain Subsets repeat?",
+    "Generate all and dedupe with a set: time and space?",
+    "\"Subsets without repeats\" → what do you add to Subsets (LC 78)?",
+    "When exactly do you skip, and why does i > index matter?",
+    "Code it, saying \"sort, save, skip equal at the same level\".",
+    "Dry-run [2,2,2].",
+    "Time and space? How is this like Combination Sum II (LC 40)?"
+  ]
+}
