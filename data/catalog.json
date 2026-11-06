@@ -524,7 +524,7 @@
     "id": 355,
     "title": "Design Twitter",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 295,
@@ -542,7 +542,7 @@
     "id": 200,
     "title": "Number of Islands",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 133,
