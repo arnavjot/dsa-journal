@@ -83,5 +83,6 @@
  "surrounded-regions": {"box":0,"due":"2026-11-28","log":[],"updated":"1"},
  "rotting-oranges": {"box":0,"due":"2026-11-29","log":[],"updated":"1"},
  "course-schedule": {"box":0,"due":"2026-11-30","log":[],"updated":"1"},
- "course-schedule-ii": {"box":0,"due":"2026-12-01","log":[],"updated":"1"}
+ "course-schedule-ii": {"box":0,"due":"2026-12-01","log":[],"updated":"1"},
+ "word-ladder": {"box":0,"due":"2026-12-02","log":[],"updated":"1"}
 }

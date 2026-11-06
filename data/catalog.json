@@ -614,7 +614,7 @@
     "id": 127,
     "title": "Word Ladder",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
