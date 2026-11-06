@@ -60,6 +60,7 @@
  "242-valid-anagram",
  "271-encode-and-decode-strings",
  "287-find-the-duplicate-number",
+ "295-find-median-from-data-stream",
  "297-serialize-and-deserialize-binary-tree",
  "347-top-k-frequent-elements",
  "424-longest-repeating-character-replacement",

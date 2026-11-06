@@ -530,7 +530,7 @@
     "id": 295,
     "title": "Find Median from Data Stream",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
