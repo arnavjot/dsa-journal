@@ -506,13 +506,13 @@
     "id": 973,
     "title": "K Closest Points to Origin",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 215,
     "title": "Kth Largest Element in an Array",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 621,

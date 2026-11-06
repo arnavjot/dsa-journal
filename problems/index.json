@@ -51,6 +51,7 @@
  "208-implement-trie-prefix-tree",
  "211-design-add-and-search-words-data-structure",
  "212-word-search-ii",
+ "215-kth-largest-element-in-an-array",
  "217-contains-duplicate",
  "226-invert-binary-tree",
  "230-kth-smallest-element-in-a-bst",
@@ -72,6 +73,7 @@
  "739-daily-temperatures",
  "853-car-fleet",
  "875-koko-eating-bananas",
+ "973-k-closest-points-to-origin",
  "981-time-based-key-value-store",
  "1046-last-stone-weight",
  "1448-count-good-nodes-in-binary-tree"
