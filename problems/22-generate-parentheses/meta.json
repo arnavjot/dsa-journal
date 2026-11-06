@@ -1,0 +1,77 @@
+{
+  "id": 22,
+  "title": "Generate Parentheses",
+  "keyIdea": "Backtracking that only makes valid moves: add '(' while open < n, add ')' only while close < open. Every string that reaches length 2n is valid, so nothing needs checking at the end.",
+  "approaches": [
+    {
+      "name": "Generate every string, then check",
+      "file": "generate-all-then-check.cpp",
+      "idea": "Build all 2^(2n) strings of ( and ), keep the balanced ones.",
+      "time": "O(2^(2n) · n)",
+      "space": "O(n) recursion",
+      "why": "Most of the strings are invalid and get thrown away."
+    },
+    {
+      "name": "Backtracking with open / close counts",
+      "file": "backtracking.cpp",
+      "best": true,
+      "idea": "backtrack(open, close, curr): length 2n → save; open < n → add (; close < open → add ).",
+      "time": "O(4ⁿ / √n)",
+      "space": "O(n) recursion",
+      "why": "Only valid prefixes are ever built: one path per answer (the Catalan number).",
+      "viz": "viz/generate-parentheses.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "When may you add ')'?",
+      "options": [
+        "Only when close < open, so it closes an earlier '('",
+        "Any time",
+        "Only at the end",
+        "When open == n"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is no validity check needed at the end?",
+      "options": [
+        "Every move keeps the prefix valid, so a full-length string is always balanced",
+        "LeetCode checks it",
+        "Because n is small",
+        "It is needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many valid strings are there for n = 3?",
+      "options": [
+        "5",
+        "6",
+        "8",
+        "3"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why doesn't this code need to undo (pop) after the recursive call?",
+      "options": [
+        "curr + '(' makes a new string for the call; the caller's curr never changes",
+        "Strings are immutable in C++",
+        "Because of the return",
+        "It does pop"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What makes a parentheses string valid? What is the length of every answer?",
+    "List all valid strings for n = 3 by hand.",
+    "Generate all strings of ( and ) and check each: how many is that?",
+    "\"Build all valid strings\" → which technique, and what keeps a prefix valid?",
+    "What are the two moves and their conditions?",
+    "Code it, saying \"open while open < n, close while close < open\".",
+    "Dry-run n = 2: the order the strings are found.",
+    "Time and space? Why is the count a Catalan number?"
+  ]
+}

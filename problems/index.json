@@ -8,6 +8,7 @@
  "19-remove-nth-node-from-end-of-list",
  "20-valid-parentheses",
  "21-merge-two-sorted-lists",
+ "22-generate-parentheses",
  "23-merge-k-sorted-lists",
  "25-reverse-nodes-in-k-group",
  "33-search-in-rotated-sorted-array",
