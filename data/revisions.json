@@ -69,5 +69,9 @@
  "kth-smallest-element-in-a-bst": {"box":0,"due":"2026-11-22","log":[],"updated":"1"},
  "construct-binary-tree-from-preorder-and-inorder-traversal": {"box":0,"due":"2026-11-23","log":[],"updated":"1"},
  "binary-tree-maximum-path-sum": {"box":0,"due":"2026-11-24","log":[],"updated":"1"},
- "serialize-and-deserialize-binary-tree": {"box":0,"due":"2026-11-25","log":[],"updated":"1"}
+ "serialize-and-deserialize-binary-tree": {"box":0,"due":"2026-11-25","log":[],"updated":"1"},
+ "letter-combinations-of-a-phone-number": {"box":0,"due":"2026-11-18","log":[],"updated":"1"},
+ "n-queens": {"box":0,"due":"2026-11-19","log":[],"updated":"1"},
+ "kth-largest-element-in-a-stream": {"box":0,"due":"2026-11-20","log":[],"updated":"1"},
+ "last-stone-weight": {"box":0,"due":"2026-11-21","log":[],"updated":"1"}
 }

@@ -476,13 +476,13 @@
     "id": 17,
     "title": "Letter Combinations of a Phone Number",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 51,
     "title": "N-Queens",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
@@ -494,13 +494,13 @@
     "id": 703,
     "title": "Kth Largest Element in a Stream",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 1046,
     "title": "Last Stone Weight",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 973,
