@@ -76,5 +76,6 @@
  "last-stone-weight": {"box":0,"due":"2026-11-21","log":[],"updated":"1"},
  "find-median-from-data-stream": {"box":0,"due":"2026-11-22","log":[],"updated":"1"},
  "kth-largest-element-in-an-array": {"box":0,"due":"2026-11-23","log":[],"updated":"1"},
- "k-closest-points-to-origin": {"box":0,"due":"2026-11-24","log":[],"updated":"1"}
+ "k-closest-points-to-origin": {"box":0,"due":"2026-11-24","log":[],"updated":"1"},
+ "task-scheduler": {"box":0,"due":"2026-11-25","log":[],"updated":"1"}
 }

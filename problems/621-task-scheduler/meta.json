@@ -1,0 +1,78 @@
+{
+  "id": 621,
+  "title": "Task Scheduler",
+  "keyIdea": "The most frequent task sets the shape: maxFreq rows of n + 1 slots, the last row only holding the tasks tied for the top count → (maxFreq − 1)·(n + 1) + countMax. Other tasks fill the idle gaps; answer = max(number of tasks, that frame). Or simulate with a max-heap of counts plus a cooldown queue.",
+  "approaches": [
+    {
+      "name": "Your simulation: max-heap + cooldown queue",
+      "file": "heap-cooldown-queue.cpp",
+      "idea": "Each tick: bring back a task whose cooldown ended, run the one with the most copies left, send it to the queue until time + n + 1.",
+      "time": "O(answer · log 26), up to O(m·n)",
+      "space": "O(26)",
+      "why": "One loop step per time unit, idle ticks included.",
+      "viz": "viz/task-scheduler-heap.html"
+    },
+    {
+      "name": "Count the frame (formula)",
+      "file": "math-formula.cpp",
+      "best": true,
+      "idea": "maxFreq, countMax → frame = (maxFreq − 1)(n + 1) + countMax; return max(tasks.size(), frame).",
+      "time": "O(m)",
+      "space": "O(26)",
+      "why": "One pass to count; the rest is arithmetic.",
+      "viz": "viz/task-scheduler.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does (maxFreq − 1)·(n + 1) count?",
+      "options": [
+        "The full rows: each copy of the top task except the last, plus its n cooldown slots",
+        "All tasks",
+        "Idle slots only",
+        "The last row"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why + countMax?",
+      "options": [
+        "The last row holds one copy of every task tied for the highest count",
+        "To add idle slots",
+        "For n",
+        "It counts the queue"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why return max(tasks.size(), frame)?",
+      "options": [
+        "If other tasks overflow the gaps, nobody idles and the time is just the number of tasks",
+        "To avoid negatives",
+        "Because of ties",
+        "It is always frame"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the simulation, why run the task with the most copies left?",
+      "options": [
+        "It has the most cooldowns ahead; starting it early lets others fill its gaps",
+        "Alphabetical order",
+        "It is the shortest",
+        "To empty the queue"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can the CPU be idle? Does task order matter? What does n mean exactly?",
+    "Schedule AAABBB with n = 2 by hand.",
+    "Try every order: why is that hopeless?",
+    "\"Same task needs n gaps\" → what decides the length: which task?",
+    "Write the frame formula. When are there no idles?",
+    "Code the formula, saying \"full rows plus the last row, at least the task count\".",
+    "Check AAAAAABCDEFG, n = 2 with the formula.",
+    "Time and space? How does the heap + queue simulation get the same answer?"
+  ]
+}
