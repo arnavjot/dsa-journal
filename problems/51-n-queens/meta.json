@@ -1,0 +1,77 @@
+{
+  "id": 51,
+  "title": "N-Queens",
+  "keyIdea": "Place one queen per column, left to right. In a column try each row; it is safe if its row, its col − row diagonal and its row + col diagonal are all free (three maps, O(1) checks). Place, mark, recurse on the next column, then unmark (backtrack).",
+  "approaches": [
+    {
+      "name": "Scan the board in isSafe",
+      "file": "scan-board.cpp",
+      "idea": "One queen per row; isSafe walks up the column and both upward diagonals.",
+      "time": "O(n! · n)",
+      "space": "O(n²) board",
+      "why": "Each safety check scans up to O(n) squares."
+    },
+    {
+      "name": "Row / diagonal maps (O(1) checks)",
+      "file": "hash-checks.cpp",
+      "best": true,
+      "idea": "rowCheck[row], upperLeft[col − row], bottomLeft[row + col] say what is taken; mark on place, unmark on backtrack.",
+      "time": "O(n!)",
+      "space": "O(n²) board + O(n) maps",
+      "why": "Each check is three lookups; the search tries at most n · (n − 1) · … placements.",
+      "viz": "viz/n-queens.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is col − row the same along a ↘ diagonal?",
+      "options": [
+        "Both row and col go up by 1 each step, so their difference stays constant",
+        "Because the board is square",
+        "It changes",
+        "Only for n = 4"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is row + col the same along a ↗ diagonal?",
+      "options": [
+        "row goes down by 1 as col goes up by 1, so the sum stays constant",
+        "It isn't",
+        "Because of symmetry",
+        "Only on the main diagonal"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why doesn't isSafe check the column?",
+      "options": [
+        "Each call fills exactly one column, so it never has two queens",
+        "Columns can share queens",
+        "It is checked elsewhere",
+        "By luck"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many solutions are there for n = 4?",
+      "options": [
+        "2",
+        "0",
+        "4",
+        "1"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What attacks what? How is a solution returned? Which n have no solution?",
+    "Solve n = 4 by hand. Where did you have to back up?",
+    "Trying every placement of n queens on n² squares: how many is that?",
+    "\"Place items with constraints, undo when stuck\" → which technique?",
+    "What do you check for safety, and how do the diagonal keys col − row and row + col work?",
+    "Code it, saying \"one per column, check 3 maps, place, recurse, unplace\".",
+    "Dry-run n = 4, column 0 = row 0: where does it get stuck?",
+    "Time and space? How would you just count solutions (LC 52)?"
+  ]
+}
