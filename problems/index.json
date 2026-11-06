@@ -36,6 +36,7 @@
  "124-binary-tree-maximum-path-sum",
  "125-valid-palindrome",
  "128-longest-consecutive-sequence",
+ "130-surrounded-regions",
  "131-palindrome-partitioning",
  "138-copy-list-with-random-pointer",
  "141-linked-list-cycle",
@@ -49,7 +50,9 @@
  "199-binary-tree-right-side-view",
  "200-number-of-islands",
  "206-reverse-linked-list",
+ "207-course-schedule",
  "208-implement-trie-prefix-tree",
+ "210-course-schedule-ii",
  "211-design-add-and-search-words-data-structure",
  "212-word-search-ii",
  "215-kth-largest-element-in-an-array",
@@ -78,6 +81,7 @@
  "875-koko-eating-bananas",
  "973-k-closest-points-to-origin",
  "981-time-based-key-value-store",
+ "994-rotting-oranges",
  "1046-last-stone-weight",
  "1448-count-good-nodes-in-binary-tree"
 ]

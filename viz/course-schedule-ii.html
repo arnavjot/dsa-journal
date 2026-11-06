@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Course Schedule II Stepper</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — presets, stacked rows of cells / bars / panels, controls, then code + numbers */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --cur:#d9661f; --cur-soft:#fcebdc; --st:#7446d1; --st-soft:#efe9fb;
+  --hit:#cf2f55; --hit-soft:#fbe4ea; --ok:#0f8a5f; --ok-soft:#e2f5ec;
+  --code-bg:#f0f2f6; --hl:#fff1c2;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --st:#a98bff; --st-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --st:#a98bff; --st-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:76ch}
+.sub code,.why code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--st);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:600px;height:auto;margin:0 auto}
+
+.cell rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.cell .v{font-family:var(--f-mono);font-weight:700;font-size:20px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cell .i{font-family:var(--f-mono);font-size:11px;fill:var(--muted);text-anchor:middle}
+.cell.done rect{fill:var(--code-bg)}
+.cell.later .v{fill:var(--muted)}
+.cell.matched rect{fill:var(--ok-soft);stroke:var(--ok)}
+.cell.cur rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.cell.bad rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.cell.partner rect{stroke:var(--st);stroke-width:3}
+.arc{fill:none;stroke:var(--ok);stroke-width:2;opacity:.5;transition:opacity .3s}
+.arc.now{opacity:1;stroke-width:3}
+.chip{transition:opacity .3s}
+.chip rect{fill:var(--st-soft);stroke:var(--st);stroke-width:1.5}
+.chip text{font-family:var(--f-mono);font-size:18px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.chip.top rect{stroke-width:3}
+.chip.bad rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.chip.fresh rect{fill:var(--st);}
+.chip.fresh text{fill:#fff}
+.chip.ghost rect{fill:none;stroke:var(--ok);stroke-dasharray:4 3}
+.chip.ghost text{fill:var(--ok)}
+.stackbox{fill:none;stroke:var(--line);stroke-width:1.5}
+.ann{font-family:var(--f-body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.ann.left{text-anchor:start}
+.empty{font-family:var(--f-body);font-size:13px;fill:var(--muted);font-style:italic;transition:opacity .3s}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.tok.i rect{fill:var(--cur)} .tok.top rect{fill:var(--st)}
+.verdict{transition:opacity .3s}
+.verdict rect{stroke-width:2}
+.verdict text{font-family:var(--f-mono);font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.verdict.t rect{fill:var(--ok-soft);stroke:var(--ok)} .verdict.t text{fill:var(--ok)}
+.verdict.f rect{fill:var(--hit-soft);stroke:var(--hit)} .verdict.f text{fill:var(--hit)}
+@media (prefers-reduced-motion:reduce){.tok,.arc,.chip,.verdict,.cell rect{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre;min-height:1.7em;width:max-content;min-width:100%;box-sizing:border-box}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--st)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.math .dim{color:var(--muted);font-weight:400}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--st);padding:2px 0 2px 12px;max-width:80ch;margin:0}
+.why b{color:var(--ink)}
+.why + .why{margin-top:-8px}
+.tk rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.tk text{font-family:var(--f-mono);font-size:16px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.tk .i{font-size:11px;font-weight:400;fill:var(--muted)}
+.tk.op rect{fill:var(--st-soft)}
+.tk.done rect{fill:var(--code-bg)} .tk.done text:not(.i){fill:var(--muted)}
+.tk.cur rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.slot rect{fill:var(--st-soft);stroke:var(--st);stroke-width:1.5}
+.slot text{font-family:var(--f-mono);font-size:16px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.slot.fresh rect{fill:var(--st)} .slot.fresh text{fill:#fff}
+.slot.res rect{fill:var(--ok-soft);stroke:var(--ok);stroke-width:3}
+.calc{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink)}
+.calc.b{fill:var(--cur)} .calc.a{fill:var(--st)} .calc.r{fill:var(--ok)}
+.calc.dim{font-family:var(--f-body);font-weight:400;font-size:12px;fill:var(--muted)}
+.tn{transition:transform .5s cubic-bezier(.3,.7,.3,1)}
+.tn circle{fill:var(--surface);stroke:var(--edge);stroke-width:2;transition:fill .3s, stroke .3s}
+.tn text{font-family:var(--f-mono);font-size:15px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.tn.cur circle{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.tn.done circle{fill:var(--ok-soft);stroke:var(--ok)}
+.tn.open circle{stroke:var(--st);stroke-width:2.5}
+.tn.kid circle{fill:var(--st-soft);stroke:var(--st);stroke-width:2.5}
+.te{stroke:var(--edge);stroke-width:2;transition:all .5s cubic-bezier(.3,.7,.3,1)}
+.lr{font-family:var(--f-mono);font-size:10px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.lr.k{fill:var(--st)}
+.cs rect{fill:var(--code-bg);stroke:var(--line)}
+.cs text{font-family:var(--f-mono);font-size:12px;font-weight:700;fill:var(--ink);dominant-baseline:central}
+.cs.top rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:2}
+.cshead{font-family:var(--f-body);font-size:12px;font-weight:600;fill:var(--muted)}
+
+#g{padding:14px 16px;overflow-x:auto}
+.vblock{margin:4px 0 12px}
+.vrow{display:flex;align-items:flex-start;gap:10px}
+.vlab{flex:0 0 96px;font-family:var(--f-body);font-size:12px;font-weight:600;color:var(--muted);padding-top:22px;line-height:1.25}
+.vlab.nolead{padding-top:6px}
+.vcells{display:flex;gap:4px;flex-wrap:nowrap}
+.vcol{display:flex;flex-direction:column;align-items:center;gap:3px}
+.vidx{font-family:var(--f-mono);font-size:10px;color:var(--muted);height:13px}
+.vc{min-width:34px;padding:6px 7px;border:1.5px solid var(--edge);border-radius:8px;background:var(--surface);font-family:var(--f-mono);font-weight:700;font-size:15px;text-align:center;color:var(--ink);white-space:pre;box-sizing:border-box}
+.vc.sm{min-width:24px;padding:5px 4px;font-size:13px}
+.vc.cur{background:var(--cur-soft);border-color:var(--cur);border-width:2.5px}
+.vc.ok{background:var(--ok-soft);border-color:var(--ok)}
+.vc.bad{background:var(--hit-soft);border-color:var(--hit);border-width:2.5px}
+.vc.sel{background:var(--st-soft);border-color:var(--st)}
+.vc.dim{opacity:.38}
+.vc.ghost{border-style:dashed;color:var(--muted)}
+.vc.b1{background:var(--code-bg)}
+.vc.len{color:var(--st)} .vc.hash{color:var(--muted)} .vc.word{color:var(--ok)}
+.vtags{display:flex;flex-direction:column;gap:2px;align-items:center;min-height:0}
+.vt{font-family:var(--f-mono);font-size:10.5px;font-weight:700;color:#fff;border-radius:5px;padding:1px 6px;background:var(--cur)}
+.vt.b{background:var(--st)} .vt.c{background:var(--ok)} .vt.d{background:var(--hit)}
+.vpanel{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-left:106px;max-width:calc(100% - 106px)}
+.vpanel .vlab2{font-family:var(--f-body);font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px}
+.vchips{display:flex;flex-wrap:wrap;gap:6px}
+.vchip{font-family:var(--f-mono);font-size:13px;font-weight:600;border:1.5px solid var(--line);border-radius:8px;padding:3px 8px;background:var(--code-bg);color:var(--ink);white-space:pre}
+.vchip.cur{background:var(--cur-soft);border-color:var(--cur)} .vchip.ok{background:var(--ok-soft);border-color:var(--ok)}
+.vchip.bad{background:var(--hit-soft);border-color:var(--hit);text-decoration:line-through} .vchip.sel{background:var(--st-soft);border-color:var(--st)}
+.vempty{font-family:var(--f-body);font-size:13px;color:var(--muted);font-style:italic}
+.vbars svg{display:block}
+.vbar{fill:var(--line)} .vbar.cur{fill:var(--cur-soft);stroke:var(--cur);stroke-width:2.5} .vbar.sel{fill:var(--st-soft);stroke:var(--st);stroke-width:2}
+.vbar.ok{fill:var(--ok-soft);stroke:var(--ok);stroke-width:2} .vbar.dim{opacity:.4}
+.vwater{fill:#4f8fe8;opacity:.55}
+.vover{fill:#4f8fe8;opacity:.22;stroke:#4f8fe8;stroke-width:2;stroke-dasharray:6 4}
+.vbest{fill:none;stroke:#c9a227;stroke-width:3}
+.vbv{font-family:var(--f-mono);font-size:12px;font-weight:700;fill:var(--ink);text-anchor:middle}
+.vbi{font-family:var(--f-mono);font-size:10px;fill:var(--muted);text-anchor:middle}
+.vbt rect{fill:var(--cur)} .vbt.b rect{fill:var(--st)} .vbt text{font-family:var(--f-mono);font-size:10.5px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.vline{stroke-width:2;stroke-dasharray:5 4} .vline.a{stroke:var(--cur)} .vline.b{stroke:var(--st)}
+.vlinelab{font-family:var(--f-mono);font-size:11px;font-weight:700} .vlinelab.a{fill:var(--cur)} .vlinelab.b{fill:var(--st)}
+.vnote{margin-left:106px;font-family:var(--f-mono);font-size:13px;color:var(--ink)}
+@media (max-width:600px){.vlab{flex-basis:70px}.vpanel,.vnote{margin-left:80px;max-width:calc(100% - 80px)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Course Schedule II, step by step (Kahn's BFS)</h1>
+    <p class="sub">Kahn's algorithm. <code>indegree[c]</code> = how many courses c still waits for. Every course with indegree 0 can be taken now: queue it. Taking a course lowers the indegree of every course it unlocks; any that reach 0 join the queue. If all n courses get taken, there is an order; if some never reach 0, they wait on each other in a cycle. The order courses leave the queue is the answer.</p>
+  </header>
+  <div class="legend"><span><i class="dot" style="background:var(--cur)"></i>course being processed</span><span><i class="dot" style="background:var(--st)"></i>queued / on the path</span><span><i class="dot" style="background:var(--ok)"></i>taken / finished</span><span><i class="dot" style="background:var(--hit)"></i>cycle</span></div>
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+  <div class="stage" id="g" role="img" aria-label="Courses with their indegrees or DFS state, the edges and the order found"></div>
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed"><option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option></select>
+    <span class="phase" id="phase">Setup</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">The code</div><pre class="code" id="code"></pre></div>
+    <div class="card"><div class="label">What just happened</div><div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div><dl class="math" id="math"></dl></div>
+  </div>
+  <p class="why"><b>Why a cycle leaves courses behind:</b> courses on a cycle each wait for another one on it, so none of them ever reaches indegree 0.</p><p class="why"><b>Edge direction:</b> [a, b] means b before a, so the edge goes b → a and a's indegree counts it.</p><p class="why"><b>Cost:</b> O(V + E): each course is queued once and each edge is looked at once.</p>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const PRESETS = [{"key": "ex1", "label": "Example 1: 2 courses, 1 needs 0", "input": [2, [[1, 0]]]}, {"key": "four", "label": "4 courses: 0 → 1, 2 → 3", "input": [4, [[1, 0], [2, 0], [3, 1], [3, 2]]]}, {"key": "cycle", "label": "Cycle 1 → 2 → 3 → 1", "input": [4, [[1, 0], [2, 1], [3, 2], [1, 3]]]}, {"key": "ex2", "label": "Example 2: 0 and 1 need each other", "input": [2, [[1, 0], [0, 1]]]}, {"key": "free", "label": "No prerequisites", "input": [3, []]}];
+const CODE = ["class Solution {", "  public:", "    vector<int> findOrder(int V, vector<vector<int>>& prerequisites) {", "        vector<int> adj[V];", "        for(auto& pre : prerequisites) {", "            adj[pre[1]].push_back(pre[0]);", "        }", "", "        vector<int> indegree(V, 0);", "        for(int i = 0; i < V; i++) {", "            for(auto nbr : adj[i]) {", "                indegree[nbr]++;", "            }", "        }", "", "        queue<int> q;", "        for(int i = 0; i < V; i++) {", "            if(indegree[i] == 0) {", "                q.push(i);", "            }", "        }", "", "        vector<int> topo;", "        while(!q.empty()) {", "            int front = q.front();", "            q.pop();", "            topo.push_back(front);", "", "            for(auto nbr : adj[front]) {", "                indegree[nbr]--;", "                if(indegree[nbr] == 0) {", "                    q.push(nbr);", "                }", "            }", "        }", "", "        if(topo.size() != V) return {}; // cycle detection if all nodes are not in topological sort", "        return topo;", "    }", "};"];
+const INPUT_HINT = "your own: n ; pairs a b \u2014 4 ; 1 0, 2 0, 3 1, 3 2";
+// line number by text: L('freq[nums[i]]++'), or the first match after line `after`
+const L = (s, after = -1) => { const i = CODE.findIndex((l, k) => k > after && l.includes(s)); if(i < 0) throw new Error('no code line: ' + s); return i; };
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ints = s => (String(s).match(/-?\d+/g) || []).map(Number);
+const listStr = a => '[' + a.join(', ') + ']';
+// blocks
+const row = (label, vals, cls = () => '', tags = {}, opt = {}) => ({kind:'row', label, vals: vals.slice(), cls: vals.map((v, i) => cls(i, v) || ''), tags: JSON.parse(JSON.stringify(tags)), opt});   // snapshot: later pushes must not change earlier frames
+const panel = (title, items, empty = 'empty') => ({kind:'panel', title, items, empty});
+const note = t => ({kind:'note', t});
+
+function drawRow(b){
+  const cells = b.vals.map((v, i) => {
+    const t = (b.tags[i] || []).map(x => `<span class="vt ${x.c || ''}">${esc(x.t)}</span>`).join('');
+    return `<div class="vcol"${b.opt.boxGap && i % 3 === 2 && i < b.vals.length - 1 ? ' style="margin-right:8px"' : ''}>${b.opt.idx === false ? '' : `<div class="vidx">${b.opt.idxLabels ? esc(b.opt.idxLabels[i]) : i}</div>`}<div class="vc ${b.opt.sm ? 'sm ' : ''}${b.cls[i]}">${esc(v)}</div><div class="vtags">${t}</div></div>`;
+  }).join('');
+  return `<div class="vblock vrow"${b.opt.mb !== undefined ? ` style="margin:0 0 ${b.opt.mb}px"` : ''}><div class="vlab${b.opt.idx === false ? ' nolead' : ''}">${b.label}</div><div class="vcells">${cells || '<span class="vempty" style="padding-top:20px">empty</span>'}</div></div>`;
+}
+function drawPanel(b){
+  return `<div class="vblock vpanel"><div class="vlab2">${b.title}</div><div class="vchips">${b.items.length ? b.items.map(x => `<span class="vchip ${x.c || ''}">${esc(x.t)}</span>`).join('') : `<span class="vempty">${b.empty}</span>`}</div></div>`;
+}
+// bars: {kind:'bars', h:[...], cls:[...], water:[...], over:{l,r,h}, best:{l,r,h}, tags:{i:[{t,c}]}, lines:[{y,c,t}]}
+function drawBars(b){
+  const n = b.h.length, BW = 44, X0 = 106, maxH = Math.max(1, ...b.h, ...(b.water || []).map((w, i) => w + b.h[i]), b.over ? b.over.h : 0);
+  const CH = 150, k = CH / maxH, TOP = 26, base = TOP + CH, W = X0 + n * BW + 110, H = base + 20 + 48;   // room on the right for the rightMax label
+  const x = i => X0 + i * BW, y = v => base - v * k;
+  let s = `<text class="vbi" x="40" y="${base + 14}" style="text-anchor:start">i</text>`;
+  if(b.best) s += `<rect class="vbest" x="${x(b.best.l) + BW / 2}" y="${y(b.best.h)}" width="${(b.best.r - b.best.l) * BW}" height="${base - y(b.best.h)}"/>`;
+  if(b.over && b.over.r >= b.over.l) s += `<rect class="vover" x="${x(b.over.l) + BW / 2}" y="${y(b.over.h)}" width="${Math.max(2, (b.over.r - b.over.l) * BW)}" height="${base - y(b.over.h)}"/>`;
+  b.h.forEach((v, i) => {
+    s += `<rect class="vbar ${b.cls[i] || ''}" x="${x(i) + 5}" y="${y(v)}" width="${BW - 10}" height="${Math.max(0, base - y(v))}" rx="3"/>`;
+    const w = (b.water || [])[i] || 0;
+    if(w > 0) s += `<rect class="vwater" x="${x(i) + 5}" y="${y(v + w)}" width="${BW - 10}" height="${w * k}"/>`;
+    s += `<text class="vbv" x="${x(i) + BW / 2}" y="${y(v + w) - 6}">${b.lab ? b.lab[i] : v}</text><text class="vbi" x="${x(i) + BW / 2}" y="${base + 14}">${i}</text>`;
+    (b.tags[i] || []).forEach((t, r) => { const w2 = t.t.length * 7 + 12; s += `<g class="vbt ${t.c || ''}" transform="translate(${x(i) + BW / 2},${base + 32 + r * 22})"><rect x="${-w2 / 2}" y="-9" width="${w2}" height="18" rx="5"/><text>${esc(t.t)}</text></g>`; });
+  });
+  (b.lines || []).forEach(l => { s += `<line class="vline ${l.c}" x1="${x(l.from)}" x2="${x(l.to) + BW}" y1="${y(l.y)}" y2="${y(l.y)}"/><text class="vlinelab ${l.c}" x="${l.c === 'a' ? x(l.from) - 4 : x(l.to) + BW + 4}" y="${y(l.y) - 4}" style="text-anchor:${l.c === 'a' ? 'end' : 'start'}">${esc(l.t)}</text>`; });
+  return `<div class="vblock vbars"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg></div>`;
+}
+const DRAW = {row: drawRow, panel: drawPanel, bars: drawBars, note: b => `<div class="vblock vnote">${b.t}</div>`};
+
+
+const stackP = st => panel('call stack (top = running)', st.slice().reverse().map((s, j) => ({t: s, c: j === 0 ? 'cur' : ''})), 'empty');
+const resP = (res, fresh) => panel(`results (${res.length})`, res.map((r, j) => ({t: '[' + r.join(',') + ']', c: fresh && j === res.length - 1 ? 'ok' : ''})), 'none yet');
+const tg = list => { const t = {}; list.forEach(([k, l, c]) => { if(k !== null && k >= 0) (t[k] = t[k] || []).push({t: l, c}); }); return t; };
+const MODE = 'order';
+function readCustom(t){ const p = t.split(';'); if(p.length !== 2) throw 'Write n ; pairs a b (a needs b first), like 4 ; 1 0, 2 0, 3 1, 3 2';
+  const n = ints(p[0])[0], v = ints(p[1]); if(!(n >= 1 && n <= 7)) throw 'n from 1 to 7.'; if(v.length % 2 || v.length > 20) throw 'Pairs come in twos, up to 10 pairs.';
+  const pr = []; for(let i = 0; i < v.length; i += 2){ if(v[i] < 0 || v[i] >= n || v[i + 1] < 0 || v[i + 1] >= n || v[i] === v[i + 1]) throw 'Each pair: two different courses from 0 to n − 1.'; pr.push([v[i], v[i + 1]]); } return [n, pr]; }
+const adjNote = (n, adj) => note('edges (b → a means take b before a): ' + [...Array(n)].map((_, i) => adj[i].length ? `${i}→${adj[i].join(',')}` : null).filter(Boolean).join('   ') || 'no edges');
+
+function prepare([n, pr]){
+  const F = [], adj = [...Array(n)].map(() => []); pr.forEach(([a, b]) => adj[b].push(a));
+  const indeg = Array(n).fill(0); adj.forEach(l => l.forEach(v => indeg[v]++));
+  const q = [], topo = [], ORD = MODE === 'order';
+  const B = (cur, dec) => [row('course', [...Array(n)].map((_, i) => String(i)), i => i === cur ? 'cur' : topo.includes(i) ? 'ok' : q.includes(i) ? 'sel' : '', {}, {idx: false}),
+    row('indegree', indeg.map(String), i => dec && dec.includes(i) ? 'cur' : topo.includes(i) ? 'dim' : indeg[i] === 0 ? 'ok' : '', {}, {idx: false}), adjNote(n, adj),
+    panel('queue (indegree 0, ready to take)', q.map(v => ({t: String(v), c: ''})), 'empty'), row('topo order', topo.length ? topo.map(String) : ['∅'], () => topo.length ? 'ok' : 'ghost', {}, {idx: false})];
+  F.push({blocks: B(-1), lines: [L('adj[pre[1]].push_back(pre[0])'), L('indegree[nbr]++')], ph: 'Build', msg: '<span class="eq">indegree[c] = number of courses c still waits for</span>', math: [['taken', '0']]});
+  for(let i = 0; i < n; i++) if(indeg[i] === 0) q.push(i);
+  F.push({blocks: B(-1), lines: [L('if(indegree[i] == 0)'), L('q.push(i)')], ph: 'Start', msg: `<span class="eq">queue the courses with no prerequisites: ${q.length ? q.join(', ') : 'none!'}</span>`, math: [['taken', '0']]});
+  while(q.length){
+    const f = q.shift(); topo.push(f); const dec = [], ready = [];
+    adj[f].forEach(v => { indeg[v]--; dec.push(v); if(indeg[v] === 0){ q.push(v); ready.push(v); } });
+    F.push({blocks: B(f, dec), lines: [L('int front = q.front()'), L('q.pop()'), L('topo.push_back(front)')].concat(dec.length ? [L('indegree[nbr]--')] : []).concat(ready.length ? [L('if(indegree[nbr] == 0)'), L('q.push(nbr)')] : []), ph: `take ${f}`,
+      msg: `<span class="eq">take course ${f}${dec.length ? `; it unlocks ${dec.join(', ')}: indegree − 1` : ''}${ready.length ? `\nnow ready: ${ready.join(', ')}` : ''}</span>`, math: [['taken', `${topo.length} of ${n}`]]});
+  }
+  const ok = topo.length === n, endLines = ORD ? (ok ? [L('return topo')] : [L('if(topo.size() != V) return {}')]) : (ok ? [L('return true')] : [L('if(topo.size() != numCourses) return false')]);
+  F.push({blocks: B(-1), lines: endLines, ph: 'Done', msg: `<span class="eq">${ok ? `all ${n} taken → ${ORD ? `[${topo.join(', ')}]` : 'true'}` : `only ${topo.length} of ${n} taken: the rest wait on each other (a cycle) → ${ORD ? '{}' : 'false'}`}</span>`, math: [['answer', ORD ? (ok ? '[' + topo.join(', ') + ']' : '[]') : String(ok)]]});
+  return F;
+}
+
+
+function update(){
+  const f = S.F[cur];
+  $('g').innerHTML = f.blocks.map(b => DRAW[b.kind](b)).join('');
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!(f.lines || []).includes(i)));
+  fixBranches();
+  $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
+  $('math').innerHTML = (f.math || []).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur === 0; $('next').disabled = cur === S.F.length - 1;
+}
+let S = null, cur = 0, timer = null;
+function load(input, key){
+  stop(); S = {F: prepare(input)}; cur = 0;
+  $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${esc(l)}</span>`).join('');
+  update();
+  document.querySelectorAll('[data-preset]').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset === key ? 'true' : 'false'));
+}
+function onCustom(e){
+  e.preventDefault();
+  let input; try { input = readCustom($('customIn').value); } catch(m){ $('err').textContent = String(m); return; }
+  $('err').textContent = ''; load(input, null);
+}
+function step(d){ const n = cur + d; if(n < 0 || n >= S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){ if(timer){ stop(); return; } if(cur === S.F.length - 1){ cur = 0; update(); } $('play').textContent = '❚❚ Pause'; timer = setInterval(() => { if(!step(1)) stop(); }, +$('speed').value); }
+$('presets').innerHTML = PRESETS.map(p => `<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+  `<form class="custom" id="customForm"><input id="customIn" placeholder="${esc(INPUT_HINT)}" aria-label="Your own input"><button class="btn" type="submit">Run</button></form>`;
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { $('err').textContent = ''; const x = PRESETS.find(q => q.key === b.dataset.preset); load(x.input, x.key); });
+$('customForm').addEventListener('submit', onCustom);
+$('next').onclick = () => { stop(); step(1); }; $('prev').onclick = () => { stop(); step(-1); };
+$('reset').onclick = () => { stop(); cur = 0; update(); }; $('play').onclick = play;
+$('speed').onchange = () => { if(timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); } else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); } else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+load(PRESETS[0].input, PRESETS[0].key);
+// Only light an if-line when its body actually runs: if the else part runs, or execution goes past it, the condition was false.
+function fixBranches(){
+  const sp = [...document.querySelectorAll('#code span')]; if(!sp.length) return;
+  const code = sp.map(s => s.textContent), ind = l => l.match(/^\s*/)[0].length, on = i => sp[i].classList.contains('on');
+  const strip = l => l.replace(/\/\/.*$/, '');
+  for(let h = 0; h < code.length; h++){
+    if(!/^(\}\s*)?(else\s+)?if\s*\(/.test(code[h].trim())) continue;
+    let depth = 0, he = h, started = false;
+    for(let k = h; k < code.length; k++){ for(const ch of strip(code[k])){ if(ch === '('){ depth++; started = true; } else if(ch === ')') depth--; } he = k; if(started && depth <= 0) break; }
+    const tail = strip(code[he]).trim(), d = ind(code[h]);
+    const oneLine = !/\{\s*$/.test(tail) && /;\s*$/.test(tail);
+    let k = he + 1; const body = [];
+    if(!oneLine) while(k < code.length && (!code[k].trim() || ind(code[k]) > d)){ if(code[k].trim()) body.push(k); k++; }
+    let e = k; if(e < code.length && ind(code[e]) === d && /^\}\s*$/.test(code[e].trim())) e++;
+    const els = [], et = e < code.length ? code[e].trim() : '';
+    if(e < code.length && ind(code[e]) === d && /^(\}\s*)?else\b/.test(et) && !/^(\}\s*)?else\s+if\b/.test(et)){
+      els.push(e); let j = e + 1; while(j < code.length && (!code[j].trim() || ind(code[j]) > d)){ if(code[j].trim()) els.push(j); j++; }
+    }
+    const hdr = []; for(let x = h; x <= he; x++) hdr.push(x);
+    if(!hdr.some(on)) continue;
+    const bOn = body.some(on), eOn = els.some(on);
+    const off = oneLine ? eOn : (!bOn && (eOn || (body.length > 0 && sp.some((_, x) => x > he && !body.includes(x) && on(x)))));
+    if(off) hdr.forEach(x => sp[x].classList.remove('on'));
+  }
+}
+</script>
+<style id="split-css">
+@media (min-width:880px){
+  .wrap.split-on{max-width:1380px}
+  .split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
+  .split-right{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto;border-radius:12px}
+  .split-right pre.code{font-size:11.5px}
+}
+.split-left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.split-left > *{margin-top:0;margin-bottom:0}
+.split-right{min-width:0}
+@media (max-width:879px){.split-right{margin-top:12px}}
+</style>
+<script id="split-js">
+// Side-by-side layout: picture + controls + explanation on the left, the code on the right.
+// Only moves existing elements (ids and event handlers stay the same).
+(function(){
+  const code = document.getElementById('code'), msg = document.getElementById('msg');
+  const stage = document.querySelector('.stage'), controls = document.querySelector('.controls');
+  if(!code || !msg || !stage || !controls || document.querySelector('.split')) return;
+  const codeCard = code.closest('.card'), msgCard = msg.closest('.card');
+  if(!codeCard || !msgCard || codeCard === msgCard) return;
+  const grid = codeCard.parentElement;
+  const split = document.createElement('div'), left = document.createElement('div'), right = document.createElement('div');
+  split.className = 'split'; left.className = 'split-left'; right.className = 'split-right';
+  stage.parentElement.insertBefore(split, stage);
+  left.append(stage, controls, msgCard); right.append(codeCard); split.append(left, right);
+  if(grid && grid.classList.contains('grid') && !grid.children.length) grid.remove();
+  const wrap = split.closest('.wrap'); if(wrap) wrap.classList.add('split-on');
+  // keep the highlighted line in view inside the code panel (only scrolls the panel, never the page)
+  let pending = false;
+  const follow = () => { pending = false;
+    if(right.scrollHeight <= right.clientHeight + 2) return;
+    const on = code.querySelector('span.on'); if(!on) return;
+    const box = right.getBoundingClientRect(), r = on.getBoundingClientRect();
+    if(r.top < box.top + 40 || r.bottom > box.bottom - 40) right.scrollTop += (r.top - box.top) - box.height / 3;
+  };
+  new MutationObserver(() => { if(!pending){ pending = true; requestAnimationFrame(follow); } }).observe(code, {subtree: true, attributes: true, attributeFilter: ['class'], childList: true});
+})();
+</script>
+</body>
+</html>

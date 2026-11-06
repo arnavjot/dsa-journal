@@ -566,13 +566,13 @@
     "id": 130,
     "title": "Surrounded Regions",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 994,
     "title": "Rotting Oranges",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 286,
@@ -584,13 +584,13 @@
     "id": 207,
     "title": "Course Schedule",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 210,
     "title": "Course Schedule II",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 684,

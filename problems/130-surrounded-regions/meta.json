@@ -1,0 +1,69 @@
+{
+  "id": 130,
+  "title": "Surrounded Regions",
+  "keyIdea": "An O survives only if it connects to the border. DFS from every border O and mark what it reaches; then every unmarked O is surrounded and becomes X.",
+  "approaches": [
+    {
+      "name": "DFS from the border",
+      "file": "border-dfs.cpp",
+      "best": true,
+      "idea": "DFS from each O on the first/last row and column, marking vis; flip every O not in vis.",
+      "time": "O(n·m)",
+      "space": "O(n·m)",
+      "why": "Each cell is visited at most once.",
+      "viz": "viz/surrounded-regions.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why start the search from the border instead of from each O?",
+      "options": [
+        "One pass from the border marks exactly the O's that are not surrounded",
+        "It is required by LeetCode",
+        "Border cells are faster",
+        "To count regions"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Which O's become X?",
+      "options": [
+        "The ones not reachable from any border O",
+        "All O's",
+        "Only border O's",
+        "O's with 4 X neighbours"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Do diagonal O's connect?",
+      "options": [
+        "No, only the 4 directions",
+        "Yes",
+        "Only on the border",
+        "Depends on size"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Time complexity?",
+      "options": [
+        "O(n·m)",
+        "O((n·m)²)",
+        "O(n + m)",
+        "O(log n)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What makes a region \"surrounded\"? Do diagonals count?",
+    "Solve Example 1 by hand.",
+    "Search from each O to see if it reaches the border: what does that cost?",
+    "\"Which cells connect to the edge?\" → which trick?",
+    "Which cells do you start from, and what do you flip at the end?",
+    "Code it, saying \"mark from the border, flip the rest\".",
+    "Dry-run OOO/OXO/OOO.",
+    "Time and space? How is this like Pacific Atlantic (LC 417)?"
+  ]
+}
