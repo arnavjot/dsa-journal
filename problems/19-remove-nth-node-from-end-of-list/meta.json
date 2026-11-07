@@ -1,0 +1,78 @@
+{
+  "id": 19,
+  "title": "Remove Nth Node From End of List",
+  "keyIdea": "Give fast a head start of n nodes, then move fast and slow together until fast is on the last node: slow is right before the node to remove. If fast became NULL after the head start, remove the head.",
+  "approaches": [
+    {
+      "name": "Count the length, then remove",
+      "file": "count-length.cpp",
+      "idea": "Pass 1 counts len. If n == len remove head; else walk prev to node len − n and skip the next node.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Two passes over the list.",
+      "viz": "viz/remove-nth-node-from-end-of-list-count.html"
+    },
+    {
+      "name": "Two pointers, n apart",
+      "file": "two-pointers.cpp",
+      "best": true,
+      "idea": "fast moves n steps; fast == NULL → remove head; else move both until fast->next == NULL, then slow->next = slow->next->next.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass; the gap of n puts slow right before the target.",
+      "viz": "viz/remove-nth-node-from-end-of-list.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does slow end right before the node to remove?",
+      "options": [
+        "fast stops on the last node and slow is n nodes behind it, so slow->next is n-th from the end",
+        "slow moves twice as fast",
+        "slow starts at the end",
+        "Because n is small"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When does fast == NULL after the head start?",
+      "options": [
+        "When n equals the length: the node to remove is the head",
+        "When n is 1",
+        "When the list is empty",
+        "Never"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How would a dummy node before head help?",
+      "options": [
+        "slow can start on the dummy, so removing the head needs no special case",
+        "It makes it faster",
+        "It avoids deleting memory",
+        "It counts the length"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why loop while fast->next != NULL, not fast != NULL?",
+      "options": [
+        "So fast stops ON the last node and slow stops BEFORE the target",
+        "To avoid a crash only",
+        "To skip the head",
+        "It makes no difference"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is n always valid? What if the list has one node?",
+    "Remove the 2nd from the end of [1,2,3,4,5] by hand: which pointer change does it?",
+    "Count the length, then walk again: time?",
+    "\"n-th from the end in one pass\": which pattern?",
+    "How far ahead does fast go, and when do you stop both pointers?",
+    "Code it, saying \"head start n, move together, skip slow->next\".",
+    "Dry-run [1,2], n = 2: what is fast after the head start?",
+    "Time and space? Rewrite it with a dummy node."
+  ]
+}

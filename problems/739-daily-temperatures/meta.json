@@ -1,0 +1,39 @@
+{
+  "id": 739,
+  "title": "Daily Temperatures",
+  "keyIdea": "Keep a stack of days still waiting for a warmer day; their temperatures decrease from bottom to top (monotonic stack). A warmer day i pops every colder day on top and sets answer[prev] = i − prev, then waits itself. Each day is pushed and popped once: O(n).",
+  "approaches": [
+    {
+      "name": "Brute force: scan forward",
+      "file": "brute.cpp",
+      "idea": "For each day, walk forward until a warmer day appears.",
+      "time": "O(n²)", "space": "O(1) extra",
+      "why": "A falling run like 100, 99, 98, … makes every day scan to the end: ~n²/2 steps, ~5·10⁹ at n = 10⁵."
+    },
+    {
+      "name": "Monotonic stack",
+      "file": "monotonic-stack.cpp",
+      "best": true,
+      "idea": "For each day i: while the top day is colder, pop it and answer it with i − prev. Then push i.",
+      "time": "O(n)", "space": "O(n)",
+      "why": "Every index is pushed once and popped at most once, so all the while loops together do at most n pops. The stack can hold n days on a falling run.",
+      "viz": "viz/daily-temperatures.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why does the stack store indices instead of temperatures?", "options": ["The answer is a distance in days (i − prev), and the temperature is one lookup away", "Indices are smaller", "Temperatures can repeat", "It's required by C++"], "answer": 0},
+    {"q": "What's true about the temperatures on the stack, bottom to top?", "options": ["They never go up (each waiting day is no warmer than the one below)", "They always go up", "They're sorted by index only", "No pattern"], "answer": 0},
+    {"q": "Why is it O(n) even with a while loop inside the for loop?", "options": ["Each index is pushed once and popped at most once, so total pops ≤ n", "The while loop runs at most once", "It's actually O(n²)", "The stack is small"], "answer": 0},
+    {"q": "temperatures = [50,50,50,51]. What's the answer?", "options": ["[3,2,1,0]: equal days aren't warmer, so they wait for 51", "[1,1,1,0]", "[0,0,0,0]", "[3,3,3,0]"], "answer": 0}
+  ],
+  "steps": [
+    "Strictly warmer or warmer-or-equal? What goes in answer for a day that never gets warmer?",
+    "Do [73,74,75,71,69,72,76,73] by hand. Which days are still waiting when you reach 72?",
+    "Scan forward from each day: time? What input makes it worst?",
+    "\"Next greater element\": which pattern? What order do the waiting days' temperatures keep?",
+    "What do you store on the stack, when do you pop, and what do you write when you pop?",
+    "Code it, saying \"this day answers everyone colder on top\".",
+    "Dry-run [90,80,70,60,100]: how many pops happen at day 4, and what are the answers?",
+    "Why O(n) despite the nested loop? How is LC 84 (Largest Rectangle in Histogram) the same idea?"
+  ]
+}

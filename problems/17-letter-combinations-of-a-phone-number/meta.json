@@ -1,0 +1,69 @@
+{
+  "id": 17,
+  "title": "Letter Combinations of a Phone Number",
+  "keyIdea": "Recursion with processed (p) and unprocessed (up) strings: take the first digit of up, and for each of its letters recurse with p + letter and the rest of up. up empty → p is one combination. Each call returns its list; the caller concatenates.",
+  "approaches": [
+    {
+      "name": "Processed / unprocessed recursion",
+      "file": "processed-unprocessed.cpp",
+      "best": true,
+      "idea": "gen(p, up): up empty → {p}; else for ch in mapping[up[0]]: add gen(p + ch, up.substr(1)) to the list.",
+      "time": "O(n·4ⁿ)",
+      "space": "O(n·4ⁿ) for the output",
+      "why": "Up to 4 letters per digit; each finished combination has length n.",
+      "viz": "viz/letter-combinations-of-a-phone-number.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What do p and up stand for?",
+      "options": [
+        "p = letters chosen so far (processed), up = digits still left (unprocessed)",
+        "Previous and upper",
+        "Pointer and update",
+        "Nothing special"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is returned for digits = \"\"?",
+      "options": [
+        "An empty list (not [\"\"])",
+        "[\"\"]",
+        "null",
+        "[\"a\"]"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is there no undo step?",
+      "options": [
+        "p + ch and up.substr(1) create new strings for each call",
+        "Strings are immutable",
+        "The list undoes it",
+        "There is an undo"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is it up to 4ⁿ and not 3ⁿ?",
+      "options": [
+        "Digits 7 and 9 map to 4 letters",
+        "Because of 0 and 1",
+        "Because n ≤ 4",
+        "It is always 3ⁿ"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Which digits can appear? What should \"\" return?",
+    "List the combinations for \"23\" by hand.",
+    "How many combinations can there be for n digits?",
+    "\"Every way to choose one option per position\" → which technique?",
+    "What do p and up hold? When does the recursion stop?",
+    "Code it, saying \"first digit of up, each letter, recurse with the rest\".",
+    "Dry-run \"2\": the calls and returned lists.",
+    "Time and space? How would a queue (BFS) version build the same list?"
+  ]
+}

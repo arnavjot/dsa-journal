@@ -1,0 +1,78 @@
+{
+  "id": 323,
+  "title": "Number of Connected Components in an Undirected Graph",
+  "keyIdea": "Start with n components. Union-Find each edge: if the two ends have different roots, merge them and subtract 1. Or count DFS starts over the unvisited nodes.",
+  "approaches": [
+    {
+      "name": "DFS from each unvisited node",
+      "file": "dfs.cpp",
+      "idea": "Build adjacency lists; each unvisited node starts a new component; DFS marks everything connected to it.",
+      "time": "O(n + E)",
+      "space": "O(n + E)",
+      "why": "Every node and edge is visited once.",
+      "viz": "viz/number-of-connected-components-in-an-undirected-graph-dfs.html"
+    },
+    {
+      "name": "Union-Find, counting merges",
+      "file": "union-find.cpp",
+      "best": true,
+      "idea": "components = n; for each edge, roots differ → parent[pu] = pv, components--.",
+      "time": "O(n + E · α(n))",
+      "space": "O(n)",
+      "why": "Each find is nearly constant time with path compression; no adjacency lists needed.",
+      "viz": "viz/number-of-connected-components-in-an-undirected-graph.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does the count start at n?",
+      "options": [
+        "Every node is its own component before any edge is added",
+        "Because there are n edges",
+        "It starts at 0",
+        "It starts at 1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When does components go down?",
+      "options": [
+        "When an edge joins two different roots (two separate groups)",
+        "For every edge",
+        "When the roots are equal",
+        "At the end only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does an edge between two nodes already in one group do?",
+      "options": [
+        "Nothing: same root, count unchanged",
+        "Splits the group",
+        "Adds a component",
+        "Crashes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Union-Find vs DFS here?",
+      "options": [
+        "Both about O(n + E); Union-Find needs no adjacency lists and handles edges arriving one by one",
+        "DFS is always faster",
+        "Union-Find is O(n²)",
+        "They give different answers"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Nodes 0 to n − 1? Can there be duplicate edges or isolated nodes?",
+    "Count the components of Example 1 by hand.",
+    "How would you reuse Number of Islands on a graph?",
+    "\"How many groups after joining pairs?\" → which two techniques?",
+    "With Union-Find, when does the count change?",
+    "Code it, saying \"start at n, subtract on every real merge\".",
+    "Dry-run n = 6 with 0-1, 1-2, 2-0, 4-5.",
+    "Time and space? When would you prefer Union-Find over DFS?"
+  ]
+}

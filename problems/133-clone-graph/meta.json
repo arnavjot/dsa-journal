@@ -1,0 +1,78 @@
+{
+  "id": 133,
+  "title": "Clone Graph",
+  "keyIdea": "Map each original node to its copy. DFS (or BFS): if a node already has a copy, return it; otherwise create the copy, record it in the map first, then copy each neighbour and link it. Every node and edge is copied once, even with cycles.",
+  "approaches": [
+    {
+      "name": "BFS with a map",
+      "file": "bfs-map.cpp",
+      "idea": "Copy the start node and queue it; pop a node, copy each neighbour the first time it is seen (and queue it), link the copies.",
+      "time": "O(V + E)",
+      "space": "O(V)",
+      "why": "Each node is queued once and each edge is linked once.",
+      "viz": "viz/clone-graph-bfs.html"
+    },
+    {
+      "name": "DFS with a map",
+      "file": "dfs-map.cpp",
+      "best": true,
+      "idea": "cloneGraph(node): seen → mp[node]; else make the copy, mp[node] = copy, push_back(cloneGraph(neighbor)) for each neighbour.",
+      "time": "O(V + E)",
+      "space": "O(V)",
+      "why": "Each node is copied once (the map stops repeats); each edge is followed once from each side.",
+      "viz": "viz/clone-graph.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why put the copy in the map BEFORE cloning the neighbours?",
+      "options": [
+        "A neighbour may lead back to this node (a cycle); it must find the existing copy instead of recursing forever",
+        "To save memory",
+        "For sorting",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does the map store?",
+      "options": [
+        "original node → its copy",
+        "value → node",
+        "node → visited flag only",
+        "copy → original"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does an already-copied node return mp[node] instead of a new copy?",
+      "options": [
+        "Every edge must point to the single copy of that node",
+        "To end the recursion only",
+        "Because values are unique",
+        "It returns a new copy"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Time complexity?",
+      "options": [
+        "O(V + E)",
+        "O(V²)",
+        "O(E log V)",
+        "O(V · E)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What is a deep copy? Can the graph have cycles? What about an empty graph?",
+    "Clone the 4-node square by hand: which copy do you make first?",
+    "What goes wrong if you copy recursively without remembering copies?",
+    "\"Copy a graph with cycles\" → which data structure prevents repeats?",
+    "When do you put a node in the map, and what do you return for a seen node?",
+    "Code it, saying \"seen → return the copy; else copy, record, link neighbours\".",
+    "Dry-run the triangle 1-2-3.",
+    "Time and space? How does the BFS version differ?"
+  ]
+}

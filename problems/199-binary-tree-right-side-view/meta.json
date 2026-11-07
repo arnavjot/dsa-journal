@@ -1,0 +1,68 @@
+{
+  "id": 199,
+  "title": "Binary Tree Right Side View",
+  "keyIdea": "From the right you see one node per depth: the rightmost. DFS right child first, carrying the depth; the first node reached at each depth (level == rightView.size()) is the one you see.",
+  "approaches": [
+    {
+      "name": "BFS: last node of each level",
+      "file": "bfs.cpp",
+      "idea": "Level-order with a queue; the node popped last in each level (i == levelSize − 1) is visible.",
+      "time": "O(n)",
+      "space": "O(w)",
+      "why": "Every node is visited once; the queue holds about one level.",
+      "viz": "viz/binary-tree-right-side-view-bfs.html"
+    },
+    {
+      "name": "DFS right-first with depth",
+      "file": "dfs-right-first.cpp",
+      "best": true,
+      "idea": "solve(node, level): if level == rightView.size(), this is the first node at that depth → push it. Recurse right, then left.",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Each node is visited once; the recursion is as deep as the tree.",
+      "viz": "viz/binary-tree-right-side-view.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does level == rightView.size() mean \"first at this depth\"?",
+      "options": [
+        "rightView has one entry per depth already seen, so its size is the next new depth",
+        "Because levels start at 1",
+        "Because size is always 0",
+        "It means the node is a leaf"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Can a visible node be in a left subtree?",
+      "options": [
+        "Yes, when the right side is shorter at that depth",
+        "No, never",
+        "Only the root",
+        "Only leaves"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How do you get the left side view?",
+      "options": [
+        "Recurse left before right",
+        "Recurse right twice",
+        "Reverse the answer",
+        "Use a stack"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "One node per depth? Which one exactly? Empty tree?",
+    "Do [1,2,3,4] by hand: which nodes are visible?",
+    "BFS version: which node of each level do you keep?",
+    "\"First node seen at each depth\": what visit order makes the first one the rightmost?",
+    "What do you pass down, and how do you know a depth is new?",
+    "Code it, saying \"right first, first at each depth wins\".",
+    "Dry-run [1,2,3,null,5,null,4]: which calls push a value?",
+    "Time and space? How would you get the left view, or the view from the bottom?"
+  ]
+}

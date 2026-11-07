@@ -1,0 +1,67 @@
+{
+  "id": 49,
+  "title": "Group Anagrams",
+  "keyIdea": "Anagrams share the same letter counts. Turn each word into a key of its 26 counts (\"1#0#…#\") and group words by key in a hash map: one pass over the words.",
+  "approaches": [
+    {
+      "name": "Brute force: compare pairs",
+      "file": "brute.cpp",
+      "idea": "For each unvisited word, scan the rest and pull in every anagram (checked with a 26-count array).",
+      "time": "O(n² · m)",
+      "space": "O(n)",
+      "why": "Every pair of words may be compared, each comparison O(m) for word length m."
+    },
+    {
+      "name": "Count signature as hash key",
+      "file": "signature.cpp",
+      "best": true,
+      "idea": "signature(word) = the 26 counts joined with #. groups[signature].push_back(word). Return the groups.",
+      "time": "O(n · m)",
+      "space": "O(n · m)",
+      "why": "Each word: O(m) to count + O(26) to build the key, one map insert. The map stores every word once.",
+      "viz": "viz/group-anagrams.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why do anagrams get the same key?",
+      "options": [
+        "They have exactly the same count of every letter",
+        "They have the same first letter",
+        "They're the same length",
+        "They sort the same way only sometimes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why put # between the counts?",
+      "options": [
+        "So counts like 1,11 and 11,1 don't produce the same string",
+        "For readability only",
+        "To mark the end",
+        "It's required by C++"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What other key would work?",
+      "options": [
+        "The word sorted alphabetically (O(m log m) per word)",
+        "The word length",
+        "The first and last letters",
+        "The sum of letters"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Lowercase only? Empty strings? Does the order of groups matter?",
+    "Group eat, tea, tan, ate, nat, bat by hand. What do group members share?",
+    "Comparing every pair with an anagram check: time?",
+    "\"Group things that are equal under some rule\": what single value can represent the rule?",
+    "How do you build the key, and why the separators?",
+    "Code it, saying \"same counts → same key → same group\".",
+    "Dry-run listen, silent, enlist, google: what keys come out?",
+    "Time and space? Sorted-word key vs count key: which is faster and why?"
+  ]
+}

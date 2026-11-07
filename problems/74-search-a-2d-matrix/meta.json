@@ -1,0 +1,67 @@
+{
+  "id": 74,
+  "title": "Search a 2D Matrix",
+  "keyIdea": "Rows are sorted and each row starts after the previous one ends, so the matrix read row by row is one sorted list. Binary search indices 0 … n·m − 1 and map an index to a cell with row = mid / m, col = mid % m.",
+  "approaches": [
+    {
+      "name": "Two binary searches: row, then column",
+      "file": "row-then-column.cpp",
+      "idea": "Find the last row whose first value ≤ target, then binary search that row.",
+      "time": "O(log n + log m)",
+      "space": "O(1)",
+      "why": "Two binary searches; log n + log m = log(n·m)."
+    },
+    {
+      "name": "One binary search on the flattened index",
+      "file": "flat-binary-search.cpp",
+      "best": true,
+      "idea": "s = 0, e = n·m − 1; mid → (mid / m, mid % m); compare and halve.",
+      "time": "O(log(n·m))",
+      "space": "O(1)",
+      "why": "Standard binary search over n·m positions, with O(1) index → cell conversion.",
+      "viz": "viz/search-a-2d-matrix.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "With m = 4 columns, which cell is index 6?",
+      "options": [
+        "row 1, col 2 (6 / 4 = 1, 6 % 4 = 2)",
+        "row 2, col 1",
+        "row 1, col 1",
+        "row 6, col 0"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can the matrix be searched as one sorted list?",
+      "options": [
+        "Each row is sorted and every row's first value is bigger than the previous row's last value",
+        "Because columns are sorted",
+        "Because it's square",
+        "It can't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Total time?",
+      "options": [
+        "O(log(n·m))",
+        "O(n + m)",
+        "O(n·m)",
+        "O(n log m)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are rows sorted, and does each row start after the previous ends? Strictly increasing? Sizes?",
+    "Search for 3 and for 13 by hand in Example 1.",
+    "Scanning every cell: time? Scanning from the top-right corner: time?",
+    "\"Sorted + O(log)\": what single sorted list hides in this matrix?",
+    "How do you convert a flat index to (row, col)?",
+    "Code it, saying \"row = mid / m, col = mid % m\".",
+    "Dry-run target 60 (the last cell): which mids do you visit?",
+    "Time and space? How is LC 240 (Search a 2D Matrix II) different?"
+  ]
+}

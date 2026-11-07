@@ -1,0 +1,39 @@
+{
+  "id": 155,
+  "title": "Min Stack",
+  "keyIdea": "Store each value together with the minimum of everything up to and including it: (val, min so far). That min never changes while the element sits on the stack, so getMin() just reads the top pair, and after a pop the pair below already knows its own min.",
+  "approaches": [
+    {
+      "name": "Plain stack, scan for min",
+      "file": "scan.cpp",
+      "idea": "Store values only; getMin() loops over the whole stack.",
+      "time": "O(n) getMin, O(1) others", "space": "O(n)",
+      "why": "getMin() looks at every stored value. The problem requires every operation in O(1)."
+    },
+    {
+      "name": "Stack of (val, min so far) pairs",
+      "file": "pairs.cpp",
+      "best": true,
+      "idea": "push(val): new pair (val, min(val, top's min)). pop: remove the top pair. top: top.first. getMin: top.second.",
+      "time": "O(1) every operation", "space": "O(n)",
+      "why": "Each call touches only the last pair of the vector. The extra min per element doubles memory but stays O(n).",
+      "viz": "viz/min-stack.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why isn't a single \"current min\" variable enough?", "options": ["After popping the min you'd have no idea what the previous min was", "It would overflow", "It's O(n) to update", "It is enough"], "answer": 0},
+    {"q": "Stack holds (5,5), (3,3), (7,3). What does getMin() return?", "options": ["3, the second value of the top pair", "7", "5", "It scans and finds 3"], "answer": 0},
+    {"q": "push(3) when the top pair is (7,3). What's stored?", "options": ["(3, 3): min(3, 3)", "(3, 7)", "(7, 3)", "Nothing, 3 is already the min"], "answer": 0},
+    {"q": "Why does pop() not need to recompute anything?", "options": ["The pair below was pushed with its own min already saved", "pop() scans the stack", "The min never changes", "It does recompute"], "answer": 0}
+  ],
+  "steps": [
+    "Which operations must be O(1)? Are pop, top and getMin ever called on an empty stack?",
+    "Run push -2, push 0, push -3, getMin, pop, top, getMin by hand. What does each return?",
+    "Plain stack + scan for getMin: which call is slow, and how slow?",
+    "Why can't one min variable survive a pop? What would you need to remember instead?",
+    "What do you store with each value, and how do you compute it on push?",
+    "Code the class, saying what .first and .second mean.",
+    "Dry-run push 5, 3, 7, 3, then pop twice: what's getMin() after each step?",
+    "Time and space? How could a second stack store only the mins to save space?"
+  ]
+}

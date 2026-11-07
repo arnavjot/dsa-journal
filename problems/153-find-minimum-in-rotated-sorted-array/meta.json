@@ -1,0 +1,86 @@
+{
+  "id": 153,
+  "title": "Find Minimum in Rotated Sorted Array",
+  "keyIdea": "A rotated sorted array goes up, drops once, then goes up again; the minimum is right after the drop. Compare arr[mid] with arr[e]: arr[mid] <= arr[e] means mid…e is sorted, so the minimum is at mid or to its left (e = mid). Otherwise the drop is right of mid (s = mid + 1). Stop when s == e.",
+  "approaches": [
+    {
+      "name": "Scan everything",
+      "file": "linear.cpp",
+      "idea": "Look at every number and keep the smallest.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Correct, but the problem asks for O(log n)."
+    },
+    {
+      "name": "Compare with the left end (l <= r, track ans)",
+      "file": "compare-with-left.cpp",
+      "idea": "If nums[l] < nums[r] the range is sorted: take nums[l] and stop. Otherwise record nums[mid]; if nums[mid] >= nums[l] the left half is sorted, go right (l = mid + 1), else go left (r = mid − 1).",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "Halves the range each step. Needs the extra \"already sorted?\" check and an ans variable because mid is thrown away.",
+      "viz": "viz/find-minimum-in-rotated-sorted-array-left.html"
+    },
+    {
+      "name": "Compare with the right end (s < e)",
+      "file": "compare-with-end.cpp",
+      "best": true,
+      "idea": "arr[mid] <= arr[e] → e = mid (mid might be the minimum, keep it). Else → s = mid + 1. When s == e, return arr[s].",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "Halves the range each step; no ans variable and no special case for an unrotated array.",
+      "viz": "viz/find-minimum-in-rotated-sorted-array.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "arr[mid] <= arr[e]. What does that tell you?",
+      "options": [
+        "mid … e is sorted, so the minimum is at mid or to its left",
+        "The minimum is to the right of mid",
+        "mid is always the minimum",
+        "The array isn't rotated"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why e = mid and not e = mid − 1?",
+      "options": [
+        "mid itself could be the minimum, so it must stay in the range",
+        "To avoid overflow",
+        "It makes no difference",
+        "Because the loop is s <= e"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the loop while (s < e) and not s <= e?",
+      "options": [
+        "It stops with one element left, which is the answer; with s <= e and e = mid it could loop forever",
+        "It's faster",
+        "To skip the last element",
+        "Both are the same here"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why compare with arr[e] instead of arr[s]?",
+      "options": [
+        "arr[e] works even when the array isn't rotated; arr[s] needs an extra sorted check",
+        "arr[s] can overflow",
+        "arr[e] is always the max",
+        "No reason"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are values unique? Can the array be unrotated? What's the smallest size?",
+    "Find the minimum of [3,4,5,1,2] and [11,13,15,17] by hand. Where is it relative to the drop?",
+    "Scanning everything: time, and why isn't it enough?",
+    "\"O(log n) on a sorted-but-rotated array\": which pattern?",
+    "What does arr[mid] <= arr[e] tell you? What do you do in each case, and why e = mid not mid − 1?",
+    "Code it, saying \"compare mid with the right end\".",
+    "Dry-run [4,5,6,7,0,1,2]: which s, mid, e do you visit?",
+    "Time and space? How does LC 33 (search in rotated array) build on this?"
+  ]
+}

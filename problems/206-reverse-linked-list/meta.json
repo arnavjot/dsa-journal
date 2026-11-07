@@ -1,0 +1,78 @@
+{
+  "id": 206,
+  "title": "Reverse Linked List",
+  "keyIdea": "Walk once with prev / curr / next: save next, point curr->next back to prev, move prev and curr forward. When curr is NULL, prev is the new head.",
+  "approaches": [
+    {
+      "name": "Recursion",
+      "file": "recursive.cpp",
+      "idea": "Reverse everything after head (returns the new head), then head->next->next = head and head->next = NULL.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One call per node on the call stack.",
+      "viz": "viz/reverse-linked-list-recursive.html"
+    },
+    {
+      "name": "Three pointers (iterative)",
+      "file": "iterative.cpp",
+      "best": true,
+      "idea": "prev = NULL, curr = head. Loop: next = curr->next; curr->next = prev; prev = curr; curr = next. Return prev.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Each node's pointer is flipped once; only three extra pointers.",
+      "viz": "viz/reverse-linked-list.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why save next before curr->next = prev?",
+      "options": [
+        "After the flip, curr no longer points to the rest of the list, so it would be lost",
+        "To make it faster",
+        "Because prev is NULL",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why return prev and not curr?",
+      "options": [
+        "The loop ends when curr is NULL; prev holds the old last node, the new head",
+        "curr is the new tail",
+        "They are the same",
+        "prev is always the old head"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the recursive version, what does head->next->next = head do?",
+      "options": [
+        "The old next node is now the tail of the reversed part; it points back to head",
+        "Deletes the next node",
+        "Makes a cycle on purpose",
+        "Moves head forward"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is head->next = NULL needed in the recursive version?",
+      "options": [
+        "head is the new tail; otherwise head and its old next would point at each other (a cycle)",
+        "To free memory",
+        "To end the recursion",
+        "It isn't needed"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can the list be empty or one node? What do you return then?",
+    "Reverse 1 → 2 → 3 by hand: which pointers change, in what order?",
+    "Copy values into an array and rebuild: time and space?",
+    "\"Reverse links in place\": which pointers do you need to keep?",
+    "What's the order of the four lines in the loop, and why does next come first?",
+    "Code it, saying \"save next, flip, move prev, move curr\".",
+    "Dry-run [1,2]: prev, curr, next after each step?",
+    "Time and space? How does the recursive version work, and what does it cost in space?"
+  ]
+}

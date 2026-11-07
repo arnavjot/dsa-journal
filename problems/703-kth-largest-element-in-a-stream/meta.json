@@ -1,0 +1,77 @@
+{
+  "id": 703,
+  "title": "Kth Largest Element in a Stream",
+  "keyIdea": "Keep the k largest numbers seen so far in a min-heap of size k. Its top is the k-th largest. On each add: push, and if the size passes k, pop the smallest.",
+  "approaches": [
+    {
+      "name": "Sorted array of everything",
+      "file": "sorted-array.cpp",
+      "idea": "Keep all numbers sorted; insert each new one in place; answer all[size − k].",
+      "time": "O(n) per add",
+      "space": "O(n)",
+      "why": "Inserting into a sorted array shifts up to n elements, and the array keeps growing."
+    },
+    {
+      "name": "Min-heap of size k",
+      "file": "min-heap-size-k.cpp",
+      "best": true,
+      "idea": "push; if size > k pop; return top.",
+      "time": "O(log k) per add",
+      "space": "O(k)",
+      "why": "The heap never holds more than k + 1 numbers.",
+      "viz": "viz/kth-largest-element-in-a-stream.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why a min-heap and not a max-heap?",
+      "options": [
+        "You need the smallest of the top k: to return it and to drop it when a bigger number arrives",
+        "Max-heaps are slower",
+        "To sort the stream",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the heap's top after each add?",
+      "options": [
+        "The k-th largest number seen so far",
+        "The largest",
+        "The newest number",
+        "The median"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can a popped number be forgotten forever?",
+      "options": [
+        "k bigger numbers already exist; new numbers can only push it further down",
+        "It is a duplicate",
+        "The heap is full",
+        "It can come back"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Time per add?",
+      "options": [
+        "O(log k)",
+        "O(k)",
+        "O(n log n)",
+        "O(1)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is k always valid? Can nums start with fewer than k numbers?",
+    "Run Example 1 by hand: what is the 3rd largest after each add?",
+    "Keep everything sorted: cost per add?",
+    "\"k-th largest, numbers keep arriving\" → which data structure, and which kind?",
+    "What do you do on each add, and why is the top the answer?",
+    "Code it, saying \"min-heap of size k, top is the k-th largest\".",
+    "Dry-run k = 1 with adds -3, -2, -4.",
+    "Time and space? How is this like Top K Frequent (LC 347)?"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": 424,
+  "title": "Longest Repeating Character Replacement",
+  "keyIdea": "A window can become all one letter if (length − count of its most common letter) ≤ k. Grow the window with j, slide i while that cost is over k, and keep the largest window. maxCount may go stale (never decreases), which only stops the window from growing, never gives a wrong answer.",
+  "approaches": [
+    {
+      "name": "Brute force: every window",
+      "file": "brute.cpp",
+      "idea": "For each start i, extend j with a fresh count array and check length − maxCount ≤ k.",
+      "time": "O(n²)",
+      "space": "O(26)",
+      "why": "n starts × up to n ends."
+    },
+    {
+      "name": "Sliding window with maxCount",
+      "file": "sliding-window.cpp",
+      "best": true,
+      "idea": "freq[s[j]]++, maxCount = max(maxCount, freq[s[j]]); while (len − maxCount > k) shrink from i; maxLen = max(maxLen, len).",
+      "time": "O(n)",
+      "space": "O(26)",
+      "why": "j moves n times, i at most n times; the map holds at most 26 letters.",
+      "viz": "viz/longest-repeating-character-replacement.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "How many replacements does a window need?",
+      "options": [
+        "length − count of its most frequent letter",
+        "k",
+        "the number of distinct letters",
+        "length − 1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is it OK that maxCount is never decreased?",
+      "options": [
+        "A stale maxCount only makes the window slide instead of grow; the answer only improves when a truly bigger maxCount appears",
+        "It's a bug that happens to pass",
+        "Because letters never leave",
+        "Because k is small"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "\"AABABBA\", k = 1 → ?",
+      "options": [
+        "4",
+        "3",
+        "5",
+        "7"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Uppercase only? What exactly can you change, and how many times? Empty string?",
+    "Do \"AABABBA\", k = 1 by hand: which window of length 4 works?",
+    "Every window with a count array: time?",
+    "\"Longest window that can satisfy a budget\": which pattern? What's the window's cost?",
+    "When do you shrink, and what do you update when you shrink?",
+    "Code it, saying \"length minus most common ≤ k\".",
+    "Dry-run \"ABAB\", k = 2: does the window ever shrink?",
+    "Why can maxCount stay stale? Time and space?"
+  ]
+}

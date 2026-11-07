@@ -1,0 +1,77 @@
+{
+  "id": 994,
+  "title": "Rotting Oranges",
+  "keyIdea": "Multi-source BFS: queue every rotten orange at time 0. Popping one at time t rots its fresh neighbours at t + 1. BFS order = time order, so each orange rots at the earliest minute. Any fresh orange left → −1; else the largest time.",
+  "approaches": [
+    {
+      "name": "DFS with time relaxation",
+      "file": "dfs-with-relaxation.cpp",
+      "idea": "DFS from each rotten orange carrying the time; revisit a cell only if this path reaches it sooner.",
+      "time": "O((n·m)²) worst case",
+      "space": "O(n·m)",
+      "why": "A cell can be re-explored many times as faster paths arrive; correct but wasteful."
+    },
+    {
+      "name": "Multi-source BFS",
+      "file": "multi-source-bfs.cpp",
+      "best": true,
+      "idea": "Queue all rotten oranges with time 0; pop, rot fresh neighbours at time + 1, push them; track the max time; check for leftover fresh ones.",
+      "time": "O(n·m)",
+      "space": "O(n·m)",
+      "why": "Every cell enters the queue at most once.",
+      "viz": "viz/rotting-oranges.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why put ALL rotten oranges in the queue at the start?",
+      "options": [
+        "Rot spreads from all of them at once; starting together makes BFS layers equal to minutes",
+        "To save memory",
+        "Order doesn't matter",
+        "To find the first one"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does BFS give the minimum time?",
+      "options": [
+        "It processes cells in order of time, so the first time a cell is reached is the earliest",
+        "It visits fewer cells",
+        "Because of the max()",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When is the answer −1?",
+      "options": [
+        "When a fresh orange is never reached by any rotten one",
+        "When there are no rotten oranges and no fresh ones",
+        "When the grid is empty",
+        "Never"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Can plain DFS (mark once, never revisit) give the right time?",
+      "options": [
+        "No: it may reach a cell first by a long path and never fix it",
+        "Yes, always",
+        "Only on small grids",
+        "Only with one rotten orange"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What spreads, how fast, and in which directions? When is it impossible?",
+    "Run Example 1 minute by minute.",
+    "Simulate minute by minute rescanning the whole grid: cost?",
+    "\"Spread from many sources at once, earliest time\" → which technique?",
+    "What goes in the queue, and when do you mark an orange rotten?",
+    "Code it, saying \"all rotten at time 0, BFS, check for fresh\".",
+    "Dry-run [[2,1,1],[0,1,1],[1,0,1]].",
+    "Time and space? Why does plain DFS give wrong times?"
+  ]
+}

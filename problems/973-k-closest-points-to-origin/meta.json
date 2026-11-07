@@ -1,0 +1,78 @@
+{
+  "id": 973,
+  "title": "K Closest Points to Origin",
+  "keyIdea": "Compare squared distances x² + y² (no square roots). Keep the k closest seen so far in a max-heap keyed by distance²: push each point, pop the farthest whenever the size passes k. O(n log k).",
+  "approaches": [
+    {
+      "name": "Your min-heap of all points",
+      "file": "min-heap-all.cpp",
+      "idea": "Push every point into a min-heap by distance², pop k times.",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "All n points go into the heap.",
+      "viz": "viz/k-closest-points-to-origin-all.html"
+    },
+    {
+      "name": "Max-heap of size k",
+      "file": "max-heap-size-k.cpp",
+      "best": true,
+      "idea": "Push {distance², index}; if size > k pop the farthest. The k left are the answer.",
+      "time": "O(n log k)",
+      "space": "O(k)",
+      "why": "The heap never grows past k + 1.",
+      "viz": "viz/k-closest-points-to-origin.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why compare x² + y² instead of the real distance?",
+      "options": [
+        "Same order, no square roots needed",
+        "It is more precise",
+        "LeetCode requires it",
+        "To avoid negatives"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the size-k version, why a MAX-heap for the closest points?",
+      "options": [
+        "You need to throw away the farthest of the kept points, which is the max-heap's top",
+        "Min-heaps can't hold pairs",
+        "It sorts the answer",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is your min-heap version O(n log n)?",
+      "options": [
+        "It pushes all n points into the heap",
+        "Because of the compare class",
+        "It pops n times",
+        "It isn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Must the answer be sorted by distance?",
+      "options": [
+        "No, any order is accepted",
+        "Yes, closest first",
+        "Yes, farthest first",
+        "By x coordinate"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Any order allowed? Is the answer unique? How big can coordinates be (overflow)?",
+    "Find the 2 closest of [[3,3],[5,-1],[-2,4]] by hand.",
+    "Sort all points by distance: time?",
+    "\"k smallest of n\" → which heap and which size?",
+    "What do you push, and when do you pop?",
+    "Code it, saying \"max-heap of size k, drop the farthest\".",
+    "Dry-run [[1,3],[-2,2]], k = 1.",
+    "Time and space? Compare with your min-heap-of-all version and with quickselect."
+  ]
+}

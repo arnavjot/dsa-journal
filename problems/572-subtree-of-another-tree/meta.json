@@ -1,0 +1,67 @@
+{
+  "id": 572,
+  "title": "Subtree of Another Tree",
+  "keyIdea": "Try every node of root as a starting point and ask isSameTree(node, subRoot): same shape and values all the way down. The first node where it's true → true; if none works → false.",
+  "approaches": [
+    {
+      "name": "Serialize + find",
+      "file": "serialize.cpp",
+      "idea": "Write both trees as preorder strings with NULL markers, then check if subRoot's string appears inside root's.",
+      "time": "O(m + n) with KMP",
+      "space": "O(m + n)",
+      "why": "Each tree is serialized once. A plain find() can be slower in theory; KMP guarantees linear time. The markers stop false matches like \"2\" inside \"12\"."
+    },
+    {
+      "name": "Try every node + isSameTree",
+      "file": "recursive.cpp",
+      "best": true,
+      "idea": "isSubtree visits each node of root; at each one runs isSameTree against subRoot; stops at the first full match.",
+      "time": "O(m × n)",
+      "space": "O(h)",
+      "why": "isSameTree can cost up to n (size of subRoot) at each of the m nodes of root. Usually it fails within a node or two, so it's fast in practice.",
+      "viz": "viz/subtree-of-another-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "root's node 2 has a child, subRoot is a single 2. Is subRoot a subtree there?",
+      "options": [
+        "No: a subtree includes all descendants, so the extra child breaks the match",
+        "Yes, the values match",
+        "Only if the child is NULL",
+        "Only at the root"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Worst-case time of the isSameTree-at-every-node approach?",
+      "options": [
+        "O(m × n)",
+        "O(m + n)",
+        "O(log m)",
+        "O(n²) only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why put markers like \",^\" and \",#\" in the serialized strings?",
+      "options": [
+        "So values can't match across boundaries (\"2\" inside \"12\") and NULLs keep the shape",
+        "To make strings shorter",
+        "For sorting",
+        "They aren't needed"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What counts as a subtree: one node, or a node with all its descendants? Can subRoot be empty?",
+    "Check [3,4,5,1,2] vs [4,1,2] and then add a 0 under the 2. Why does it change?",
+    "Which helper from an earlier problem can you reuse, and how often would you call it?",
+    "\"Is this tree equal to that one, starting somewhere?\": what two recursions do you combine?",
+    "Base cases for isSubtree? What do you return when isSameTree says no?",
+    "Code it, saying \"try here, else try left, else try right\".",
+    "Dry-run \"Several false starts\": which starting nodes fail before the match?",
+    "Time? How would serializing both trees and searching for a substring help?"
+  ]
+}

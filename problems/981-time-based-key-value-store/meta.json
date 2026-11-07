@@ -1,0 +1,77 @@
+{
+  "id": 981,
+  "title": "Time Based Key-Value Store",
+  "keyIdea": "Store each key's (timestamp, value) pairs in a vector. Set timestamps only increase, so push_back keeps it sorted. get(key, t) = the last pair with time <= t: binary search, and on every time <= t save the value and go right (left = mid + 1); otherwise go left.",
+  "approaches": [
+    {
+      "name": "Scan back from the newest",
+      "file": "linear.cpp",
+      "idea": "Same storage; get walks the key's list from the end and returns the first value with time <= t.",
+      "time": "set O(1), get O(n)",
+      "space": "O(total sets)",
+      "why": "A get may walk the whole list for that key (up to 2·10⁵ calls → too slow in the worst case)."
+    },
+    {
+      "name": "Binary search the timestamps",
+      "file": "binary-search.cpp",
+      "best": true,
+      "idea": "left = 0, right = size − 1, ans = \"\". values[mid].first <= t → ans = value, left = mid + 1; else right = mid − 1.",
+      "time": "set O(1), get O(log n)",
+      "space": "O(total sets)",
+      "why": "Each get halves the list each step.",
+      "viz": "viz/time-based-key-value-store.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is each key's list sorted without ever sorting it?",
+      "options": [
+        "set timestamps are strictly increasing, so push_back appends in time order",
+        "unordered_map keeps it sorted",
+        "Binary search sorts it",
+        "It isn't sorted"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "values[mid].first <= timestamp. Why left = mid + 1 and not stop?",
+      "options": [
+        "mid is valid, but a later pair might still be <= timestamp, and we want the latest",
+        "To avoid an infinite loop only",
+        "Because mid is too big",
+        "It should stop"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "get(\"love\", 5) when the only sets were at times 10 and 20?",
+      "options": [
+        "\"\": nothing was set at or before 5, so ans stays empty",
+        "\"high\"",
+        "\"low\"",
+        "It crashes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why auto& values = mp[key] and not auto values?",
+      "options": [
+        "& avoids copying the whole vector on every get",
+        "Without & it won't compile",
+        "It sorts the vector",
+        "No difference"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are set timestamps increasing? What does get return if nothing is early enough, or the key is missing?",
+    "Run the LeetCode example by hand: set foo bar 1, get 1, get 3, set foo bar2 4, get 4, get 5.",
+    "Scanning the list on every get: time, and why too slow?",
+    "\"Sorted list, find the last element <= t\": which pattern?",
+    "What do you store per key? What do you do with mid when its time is <= t, or > t?",
+    "Code it, saying \"last time <= t, save and go right\".",
+    "Dry-run times [1,3,5,7,9,11,13] with get 8: which mids, what's ans?",
+    "Cost of set and get? Could upper_bound do the search in one line?"
+  ]
+}

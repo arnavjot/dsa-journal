@@ -1,0 +1,86 @@
+{
+  "id": 242,
+  "title": "Valid Anagram",
+  "keyIdea": "Anagrams have the same letter counts. Keep one counter per letter: +1 for each letter of s, −1 for each letter of t. If every counter ends at 0, the letters cancel exactly and it's an anagram.",
+  "approaches": [
+    {
+      "name": "Sort both",
+      "file": "sorting.cpp",
+      "idea": "Sort both strings. Anagrams turn into the exact same string, so just compare them.",
+      "time": "O(n log n)",
+      "space": "O(1) extra",
+      "why": "Two sorts of n characters each, then an O(n) comparison. Sorting is in place, so no extra container (std::sort uses O(log n) stack). s and t are passed by value, so the caller's strings stay untouched."
+    },
+    {
+      "name": "Hash map counts",
+      "file": "hash-map.cpp",
+      "idea": "Count each character of s in an unordered_map, then subtract for each character of t. If a count ever drops below 0, t has a letter s doesn't have enough of.",
+      "time": "O(n)",
+      "space": "O(k)",
+      "why": "One pass over each string, O(1) average per map update. k is the number of different characters. This is the answer to the Unicode follow-up.",
+      "viz": "viz/valid-anagram-hash-map.html"
+    },
+    {
+      "name": "Count array of 26",
+      "file": "count-array.cpp",
+      "best": true,
+      "idea": "freq[26], one slot per letter. In one loop: freq[s[i]-'a']++ and freq[t[i]-'a']--. Then every slot must be 0.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass over the strings plus a fixed 26 checks. The array is always 26 ints no matter how long the strings are, so the space is constant.",
+      "viz": "viz/valid-anagram.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does s[i] - 'a' give you?",
+      "options": [
+        "The letter's slot 0–25 ('a' → 0, 'z' → 25)",
+        "The ASCII code of the letter",
+        "The position of the letter in s",
+        "1 if it's a vowel"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "After the loop, freq['c'] = −1. What does that mean?",
+      "options": [
+        "t has one more 'c' than s",
+        "s has one more 'c' than t",
+        "'c' doesn't appear anywhere",
+        "It's an anagram"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the space O(1) even though we use an array?",
+      "options": [
+        "It's always 26 ints, whatever the string length",
+        "Arrays don't use memory",
+        "Because we only use one loop",
+        "It isn't O(1)"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Follow-up: the strings can contain any Unicode characters. What do you change?",
+      "options": [
+        "Use an unordered_map<char/int, int> instead of freq[26]",
+        "Make the array size 52",
+        "Sort only s",
+        "Nothing, it already works"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Only lowercase a–z? What should happen if the lengths differ?",
+    "Try anagram/nagaram, rat/car and aacc/ccac. Which one fools a \"same letters\" check?",
+    "Sorting both strings: time? Why does it work?",
+    "Same letters, same counts, only 26 letters: what fits better than a hash map?",
+    "How does one array with +1 and −1 replace two? What does s[i] - 'a' give you?",
+    "Code the length check, the counting loop and the zero check.",
+    "Dry-run rat/car: which slot is the first non-zero, and what does its sign mean?",
+    "Time and space? What changes for the Unicode follow-up?"
+  ]
+}

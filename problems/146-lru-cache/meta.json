@@ -1,0 +1,97 @@
+{
+  "id": 146,
+  "title": "LRU Cache",
+  "keyIdea": "Hash map key → node + doubly linked list ordered by use (head side = most recent, tail side = least recent). get/put move the key's node to the front; when full, evict the node before tail. Dummy head/tail remove edge cases. Every operation is O(1).",
+  "approaches": [
+    {
+      "name": "Your old solution (map + list)",
+      "file": "old-solution.cpp",
+      "idea": "Same structure. Updating a key unlinks the old node and inserts a new one; unlinked nodes are never deleted.",
+      "time": "O(1) per call",
+      "space": "O(capacity) + leaked nodes",
+      "why": "Correct and O(1), but leaks a node on every update and every eviction.",
+      "viz": "viz/lru-cache-old.html"
+    },
+    {
+      "name": "std::list + splice",
+      "file": "std-list-splice.cpp",
+      "idea": "list<pair<key,value>> in use order; map key → iterator. splice moves to the front, pop_back evicts.",
+      "time": "O(1) per call",
+      "space": "O(capacity)",
+      "why": "Same design using the standard library, no manual memory.",
+      "viz": "viz/lru-cache-list.html"
+    },
+    {
+      "name": "Map + doubly linked list (clean)",
+      "file": "clean-dll.cpp",
+      "best": true,
+      "idea": "unlink + pushFront helpers. Existing key: update val in place and move to front. Full: unlink tail->prev, erase its key, delete it.",
+      "time": "O(1) per call",
+      "space": "O(capacity)",
+      "why": "A few pointer changes and one map operation per call; no wasted or leaked nodes.",
+      "viz": "viz/lru-cache.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why do you need both a hash map and a linked list?",
+      "options": [
+        "The map finds a key's node in O(1); the list keeps use order and moves/evicts in O(1)",
+        "The map is for values only",
+        "The list is for sorting keys",
+        "Either one alone is enough"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why must each node store its key?",
+      "options": [
+        "On eviction you only have tail->prev, and you need its key to erase it from the map",
+        "To sort the list",
+        "To compare values",
+        "It doesn't need to"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What did the old solution do wrong?",
+      "options": [
+        "Removed nodes were unlinked but never deleted (a memory leak), and updates made a new node",
+        "get returned wrong values",
+        "It was O(n)",
+        "Eviction removed the newest key"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why use dummy head and tail nodes?",
+      "options": [
+        "Every real node always has a prev and next, so no NULL checks when linking/unlinking",
+        "To store the capacity",
+        "To make it faster than O(1)",
+        "To keep keys sorted"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Does get change anything?",
+      "options": [
+        "Yes: the key becomes most recently used, so its node moves to the front",
+        "No, only put changes order",
+        "Only if the key is missing",
+        "It deletes the key"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What counts as \"using\" a key: get, put, or both? What does get return for a missing key?",
+    "Run the LeetCode example (capacity 2) by hand: which key is evicted each time?",
+    "A vector with timestamps, scanning to find the oldest: time per call?",
+    "\"O(1) lookup + O(1) reorder + O(1) evict\": which two structures together?",
+    "What does each node store, and what do head and tail mean?",
+    "Code it with unlink and pushFront helpers, saying \"map finds, list orders\".",
+    "Dry-run put 1, put 2, put 1 (update), put 3 with capacity 2: which key is evicted?",
+    "Time and space? What would you change to avoid leaking memory?"
+  ]
+}

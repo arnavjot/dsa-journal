@@ -1,0 +1,78 @@
+{
+  "id": 39,
+  "title": "Combination Sum",
+  "keyIdea": "Backtracking with reuse: at each index either pick candidates[index] and stay on the same index (it may be used again), or skip it for good (index + 1). target == 0 → save; target < 0 or no candidates left → stop.",
+  "approaches": [
+    {
+      "name": "For loop from start",
+      "file": "for-loop.cpp",
+      "idea": "for i from start: if it fits, push, recurse with i (reuse), pop.",
+      "time": "Exponential: O(n^(t/m)) roughly",
+      "space": "O(t/m) recursion",
+      "why": "Same search as pick/skip, written as \"choose the next number\"; skips numbers that don't fit before recursing.",
+      "viz": "viz/combination-sum-for-loop.html"
+    },
+    {
+      "name": "Pick or skip",
+      "file": "pick-or-skip.cpp",
+      "best": true,
+      "idea": "Pick: push, dfs(index, target − c), pop. Skip: dfs(index + 1, target).",
+      "time": "Exponential: O(2^(t/m)) roughly",
+      "space": "O(t/m) recursion",
+      "why": "Each call branches in two; depth is bounded by target / smallest candidate.",
+      "viz": "viz/combination-sum.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does \"pick\" call dfs(index, …) and not index + 1?",
+      "options": [
+        "The same number may be used again",
+        "To avoid duplicates",
+        "It is a bug",
+        "To sort"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can't [2,3] and [3,2] both appear?",
+      "options": [
+        "Once a number is skipped you never come back to it, so numbers are always used in index order",
+        "Because of sorting",
+        "The answer removes them",
+        "They can"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When does a branch stop?",
+      "options": [
+        "target hits 0 (save), goes below 0, or no candidates are left",
+        "After 3 picks",
+        "When index is 0",
+        "Never"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How can sorting help?",
+      "options": [
+        "You can stop as soon as a candidate is bigger than the remaining target",
+        "It removes duplicates",
+        "It is required for correctness",
+        "It makes recursion shallower"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can a number be reused? Are candidates distinct? Does order matter?",
+    "Find all combinations of [2,3,6,7] summing to 7 by hand.",
+    "Why not try every multiset blindly? How big would that be?",
+    "\"All combinations reaching a target, with reuse\" → which technique?",
+    "What are the two choices at each index? What are the stop conditions?",
+    "Code it, saying \"pick and stay, or skip and move on\".",
+    "Dry-run [3,4], target 7.",
+    "Time and space? How does the for-loop version differ?"
+  ]
+}

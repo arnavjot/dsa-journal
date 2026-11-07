@@ -1,0 +1,68 @@
+{
+  "id": 42,
+  "title": "Trapping Rain Water",
+  "keyIdea": "Water above bar i = min(tallest on its left, tallest on its right) − height[i]. Two pointers: always process the lower side; if height[left] ≤ height[right], the right has a wall at least that tall, so left's water depends only on leftMax (and vice versa). O(n), O(1).",
+  "approaches": [
+    {
+      "name": "Prefix and suffix max arrays",
+      "file": "prefix-max.cpp",
+      "idea": "leftMax[i] and rightMax[i] = tallest bar at/left of i and at/right of i; water += min of the two − height[i].",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Three linear passes and two arrays of size n.",
+      "viz": "viz/trapping-rain-water-arrays.html"
+    },
+    {
+      "name": "Two pointers with leftMax / rightMax",
+      "file": "two-pointers.cpp",
+      "best": true,
+      "idea": "Move the lower side inward; update its max, or add max − height as water.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Each step settles one bar; only four integer variables.",
+      "viz": "viz/trapping-rain-water.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Water above a bar is…",
+      "options": [
+        "min(tallest left, tallest right) − its height (if positive)",
+        "tallest left − height",
+        "the gap to the next bar",
+        "max(left, right) − height"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can the lower side be settled with only its own max?",
+      "options": [
+        "The other side is at least as tall, so it isn't the limiting wall",
+        "The other side is always shorter",
+        "Because maxes are equal",
+        "It can't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[4,2,0,3,2,5] → ?",
+      "options": [
+        "9",
+        "6",
+        "5",
+        "12"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Bar width 1? Heights ≥ 0? What happens at the edges?",
+    "Do [4,2,0,3,2,5] by hand: water above each bar.",
+    "For each bar, scan left and right for the tallest: time?",
+    "\"Water depends on the smaller of two maxes\": how do two pointers know which max is smaller?",
+    "What do you update when a bar is a new max, and what do you add otherwise?",
+    "Code it, saying \"work on the lower side\".",
+    "Dry-run the bowl [5,1,2,1,5].",
+    "Time and space? How does the prefix-max version compare? What about the stack approach?"
+  ]
+}

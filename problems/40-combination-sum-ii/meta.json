@@ -1,0 +1,77 @@
+{
+  "id": 40,
+  "title": "Combination Sum II",
+  "keyIdea": "Sort. Backtrack with a for loop from index; each number used once (recurse with i + 1). At one level, skip a value equal to the one just tried (i > index && nums[i] == nums[i − 1]); break when a value exceeds the remaining target.",
+  "approaches": [
+    {
+      "name": "All subsets, then a set",
+      "file": "all-subsets-then-dedupe.cpp",
+      "idea": "Try all 2ⁿ subsets of the sorted array, keep those with the right sum in a set.",
+      "time": "O(n·2ⁿ·log)",
+      "space": "O(answers)",
+      "why": "Builds every subset, including all the repeated ones."
+    },
+    {
+      "name": "Sorted backtracking, skip duplicates",
+      "file": "sorted-skip-duplicates.cpp",
+      "best": true,
+      "idea": "for i from index: skip same-as-previous at this level; break if too big; push, dfs(i + 1, target − c), pop.",
+      "time": "O(2ⁿ) worst case, far less with pruning",
+      "space": "O(n) recursion",
+      "why": "Repeated combinations are never generated, and too-big values stop the loop.",
+      "viz": "viz/combination-sum-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why sort first?",
+      "options": [
+        "Equal values sit together (for the skip) and big values come last (for the break)",
+        "To return sorted answers only",
+        "It is required by the recursion",
+        "To remove duplicates"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does i > index && candidates[i] == candidates[i − 1] prevent?",
+      "options": [
+        "Starting the same level with an equal value again, which would repeat combinations",
+        "Using a number twice in one combination",
+        "Going too deep",
+        "Nothing"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why break and not continue when candidates[i] > target?",
+      "options": [
+        "Sorted, so every later value is too big as well",
+        "To save memory",
+        "continue would crash",
+        "No difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why recurse with i + 1?",
+      "options": [
+        "Each element may be used at most once",
+        "To allow reuse",
+        "To skip duplicates",
+        "To sort"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can a number be reused? Can the input have duplicates? May the answer repeat a combination?",
+    "Work out [10,1,2,7,6,1,5], target 8 by hand. Where would duplicates come from?",
+    "Generate all subsets and dedupe with a set: time?",
+    "\"Combinations, each used once, no repeated answers\" → what changes from LC 39?",
+    "When exactly do you skip a value? Why i > index and not i > 0?",
+    "Code it, saying \"sort, skip equal at the same level, break when too big\".",
+    "Dry-run [1,1,1,2], target 3.",
+    "Time and space? How is this like Subsets II (LC 90)?"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "id": 100,
+  "title": "Same Tree",
+  "keyIdea": "Walk both trees together. Both NULL → same. One NULL → different. Values differ → different. Otherwise the left subtrees and the right subtrees must both be the same.",
+  "approaches": [
+    {
+      "name": "BFS on pairs",
+      "file": "bfs.cpp",
+      "idea": "Queue pairs of nodes at the same position; any mismatch in presence or value → false.",
+      "time": "O(n)",
+      "space": "O(w)",
+      "why": "Each pair is checked once; the queue holds about one level.",
+      "viz": "viz/same-tree-bfs.html"
+    },
+    {
+      "name": "Recursion",
+      "file": "recursive.cpp",
+      "best": true,
+      "idea": "Both NULL → true; one NULL → false; equal values → isSameTree(left, left) && isSameTree(right, right).",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "One call per node pair; stops at the first difference thanks to &&.",
+      "viz": "viz/same-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why check \"both NULL\" before \"one NULL\"?",
+      "options": [
+        "If both are NULL, they're equal; only after ruling that out does \"one NULL\" mean different",
+        "Order doesn't matter",
+        "To avoid comparing values",
+        "Because NULL is 0"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[1,2] vs [1,null,2]: same?",
+      "options": [
+        "No: same values, but the 2 is on different sides",
+        "Yes",
+        "Only if values match",
+        "It crashes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does && do when the left pair is already different?",
+      "options": [
+        "The right pair is never checked",
+        "Both are always checked",
+        "It returns true",
+        "It checks the right pair first"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Same means same shape and same values? What about two empty trees?",
+    "Compare [1,2] and [1,null,2] by hand. Where do they differ?",
+    "Could you serialize both trees and compare strings? What would that cost?",
+    "\"Walk two trees in lockstep\": recursion on pairs. What are the base cases?",
+    "What are the three checks, and in which order?",
+    "Code it, naming each base case as you write it.",
+    "Dry-run [1,2,1] vs [1,1,2]: how many pairs get checked?",
+    "Time and space? How does Subtree of Another Tree (LC 572) reuse this?"
+  ]
+}

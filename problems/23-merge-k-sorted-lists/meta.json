@@ -1,0 +1,86 @@
+{
+  "id": 23,
+  "title": "Merge k Sorted Lists",
+  "keyIdea": "The next node of the answer is the smallest front among the k lists. Keep the fronts in a min-heap: pop the smallest, attach it, push its next. O(N log k). Or merge lists in pairs, halving their number each round: also O(N log k).",
+  "approaches": [
+    {
+      "name": "Collect every node and sort",
+      "file": "collect-and-sort.cpp",
+      "idea": "Put all N nodes in a vector, sort by value, relink.",
+      "time": "O(N log N)",
+      "space": "O(N)",
+      "why": "Ignores that the lists are already sorted."
+    },
+    {
+      "name": "Merge in pairs (divide and conquer)",
+      "file": "divide-and-conquer.cpp",
+      "idea": "Each round merges lists 0+1, 2+3, … with mergeTwoLists; k lists become k/2, then k/4 … until one is left.",
+      "time": "O(N log k)",
+      "space": "O(k)",
+      "why": "log k rounds, each touching every node once.",
+      "viz": "viz/merge-k-sorted-lists-divide.html"
+    },
+    {
+      "name": "Min-heap of the k fronts",
+      "file": "min-heap.cpp",
+      "best": true,
+      "idea": "Push every non-empty head. Pop the smallest, link it after tail, push its next if any.",
+      "time": "O(N log k)",
+      "space": "O(k)",
+      "why": "Each of the N nodes is pushed and popped once in a heap of at most k nodes.",
+      "viz": "viz/merge-k-sorted-lists.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does the compare class return a->val > b->val?",
+      "options": [
+        "priority_queue is a max-heap by default; reversing it puts the smallest value on top",
+        "To sort descending",
+        "Because values are negative",
+        "It makes no difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why push only tail->next after popping?",
+      "options": [
+        "Each list is sorted, so only the node right after the one taken can be needed next",
+        "To save memory only",
+        "Because the heap is full",
+        "All nodes must be pushed at the start"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is merging one list at a time into a growing result slow?",
+      "options": [
+        "The big result is walked again for every list: O(N·k)",
+        "It is not slower",
+        "It uses a heap",
+        "It skips nodes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the largest the heap ever gets?",
+      "options": [
+        "k (one front node per list)",
+        "N",
+        "log k",
+        "1"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can lists be empty, or contain empty lists? What do you return then?",
+    "Merge [1,4,5], [1,3,4], [2,6] by hand: how do you choose each next node?",
+    "Collect all values and sort: time?",
+    "\"Repeatedly take the smallest of k candidates\": which data structure?",
+    "What goes into the heap at the start, and what after each pop?",
+    "Code it, saying \"heap of fronts, pop, attach, push next\".",
+    "Dry-run Example 1: the heap after each pop?",
+    "Time and space? How does merging in pairs also reach O(N log k)?"
+  ]
+}

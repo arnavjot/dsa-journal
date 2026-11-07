@@ -1,0 +1,77 @@
+{
+  "id": 1046,
+  "title": "Last Stone Weight",
+  "keyIdea": "Every turn needs the two heaviest stones: use a max-heap. Pop two; if they differ push the difference. When at most one stone remains, return it (or 0).",
+  "approaches": [
+    {
+      "name": "Sort every round",
+      "file": "sort-every-round.cpp",
+      "idea": "Sort, take the last two, push back the difference, repeat.",
+      "time": "O(n² log n)",
+      "space": "O(1) extra",
+      "why": "Up to n rounds, each sorting the whole array."
+    },
+    {
+      "name": "Max-heap",
+      "file": "max-heap.cpp",
+      "best": true,
+      "idea": "Push all stones; while size > 1: pop two, push the difference if non-zero.",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "At most n − 1 rounds of O(log n) heap operations.",
+      "viz": "viz/last-stone-weight.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why a heap here?",
+      "options": [
+        "The two heaviest are needed again after every smash, and a heap gives them in O(log n)",
+        "To sort once",
+        "To find the median",
+        "Stones are unique"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What happens when the two stones are equal?",
+      "options": [
+        "Both are destroyed; nothing is pushed back",
+        "Both are pushed back",
+        "One is kept",
+        "The game ends"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is returned if no stones remain?",
+      "options": [
+        "0",
+        "-1",
+        "The last weight smashed",
+        "1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Which priority_queue gives the largest on top by default in C++?",
+      "options": [
+        "priority_queue<int> (a max-heap)",
+        "priority_queue<int, vector<int>, greater<int>>",
+        "set<int>",
+        "queue<int>"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What happens on equal weights? What if one stone or none is left?",
+    "Play Example 1 by hand.",
+    "Sort every round: cost?",
+    "\"Repeatedly take the largest two\" → which data structure?",
+    "What are the loop condition and the return value?",
+    "Code it, saying \"max-heap, pop two, push the difference\".",
+    "Dry-run [3,7,2].",
+    "Time and space?"
+  ]
+}

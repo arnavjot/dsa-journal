@@ -1,0 +1,77 @@
+{
+  "id": 212,
+  "title": "Word Search II",
+  "keyIdea": "Insert all words into a trie (store the full word at its end node). DFS from every cell, moving through the grid and the trie together; stop as soon as the trie has no link for the next letter. When a node holds a word, add it and clear it. Mark the path with # and restore on the way back.",
+  "approaches": [
+    {
+      "name": "Word Search (LC 79) once per word",
+      "file": "word-search-each-word.cpp",
+      "idea": "For every word, try a DFS from every cell.",
+      "time": "O(W · m·n · 4^L)",
+      "space": "O(L)",
+      "why": "Words with a common prefix repeat the same walks; nothing is shared."
+    },
+    {
+      "name": "Trie + one DFS from every cell",
+      "file": "trie-grid-dfs.cpp",
+      "best": true,
+      "idea": "dfs(r, c, node): follow node->links[board[r][c]] or stop; collect node->word; mark #, try 4 neighbours, restore.",
+      "time": "O(m·n · 4·3^(L−1)) worst case",
+      "space": "O(total letters) for the trie",
+      "why": "One walk serves every word sharing that prefix, and dead prefixes are cut immediately.",
+      "viz": "viz/word-search-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why use a trie instead of searching each word separately?",
+      "options": [
+        "Words with a common prefix share one walk, and the DFS stops when no word continues",
+        "A trie sorts the board",
+        "To use less code",
+        "It is the only correct way"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why set node->word = \"\" after adding it?",
+      "options": [
+        "So the same word isn't added again from another path",
+        "To free memory",
+        "To stop the DFS",
+        "Because words are unique"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why mark the cell # and then restore it?",
+      "options": [
+        "A cell can be used once in a path, but other paths may use it later",
+        "To delete the letter",
+        "To count visits",
+        "To mark found words"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why store the whole word in the node instead of a flag?",
+      "options": [
+        "So the word can be added to ans directly, without rebuilding it from the path",
+        "Flags don't work in tries",
+        "To save memory",
+        "It is required by LeetCode"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can a cell be reused in one word? Can the same word be found twice? Are words unique?",
+    "Find oath and eat in Example 1 by hand. Where would a search for \"pea\" stop?",
+    "Run Word Search (LC 79) for every word: time?",
+    "\"Many words on one grid\" → what shared structure prunes the search?",
+    "What does the DFS carry? When does it stop, and what happens at a node holding a word?",
+    "Code it, saying \"trie of words, DFS grid and trie together, mark and restore\".",
+    "Dry-run board [\"ab\",\"cd\"], word abcb: why is it not found?",
+    "Time and space? What pruning could you add (remove finished trie branches)?"
+  ]
+}

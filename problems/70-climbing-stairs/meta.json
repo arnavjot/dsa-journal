@@ -1,0 +1,78 @@
+{
+  "id": 70,
+  "title": "Climbing Stairs",
+  "keyIdea": "ways(i) = ways(i − 1) + ways(i − 2): the last move onto step i is 1 step or 2 steps. Base ways(1) = 1, ways(2) = 2. Only the last two values matter, so two variables give O(1) space.",
+  "approaches": [
+    {
+      "name": "Memoization (top-down)",
+      "file": "memoization.cpp",
+      "idea": "memo(n) = memo(n − 1) + memo(n − 2), cached in dp so each value is computed once.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "n distinct subproblems, each O(1) once cached; dp array plus recursion stack.",
+      "viz": "viz/climbing-stairs-memo.html"
+    },
+    {
+      "name": "Two variables (bottom-up)",
+      "file": "two-variables.cpp",
+      "best": true,
+      "idea": "prev2 = 1, prev1 = 2; for i = 3..n: curr = prev1 + prev2, slide forward.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, keeping only the two values the recurrence reads.",
+      "viz": "viz/climbing-stairs.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is ways(i) = ways(i − 1) + ways(i − 2)?",
+      "options": [
+        "The last move onto step i is either 1 step from i − 1 or 2 steps from i − 2, and these never overlap",
+        "Because of Fibonacci only",
+        "It is a guess",
+        "Because n is small"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What do plain recursion and memoization cost?",
+      "options": [
+        "About 2ⁿ calls vs O(n)",
+        "Both O(n)",
+        "Both O(2ⁿ)",
+        "O(n²) vs O(n)"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why do two variables suffice?",
+      "options": [
+        "Each value only reads the previous two",
+        "Because n ≤ 45",
+        "The array is sorted",
+        "They don't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "ways(4)?",
+      "options": [
+        "5",
+        "4",
+        "6",
+        "8"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What moves are allowed? What are the answers for n = 1 and 2?",
+    "Count the ways for n = 4 by hand.",
+    "Plain recursion: how many calls for n = 30, and why?",
+    "\"Count the ways, built from smaller answers\" → which technique?",
+    "What is the recurrence, and what are the base cases?",
+    "Code the two-variable loop, saying \"add the last two, slide\".",
+    "Dry-run n = 5.",
+    "Time and space? How do memo, table and two variables compare?"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": 3,
+  "title": "Longest Substring Without Repeating Characters",
+  "keyIdea": "Slide a window [left, right] that never contains a repeat, with its characters in a set. Move right one step at a time; if s[right] is already inside, erase from the left until it isn't. Each character enters and leaves the window once: O(n).",
+  "approaches": [
+    {
+      "name": "Brute force: every start",
+      "file": "brute.cpp",
+      "idea": "For each start i, extend j with a fresh set until a repeat appears; track the longest.",
+      "time": "O(n · k)",
+      "space": "O(k)",
+      "why": "Each start can scan up to k characters (k = alphabet / longest answer), so up to O(n²) on long strings."
+    },
+    {
+      "name": "Sliding window + set",
+      "file": "sliding-window.cpp",
+      "best": true,
+      "idea": "For each right: while s[right] is in the window, erase s[left] and left++. Then insert s[right] and update maxi with right − left + 1.",
+      "time": "O(n)",
+      "space": "O(k)",
+      "why": "right moves n times and left moves at most n times in total; set operations are O(1).",
+      "viz": "viz/longest-substring-without-repeating-characters.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why a while (not an if) when shrinking?",
+      "options": [
+        "The old copy of s[right] may be several characters in, and everything up to it must leave",
+        "To skip one character only",
+        "It's the same as if",
+        "To speed up"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is it O(n) with a loop inside a loop?",
+      "options": [
+        "left only moves forward, so all the inner loops together erase at most n characters",
+        "The inner loop runs once",
+        "It isn't, it's O(n²)",
+        "Because sets are sorted"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "\"pwwkew\" → ?",
+      "options": [
+        "3 (\"wke\")",
+        "4 (\"pwke\" isn't a substring)",
+        "2",
+        "6"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Substring (contiguous) or subsequence? Which characters can appear (spaces, digits)? Empty string?",
+    "Do \"pwwkew\" by hand: which windows are valid?",
+    "Every start + extend until a repeat: time?",
+    "\"Longest contiguous stretch with a rule\": which pattern?",
+    "What do you store for the window, and when exactly do you shrink it?",
+    "Code it, saying \"grow right, shrink left while there's a repeat\".",
+    "Dry-run \"abcdeafg\": how far does left jump when the second 'a' arrives?",
+    "Time and space? How would storing last indices let left jump instead of step?"
+  ]
+}

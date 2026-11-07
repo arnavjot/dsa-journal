@@ -1,0 +1,78 @@
+{
+  "id": 261,
+  "title": "Graph Valid Tree",
+  "keyIdea": "A tree = connected + no cycle, which also forces exactly n − 1 edges. Check the count, then DFS from 0 (skipping the parent: a visited non-parent neighbour = cycle) and make sure every node was visited. Or Union-Find: any edge joining two nodes with the same root = cycle.",
+  "approaches": [
+    {
+      "name": "Union-Find",
+      "file": "union-find.cpp",
+      "idea": "edges == n − 1, then union every edge; equal roots → false; otherwise true.",
+      "time": "O(n · α(n))",
+      "space": "O(n)",
+      "why": "n − 1 near-constant unions; n − 1 successful merges leave exactly one group.",
+      "viz": "viz/graph-valid-tree-uf.html"
+    },
+    {
+      "name": "Edge count + DFS with parent",
+      "file": "dfs-parent.cpp",
+      "best": true,
+      "idea": "edges == n − 1; DFS from 0 skipping the parent; a visited non-parent neighbour → false; finally all nodes visited.",
+      "time": "O(n + E)",
+      "space": "O(n + E)",
+      "why": "Each node and edge is visited once.",
+      "viz": "viz/graph-valid-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why skip the parent in the DFS?",
+      "options": [
+        "In an undirected graph the edge you came in on shows up again; it isn't a cycle",
+        "To save time only",
+        "The parent is never visited",
+        "It is a cycle"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Is \"edges == n − 1\" enough by itself?",
+      "options": [
+        "No: a cycle plus an isolated node can also have n − 1 edges",
+        "Yes, always",
+        "Only for n > 2",
+        "Only without duplicates"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the Union-Find version, why is no connectivity check needed at the end?",
+      "options": [
+        "n − 1 successful merges take n groups down to exactly 1",
+        "Union-Find checks it automatically",
+        "It is needed",
+        "Because of path compression"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What makes a graph a tree?",
+      "options": [
+        "Connected and no cycles (and so n − 1 edges)",
+        "n edges",
+        "No leaves",
+        "Every node has degree 2"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What exactly is a valid tree? How many edges must it have?",
+    "Decide Example 1 and Example 2 by hand.",
+    "What two properties do you need to check?",
+    "\"Connected + acyclic\" → which two techniques can check it?",
+    "How does the DFS avoid mistaking the parent edge for a cycle?",
+    "Code it, saying \"count edges, DFS with parent, all visited\".",
+    "Dry-run n = 4 with edges 0-1, 1-2, 2-0.",
+    "Time and space? Union-Find vs DFS here?"
+  ]
+}

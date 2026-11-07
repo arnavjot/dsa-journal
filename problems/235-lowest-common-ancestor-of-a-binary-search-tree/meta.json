@@ -1,0 +1,67 @@
+{
+  "id": 235,
+  "title": "Lowest Common Ancestor of a Binary Search Tree",
+  "keyIdea": "Use the BST order: if p and q are both smaller than the node, go left; both bigger, go right. The first node where they split (or that equals one of them) is the LCA. One path down: O(h).",
+  "approaches": [
+    {
+      "name": "Any binary tree (search both sides)",
+      "file": "any-binary-tree.cpp",
+      "idea": "Return p or q when you hit one; ask both subtrees; if both sides found something, this node is the LCA, else pass up whichever side found one.",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Ignores the BST order, so it may visit every node. Works for LC 236 (plain binary tree)."
+    },
+    {
+      "name": "BST walk",
+      "file": "bst.cpp",
+      "best": true,
+      "idea": "Both smaller → recurse left. Both bigger → recurse right. Otherwise return root.",
+      "time": "O(h)",
+      "space": "O(h)",
+      "why": "Only one path from the root is followed. h = log n when balanced. (Written as a loop it would be O(1) space.)",
+      "viz": "viz/lowest-common-ancestor-of-a-binary-search-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "p = 3, q = 5, root = 6. What next?",
+      "options": [
+        "Go left: both are smaller than 6",
+        "Go right",
+        "Return 6",
+        "Search both sides"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "p = 2 is an ancestor of q = 4. What's the LCA?",
+      "options": [
+        "2: a node counts as its own ancestor",
+        "The root",
+        "4",
+        "Their parent"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the BST version O(h) instead of O(n)?",
+      "options": [
+        "The value comparisons tell you which single side to go down",
+        "It uses a hash map",
+        "It stops at leaves",
+        "It isn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is it a BST? Are p and q guaranteed to be in the tree? Can a node be its own ancestor?",
+    "Find the LCA of 2 and 8, then of 2 and 4, in [6,2,8,0,4,7,9,null,null,3,5].",
+    "For any binary tree, how would you find it (search both sides)? Time?",
+    "What does the BST order tell you when both values are smaller than the node?",
+    "What are the three cases at each node?",
+    "Code it, saying \"both left, both right, or split\".",
+    "Dry-run p = 3, q = 5: which nodes do you visit?",
+    "Time and space? How does LC 236 (plain binary tree) change the approach?"
+  ]
+}

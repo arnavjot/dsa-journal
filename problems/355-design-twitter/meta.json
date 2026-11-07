@@ -1,0 +1,77 @@
+{
+  "id": 355,
+  "title": "Design Twitter",
+  "keyIdea": "Store tweets per user with a global timestamp; store followees in a set. getNewsFeed merges the users' tweet lists newest-first with a max-heap holding one tweet per user, stopping at 10 (like merging k sorted lists).",
+  "approaches": [
+    {
+      "name": "Collect all tweets and sort",
+      "file": "collect-and-sort.cpp",
+      "idea": "Gather every tweet of the user and their followees, sort newest first, take 10.",
+      "time": "getNewsFeed O(T log T)",
+      "space": "O(T)",
+      "why": "Sorts every relevant tweet even though only 10 are needed."
+    },
+    {
+      "name": "Max-heap merge of each user's newest tweets",
+      "file": "heap-merge.cpp",
+      "best": true,
+      "idea": "Push each user's newest tweet {time, user, index}; pop the newest, push that user's next older one; stop at 10.",
+      "time": "getNewsFeed O(F + 10 log F)",
+      "space": "O(F)",
+      "why": "The heap holds one tweet per followed user; only 10 pops are ever needed.",
+      "viz": "viz/design-twitter.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why a global timestamp instead of tweet IDs for order?",
+      "options": [
+        "Tweet IDs are not given in time order; the counter is",
+        "IDs can repeat",
+        "Timestamps are smaller",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does the heap hold only one tweet per user at a time?",
+      "options": [
+        "Each user's list is in time order, so only its newest unused tweet can be next overall",
+        "To save memory only",
+        "The heap can't hold more",
+        "To avoid duplicates"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why insert userId into the users set?",
+      "options": [
+        "Your own tweets belong in your feed too",
+        "To follow yourself on LeetCode",
+        "It is required by the heap",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What problem is getNewsFeed really?",
+      "options": [
+        "Merge k sorted lists, stopping after 10 elements",
+        "Top k frequent",
+        "Binary search",
+        "Two pointers"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What must the feed contain and in which order? Can a user follow themselves? Unfollow someone they don't follow?",
+    "Run the LeetCode example by hand.",
+    "Collect every tweet and sort: cost per feed?",
+    "\"Newest 10 from several time-ordered lists\" → which known problem?",
+    "What do you store per user? What goes into the heap and what comes back out?",
+    "Code it, saying \"timestamp tweets, follow sets, heap merge, stop at 10\".",
+    "Dry-run three users with interleaved posts.",
+    "Costs of each operation? What if a user follows thousands of people?"
+  ]
+}

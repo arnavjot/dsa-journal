@@ -1,0 +1,77 @@
+{
+  "id": 295,
+  "title": "Find Median from Data Stream",
+  "keyIdea": "Two heaps: maxi (max-heap) holds the smaller half, mini (min-heap) the bigger half, sizes equal or off by one. The median is a top or the average of both tops. On add, decide the side by comparing with the current median, and move a top across when a side would get two bigger.",
+  "approaches": [
+    {
+      "name": "Sorted array, insert in place",
+      "file": "sorted-insert.cpp",
+      "idea": "Keep all numbers sorted; insert with upper_bound; read the middle.",
+      "time": "addNum O(n), findMedian O(1)",
+      "space": "O(n)",
+      "why": "Each insert shifts up to n elements."
+    },
+    {
+      "name": "Two heaps (smaller half / bigger half)",
+      "file": "two-heaps.cpp",
+      "best": true,
+      "idea": "Three cases by size: equal → push to one side, median = its top; maxi bigger → keep or move maxi's top across; mini bigger → keep or move mini's top across; median = average of tops.",
+      "time": "addNum O(log n), findMedian O(1)",
+      "space": "O(n)",
+      "why": "Each add does a constant number of heap operations.",
+      "viz": "viz/find-median-from-data-stream.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does maxi.top() hold?",
+      "options": [
+        "The largest number of the smaller half",
+        "The overall maximum",
+        "The median always",
+        "The smallest number"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why must the sizes stay within one of each other?",
+      "options": [
+        "Then the middle one or two numbers are exactly the heap tops",
+        "To save memory",
+        "Heaps require it",
+        "For sorting"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "maxi already has one more element and the new number is ≤ median. What happens?",
+      "options": [
+        "maxi's top moves to mini, then the new number goes into maxi",
+        "It goes into maxi directly",
+        "It is ignored",
+        "mini's top moves to maxi"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Cost of findMedian?",
+      "options": [
+        "O(1): it reads the stored median (or the two tops)",
+        "O(log n)",
+        "O(n)",
+        "O(n log n)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What is the median for an even count? Can numbers repeat or be negative?",
+    "Add 5, 15, 1, 3 by hand and write the median after each.",
+    "Keep a sorted array: cost per add?",
+    "\"Running median\" → which two data structures, and what does each hold?",
+    "What are the three cases on add? When does a top move across?",
+    "Code it, saying \"smaller half max-heap, bigger half min-heap, balance\".",
+    "Dry-run 6, 5, 4, 3, 2.",
+    "Time and space? What if all numbers are in 0..100 (follow-up)?"
+  ]
+}

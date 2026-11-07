@@ -1,0 +1,77 @@
+{
+  "id": 105,
+  "title": "Construct Binary Tree from Preorder and Inorder Traversal",
+  "keyIdea": "The next unused preorder value is the root of the current range. Its position in inorder (from a value → index map) splits the range: left part builds the left subtree, right part the right subtree. Recurse left first with a shared preIndex.",
+  "approaches": [
+    {
+      "name": "Search the root in inorder each time",
+      "file": "linear-search.cpp",
+      "idea": "Same recursion, but find the root's position by scanning the inorder range.",
+      "time": "O(n²)",
+      "space": "O(h)",
+      "why": "Up to O(n) scan for each of n nodes (e.g. a chain)."
+    },
+    {
+      "name": "Value → index map + recursion",
+      "file": "hashmap-recursion.cpp",
+      "best": true,
+      "idea": "Map each inorder value to its index. solve(start, end): root = preorder[preIndex++], split at map[root], build left then right.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each node is created once with an O(1) lookup; map O(n), recursion O(h).",
+      "viz": "viz/construct-binary-tree-from-preorder-and-inorder-traversal.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is preorder[preIndex] the root of the current range?",
+      "options": [
+        "Preorder lists every root before its subtrees, and ranges are built in that same order",
+        "It is the smallest value",
+        "It is in the middle",
+        "Only for balanced trees"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does the root's position in inorder tell you?",
+      "options": [
+        "Everything left of it in the range is the left subtree; everything right is the right subtree",
+        "Its depth",
+        "Its preorder index",
+        "Nothing"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why build the left subtree before the right?",
+      "options": [
+        "Preorder is root, left, right, so preIndex reaches the left subtree's values first",
+        "To save memory",
+        "It doesn't matter",
+        "Because inorder goes left first only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does this need unique values?",
+      "options": [
+        "The map must give one position per value to split the range",
+        "For the recursion to stop",
+        "To sort the arrays",
+        "It doesn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are values unique? Do both arrays always describe the same tree?",
+    "Build the tree for pre [3,9,20,15,7], in [9,3,15,20,7] by hand: how do you find each root?",
+    "Searching each root in inorder: time?",
+    "\"Rebuild a tree from two traversals\": what does each traversal tell you?",
+    "What are the arguments of the recursive call? When is a range empty?",
+    "Code it, saying \"next preorder = root, map splits inorder\".",
+    "Dry-run the left chain pre [3,2,1], in [1,2,3]: which ranges are called?",
+    "Time and space? Could you do it from postorder + inorder (LC 106)?"
+  ]
+}

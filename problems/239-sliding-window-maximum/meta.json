@@ -1,0 +1,67 @@
+{
+  "id": 239,
+  "title": "Sliding Window Maximum",
+  "keyIdea": "Keep the window's numbers in a structure that knows its maximum. An ordered map with counts gives the max as mp.rbegin() in O(log k) per step; a monotonic deque of decreasing values gives it at the front in O(1) amortized.",
+  "approaches": [
+    {
+      "name": "Ordered map with counts (your solution)",
+      "file": "ordered-map.cpp",
+      "idea": "mp[number] = copies in the window. Slide: decrement the leaving number (erase at 0), add the new one, max = mp.rbegin()->first.",
+      "time": "O(n log k)",
+      "space": "O(k)",
+      "why": "Each insert/erase in a balanced BST map costs O(log k).",
+      "viz": "viz/sliding-window-maximum.html"
+    },
+    {
+      "name": "Monotonic deque",
+      "file": "monotonic-deque.cpp",
+      "best": true,
+      "idea": "Deque of indices with decreasing values: drop the front when it leaves the window, drop smaller values from the back before pushing i; the front is the max.",
+      "time": "O(n)",
+      "space": "O(k)",
+      "why": "Every index is pushed once and popped at most once."
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why store counts in the map instead of just the numbers?",
+      "options": [
+        "A number can appear several times in the window; it should disappear only when its last copy leaves",
+        "To sort them",
+        "For speed",
+        "Maps need values"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Where is the window max in an ordered map?",
+      "options": [
+        "The last key: mp.rbegin()->first",
+        "The first key",
+        "The middle",
+        "Wherever it was inserted"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can a monotonic deque drop smaller values from the back?",
+      "options": [
+        "A newer, bigger value will outlast them in every future window, so they can never be the max",
+        "They're duplicates",
+        "To keep it sorted ascending",
+        "It can't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "How many windows are there? Can k be 1 or n? Negative numbers?",
+    "Do [1,3,-1,-3,5,3,6,7], k = 3 by hand.",
+    "Scan each window for its max: time?",
+    "\"Max of a moving window\": what structure keeps the max cheaply as numbers come and go?",
+    "How do you remove the leaving number correctly when it appears more than once?",
+    "Code it, saying \"out, in, read the biggest\".",
+    "Dry-run [7,7,2,7,1], k = 2: when does 7 actually leave the map?",
+    "Time and space? How does the monotonic deque get O(n)?"
+  ]
+}

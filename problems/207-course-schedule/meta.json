@@ -1,0 +1,78 @@
+{
+  "id": 207,
+  "title": "Course Schedule",
+  "keyIdea": "All courses can be finished exactly when the prerequisite graph has no cycle. Kahn: repeatedly take courses with indegree 0; if all n get taken there is no cycle. Or DFS with a \"currently on the path\" array.",
+  "approaches": [
+    {
+      "name": "DFS cycle detection",
+      "file": "dfs-cycle-check.cpp",
+      "idea": "DFS from each unvisited course; dfstrack marks the current path; reaching a course on the path = cycle.",
+      "time": "O(V + E)",
+      "space": "O(V + E)",
+      "why": "Each course and edge is explored once.",
+      "viz": "viz/course-schedule-dfs.html"
+    },
+    {
+      "name": "Kahn's algorithm (BFS on indegrees)",
+      "file": "kahn-bfs.cpp",
+      "best": true,
+      "idea": "Queue indegree-0 courses; each taken course lowers its dependents' indegrees; count how many get taken.",
+      "time": "O(V + E)",
+      "space": "O(V + E)",
+      "why": "Each course is queued once and each edge relaxed once.",
+      "viz": "viz/course-schedule.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "[a, b] means b before a. Which way does the edge go?",
+      "options": [
+        "b → a",
+        "a → b",
+        "Both ways",
+        "No edge"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does a cycle stop Kahn's algorithm from taking every course?",
+      "options": [
+        "Every course on the cycle waits for another one on it, so none reaches indegree 0",
+        "Cycles are skipped",
+        "The queue overflows",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the DFS version, what is the difference between visited and dfstrack?",
+      "options": [
+        "visited = seen ever; dfstrack = on the current path right now",
+        "They are the same",
+        "dfstrack counts visits",
+        "visited is for cycles only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Time complexity?",
+      "options": [
+        "O(V + E)",
+        "O(V²)",
+        "O(E log V)",
+        "O(V · E)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What does a prerequisite pair mean? Can there be duplicates?",
+    "Decide Example 1 and Example 2 by hand.",
+    "Try every order of courses: cost?",
+    "\"Order with dependencies / detect a cycle in a directed graph\" → which algorithms?",
+    "What do indegree and the queue mean in Kahn's algorithm?",
+    "Code it, saying \"indegree 0 → take it → unlock others\".",
+    "Dry-run 4 courses with the cycle 1 → 2 → 3 → 1.",
+    "Time and space? How does the DFS version detect a cycle?"
+  ]
+}

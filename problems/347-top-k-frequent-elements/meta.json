@@ -1,0 +1,75 @@
+{
+  "id": 347,
+  "title": "Top K Frequent Elements",
+  "keyIdea": "Count with a hash map, then keep a min-heap of (count, number) of size k: push each pair and pop when the size goes over k. The smallest count is always on top, so it's the one removed; the k survivors are the most frequent.",
+  "approaches": [
+    {
+      "name": "Brute force: count with visited",
+      "file": "brute.cpp",
+      "idea": "For each unvisited number, count its copies with an inner loop, then sort the (count, number) pairs and take the first k.",
+      "time": "O(n²)",
+      "space": "O(n)",
+      "why": "The inner loop re-scans the array for every new number."
+    },
+    {
+      "name": "Hash map + sort",
+      "file": "sort.cpp",
+      "idea": "Count with a map, put (count, number) pairs in a vector, sort descending, take the first k.",
+      "time": "O(n + d log d)",
+      "space": "O(d)",
+      "why": "Counting is O(n); sorting the d distinct numbers is O(d log d)."
+    },
+    {
+      "name": "Hash map + min-heap of size k",
+      "file": "heap.cpp",
+      "best": true,
+      "idea": "Count, then push (count, num) into a min-heap and pop whenever its size exceeds k. Pop everything left into the answer.",
+      "time": "O(n + d log k)",
+      "space": "O(d + k)",
+      "why": "The heap never holds more than k + 1 pairs, so each push/pop is O(log k).",
+      "viz": "viz/top-k-frequent-elements.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why a MIN-heap to find the MOST frequent?",
+      "options": [
+        "When it overflows you drop the least frequent, which a min-heap keeps on top",
+        "Min-heaps are faster",
+        "To sort ascending",
+        "It should be a max-heap"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why push (count, num) and not (num, count)?",
+      "options": [
+        "Pairs compare by their first element, so the heap orders by count",
+        "num is smaller",
+        "It doesn't matter",
+        "To break ties by count"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Can you beat O(n log k)?",
+      "options": [
+        "Yes: bucket sort by count (counts are at most n) gives O(n)",
+        "No",
+        "Only with sorting",
+        "Only for k = 1"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is the answer unique? Any order allowed? Range of k?",
+    "Do [1,1,1,2,2,3], k = 2 by hand: counts, then which two survive?",
+    "Count by re-scanning, then sort: time?",
+    "\"Top k by some score\": which structure keeps only the best k cheaply?",
+    "What goes into the heap, what's on top, and when do you pop?",
+    "Code it, saying \"count, push, pop if over k\".",
+    "Dry-run [4,1,-1,2,-1,2,3], k = 2: what's in the heap after each push?",
+    "Time and space? How would bucket sort make it O(n)?"
+  ]
+}

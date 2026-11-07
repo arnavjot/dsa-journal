@@ -1,0 +1,78 @@
+{
+  "id": 141,
+  "title": "Linked List Cycle",
+  "keyIdea": "Two pointers: slow moves 1 node, fast moves 2. No cycle → fast reaches NULL. Cycle → inside the loop fast gains 1 node per step on slow, so they must meet.",
+  "approaches": [
+    {
+      "name": "Hash set of visited nodes",
+      "file": "hash-set.cpp",
+      "idea": "Walk the list; a node already in the set means a cycle; NULL means none.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each node visited once, but the set stores them all.",
+      "viz": "viz/linked-list-cycle-hash-set.html"
+    },
+    {
+      "name": "Fast and slow pointers (Floyd)",
+      "file": "floyd.cpp",
+      "best": true,
+      "idea": "slow = slow->next, fast = fast->next->next while fast and fast->next exist; equal → true.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "fast reaches the end, or catches slow within one lap of the cycle.",
+      "viz": "viz/linked-list-cycle.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why must fast and slow meet if there is a cycle?",
+      "options": [
+        "Inside the cycle the gap shrinks by exactly 1 each step, so it reaches 0 without jumping over it",
+        "fast is faster",
+        "They start together",
+        "Only for even-length cycles"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why check fast->next != NULL too?",
+      "options": [
+        "fast jumps two nodes; fast->next->next would crash if fast->next were NULL",
+        "To find the middle",
+        "To skip the head",
+        "It is not needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why compare nodes (fast == slow), not values?",
+      "options": [
+        "Different nodes can hold the same value",
+        "Values are slower to compare",
+        "Values are always unique",
+        "It makes no difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Space of the hash-set version vs Floyd?",
+      "options": [
+        "O(n) vs O(1)",
+        "O(1) vs O(n)",
+        "Both O(n)",
+        "Both O(1)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can the list be empty? How is the cycle given (pos), and does your function see pos?",
+    "Draw [3,2,0,-4] with the tail linking to index 1. Walk it by hand: how do you know you are looping?",
+    "Remembering visited nodes in a set: time and space?",
+    "\"Detect a loop with O(1) memory\": which pattern?",
+    "How fast does each pointer move? What are the stop conditions?",
+    "Code it, saying \"slow 1, fast 2, meet = cycle\".",
+    "Dry-run [1,2] with pos 0: where are slow and fast after each step?",
+    "Time and space? How does LC 142 find where the cycle starts?"
+  ]
+}

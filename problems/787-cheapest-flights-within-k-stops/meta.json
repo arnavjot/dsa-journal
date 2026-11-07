@@ -1,0 +1,78 @@
+{
+  "id": 787,
+  "title": "Cheapest Flights Within K Stops",
+  "keyIdea": "The stop limit breaks plain Dijkstra (a cheap route may have too many stops). BFS by number of flights with (stops, city, cost) and a best-price array, skipping entries past k stops; or Bellman-Ford for k + 1 rounds, each reading only the previous round's prices.",
+  "approaches": [
+    {
+      "name": "Bellman-Ford, k + 1 rounds",
+      "file": "bellman-ford-k-rounds.cpp",
+      "idea": "dist[src] = 0; repeat k + 1 times: next = dist; relax every flight from dist into next; dist = next.",
+      "time": "O((k + 1) · E)",
+      "space": "O(n)",
+      "why": "k + 1 passes over all flights; the copy keeps it to one more flight per round.",
+      "viz": "viz/cheapest-flights-within-k-stops-bellman-ford.html"
+    },
+    {
+      "name": "BFS by number of stops",
+      "file": "bfs-by-stops.cpp",
+      "best": true,
+      "idea": "Queue (stops, city, cost); skip stops > k; a flight that lowers dist[city] updates it and queues (stops + 1, city, newCost).",
+      "time": "O(k · E) roughly",
+      "space": "O(n + E)",
+      "why": "Each level of BFS is one more flight; there are at most k + 1 levels.",
+      "viz": "viz/cheapest-flights-within-k-stops.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why can plain Dijkstra give a wrong answer here?",
+      "options": [
+        "It keeps only the cheapest way to each city, which may already use too many stops",
+        "It can't handle weights",
+        "It is too slow",
+        "It ignores the source"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "k stops means how many flights at most?",
+      "options": [
+        "k + 1",
+        "k",
+        "k − 1",
+        "2k"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In Bellman-Ford, why copy dist into next each round?",
+      "options": [
+        "So a round can't chain two flights using a price updated in the same round",
+        "To save memory",
+        "To sort flights",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the BFS version, what happens to a queue entry with stops > k?",
+      "options": [
+        "It is skipped: flying further would exceed the stop limit",
+        "It is processed anyway",
+        "It ends the search",
+        "It resets dist"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What does k count: stops or flights? Can the graph have cycles?",
+    "Solve Example 1 by hand with k = 1.",
+    "Try every route with at most k + 1 flights: cost?",
+    "\"Cheapest path with at most k edges\" → which algorithms work, and why not plain Dijkstra?",
+    "In BFS by stops, what is in the queue and when do you skip an entry?",
+    "Code it, saying \"BFS by stops, relax when cheaper, skip past k\".",
+    "Dry-run the trap: a cheap 3-flight route vs a $10 direct flight, k = 1.",
+    "Time and space? How does Bellman-Ford with a copy compare?"
+  ]
+}

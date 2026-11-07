@@ -1,0 +1,67 @@
+{
+  "id": 128,
+  "title": "Longest Consecutive Sequence",
+  "keyIdea": "Put everything in a hash set. Only start counting from numbers whose num − 1 is missing (run starts), then walk up with st.count(curr + 1). Each number is visited by exactly one run, so it's O(n).",
+  "approaches": [
+    {
+      "name": "Brute force with linear search",
+      "file": "brute.cpp",
+      "idea": "From every number, look for x + 1, x + 2, … with a linear scan.",
+      "time": "O(n³)",
+      "space": "O(1)",
+      "why": "Up to n starts × up to n steps × O(n) search each."
+    },
+    {
+      "name": "Hash set, count only from run starts",
+      "file": "hash-set.cpp",
+      "best": true,
+      "idea": "st = set(nums). For each num with num − 1 not in st, count up while curr + 1 is in st; track the longest.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each number is counted inside exactly one run; set lookups are O(1) on average.",
+      "viz": "viz/longest-consecutive-sequence.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why only start when num − 1 is missing?",
+      "options": [
+        "Otherwise runs would be re-counted from the middle, making it O(n²)",
+        "To skip negatives",
+        "To sort the numbers",
+        "It's not needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why loop over the set instead of nums?",
+      "options": [
+        "Duplicates are removed, so a start isn't processed twice",
+        "It's sorted",
+        "It's faster to create",
+        "No difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[1,2,0,1] → ?",
+      "options": [
+        "3 (0, 1, 2)",
+        "4",
+        "2",
+        "1"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Consecutive values, not positions? Duplicates? Empty array? Must it be O(n)?",
+    "Do [100,4,200,1,3,2] by hand. Which numbers start runs?",
+    "Sorting first: time? Why does the problem rule it out?",
+    "\"Fast membership tests\": which structure? How do you avoid re-counting a run?",
+    "When does a number start a run? How do you extend it?",
+    "Code it, saying \"only start where num − 1 is missing\".",
+    "Dry-run [0,3,7,2,5,8,4,6,0,1]: how many starts are there?",
+    "Why is it O(n) despite the inner while?"
+  ]
+}

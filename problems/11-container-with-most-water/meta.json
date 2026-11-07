@@ -1,0 +1,67 @@
+{
+  "id": 11,
+  "title": "Container With Most Water",
+  "keyIdea": "Start with the widest container (both ends). Area = width × shorter line. Move the shorter line inward: any narrower container using it is still limited by it, so it can't do better. Track the best area. O(n).",
+  "approaches": [
+    {
+      "name": "Brute force: every pair",
+      "file": "brute.cpp",
+      "idea": "Try every pair i < j and compute (j − i) × min(height[i], height[j]).",
+      "time": "O(n²)",
+      "space": "O(1)",
+      "why": "n²/2 pairs; ~5·10⁹ at n = 10⁵."
+    },
+    {
+      "name": "Two pointers, move the shorter line",
+      "file": "two-pointers.cpp",
+      "best": true,
+      "idea": "left = 0, right = n − 1. Update ans with the current area, then move whichever line is shorter.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Each step moves one pointer inward: at most n steps.",
+      "viz": "viz/container-with-most-water.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why move the shorter line?",
+      "options": [
+        "Every narrower container that keeps it is limited by it and narrower, so it can't be better",
+        "The taller line is wrong",
+        "It's random",
+        "To keep the width"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Area for lines of height 8 and 7, 7 apart?",
+      "options": [
+        "7 × 7 = 49",
+        "8 × 7 = 56",
+        "15 × 7",
+        "49 + 8"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "The loop here runs while left <= right. What happens at left == right?",
+      "options": [
+        "Width is 0, so area is 0 and nothing changes",
+        "It crashes",
+        "It double counts",
+        "It finds the answer"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What's the area formula? Can lines be height 0? How many lines?",
+    "Do [1,8,6,2,5,4,8,3,7] by hand: which two lines give 49?",
+    "Every pair: time? Why too slow?",
+    "\"Two ends moving inward\": which pattern, and which end should move?",
+    "Why is moving the shorter line always safe?",
+    "Code it, saying \"area, then move the shorter side\".",
+    "Dry-run [1,1] and [6,5,4,3,2,1].",
+    "Time and space? How is Trapping Rain Water (LC 42) different?"
+  ]
+}

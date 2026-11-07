@@ -1,0 +1,77 @@
+{
+  "id": 286,
+  "title": "Walls and Gates",
+  "keyIdea": "Multi-source BFS from all gates at once. BFS reaches rooms in order of distance, so the first time an empty room (INF) is reached, rooms[r][c] + 1 is its distance to the nearest gate; filled rooms are never touched again.",
+  "approaches": [
+    {
+      "name": "DFS from each gate (with revisiting)",
+      "file": "dfs-from-each-gate.cpp",
+      "idea": "DFS from every gate carrying the distance; overwrite a room only if this path is shorter.",
+      "time": "O((m·n)²) worst case",
+      "space": "O(m·n) recursion",
+      "why": "Rooms can be re-explored every time a shorter distance arrives."
+    },
+    {
+      "name": "Multi-source BFS from all gates",
+      "file": "multi-source-bfs.cpp",
+      "best": true,
+      "idea": "Queue every gate; pop a room, fill each INF neighbour with distance + 1 and queue it.",
+      "time": "O(m·n)",
+      "space": "O(m·n)",
+      "why": "Each room is filled and queued once.",
+      "viz": "viz/walls-and-gates.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why start BFS from all gates at the same time?",
+      "options": [
+        "Then every room is reached first from its nearest gate, in one BFS",
+        "Gates must be sorted",
+        "To use less memory only",
+        "It must start from one gate"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why skip rooms that are not INF?",
+      "options": [
+        "They already have their smallest distance (or are walls/gates)",
+        "To avoid walls only",
+        "They are gates",
+        "For speed only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is plain DFS (fill once, never revisit) wrong here?",
+      "options": [
+        "It can reach a room along a long path first and keep that larger distance",
+        "DFS can't see walls",
+        "It is too fast",
+        "It is not wrong"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Time complexity of the BFS?",
+      "options": [
+        "O(m·n)",
+        "O((m·n)²)",
+        "O(gates · m·n)",
+        "O(m + n)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What do -1, 0 and INF mean? What happens to a room no gate can reach?",
+    "Fill Example 1 by hand.",
+    "BFS from every empty room to the nearest gate: cost?",
+    "\"Distance to the nearest of many sources\" → which technique (same as Rotting Oranges)?",
+    "What goes into the queue first, and when is a room filled?",
+    "Code it, saying \"all gates in the queue, fill INF neighbours with +1\".",
+    "Dry-run one row with two gates at both ends.",
+    "Time and space? Why not DFS?"
+  ]
+}

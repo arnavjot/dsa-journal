@@ -1,0 +1,69 @@
+{
+  "id": 297,
+  "title": "Serialize and Deserialize Binary Tree",
+  "keyIdea": "Serialize in preorder and write # for every NULL child; the markers record the shape. Deserialize by splitting into a queue and reading tokens back in the same preorder: a number makes a node, then its left, then its right; # is NULL.",
+  "approaches": [
+    {
+      "name": "Preorder DFS with # for NULL",
+      "file": "preorder-dfs.cpp",
+      "best": true,
+      "idea": "serialize: val + \",\" then left, right (\"#,\" for NULL). deserialize: tokens into a queue; pop: \"#\" → NULL, else node, build left, build right.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Every node and every NULL child is written once and read once.",
+      "viz": "viz/serialize-and-deserialize-binary-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why write # for NULL children?",
+      "options": [
+        "Preorder alone can't tell different shapes apart; the #s fix every value's position",
+        "To mark the end of the string",
+        "To save space",
+        "To sort values"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why must deserialize read in preorder too?",
+      "options": [
+        "It has to consume tokens in exactly the order serialize wrote them",
+        "Any order works",
+        "Because of the queue size",
+        "To balance the tree"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many # tokens are written for a tree with n nodes?",
+      "options": [
+        "n + 1",
+        "n",
+        "2n",
+        "n − 1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does serialize return for an empty tree?",
+      "options": [
+        "\"#,\"",
+        "\"\"",
+        "\"null\"",
+        "\"0,\""
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What format is allowed? Can values be negative or multi-digit?",
+    "Serialize [1,2,3,null,null,4,5] by hand with # for NULL.",
+    "Why isn't plain preorder (without #) enough? Give two trees with the same preorder.",
+    "\"Turn a tree into a string and back\": which traversal and which marker?",
+    "How does deserialize know where the left subtree ends?",
+    "Code both, saying \"preorder with #, read back in preorder\".",
+    "Dry-run deserialize \"1,#,2,#,#,\": which node gets which child?",
+    "Time and space? How would a level-order (BFS) version work?"
+  ]
+}

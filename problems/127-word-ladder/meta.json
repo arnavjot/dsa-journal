@@ -1,0 +1,78 @@
+{
+  "id": 127,
+  "title": "Word Ladder",
+  "keyIdea": "Words are nodes, one-letter changes are edges: the shortest ladder is a BFS shortest path. Find neighbours by trying all 26 letters at each position and keeping words still in the set; erase (or mark visited) when queued so no word is queued twice.",
+  "approaches": [
+    {
+      "name": "BFS by levels with a visited set",
+      "file": "bfs-levels-visited.cpp",
+      "idea": "Return 0 if endWord is missing. Process the queue level by level; res counts levels; visited stops repeats.",
+      "time": "O(N · L² · 26)",
+      "space": "O(N · L)",
+      "why": "Each word is queued once; each pop tries L·26 changes, each hashed in O(L).",
+      "viz": "viz/word-ladder-levels.html"
+    },
+    {
+      "name": "BFS with (word, steps), erasing from the set",
+      "file": "bfs-erase-from-set.cpp",
+      "best": true,
+      "idea": "Queue (word, steps); a word found in the set is erased and queued with steps + 1; return steps when endWord is popped.",
+      "time": "O(N · L² · 26)",
+      "space": "O(N · L)",
+      "why": "Same work, and the word set doubles as the visited set.",
+      "viz": "viz/word-ladder.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why BFS and not DFS?",
+      "options": [
+        "All steps cost 1, and BFS reaches words in order of steps, so the first time it reaches endWord is the shortest ladder",
+        "DFS is too slow only",
+        "BFS uses less memory",
+        "DFS can't find any ladder"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How are neighbours of a word found?",
+      "options": [
+        "Change each position to each of the 26 letters and check the set",
+        "Compare with every word letter by letter only",
+        "Sort the words",
+        "Use a trie only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why erase a word from the set when it is queued?",
+      "options": [
+        "It acts as \"visited\", so the word is never queued twice",
+        "To shrink the answer",
+        "It is required by LeetCode",
+        "To find endWord faster"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does the answer count?",
+      "options": [
+        "Words in the ladder, including beginWord and endWord",
+        "Letters changed",
+        "Edges only",
+        "Words in the list"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Does the answer count words or changes? Is beginWord in the list? What if endWord is missing?",
+    "Find the ladder hit → cog by hand.",
+    "Compare every pair of words to build a graph first: cost?",
+    "\"Shortest number of one-step changes\" → which algorithm?",
+    "How do you list a word's neighbours, and how do you avoid revisiting?",
+    "Code it, saying \"BFS, try 26 letters per position, erase when queued\".",
+    "Dry-run a → c with [a, b, c].",
+    "Time and space? How would bidirectional BFS speed it up?"
+  ]
+}
