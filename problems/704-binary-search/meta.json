@@ -1,0 +1,39 @@
+{
+  "id": 704,
+  "title": "Binary Search",
+  "keyIdea": "Sorted array → look at the middle. If it's too small, the target can only be to the right; too big, only to the left. Throw away half each step: O(log n).",
+  "approaches": [
+    {
+      "name": "Linear scan",
+      "file": "linear.cpp",
+      "idea": "Check every number from left to right until you find the target.",
+      "time": "O(n)", "space": "O(1)",
+      "why": "Up to n checks. Works, but ignores that the array is sorted, and the problem explicitly asks for O(log n)."
+    },
+    {
+      "name": "Binary search",
+      "file": "binary-search.cpp",
+      "best": true,
+      "idea": "Keep s and e around the part that could still hold the target. mid = s + (e − s) / 2. Equal → return mid. Too small → s = mid + 1. Too big → e = mid − 1. s > e → return −1.",
+      "time": "O(log n)", "space": "O(1)",
+      "why": "Each look halves what's left, so after k looks about n / 2ᵏ remain. That hits 1 after log₂ n looks: ~14 for 10⁴ numbers.",
+      "viz": "viz/binary-search.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why mid = s + (e − s) / 2 instead of (s + e) / 2?", "options": ["s + e can overflow int when both are large; e − s can't", "It's faster", "It rounds up instead of down", "There's no difference at all"], "answer": 0},
+    {"q": "nums[mid] < target. What's the next step?", "options": ["s = mid + 1: mid and everything left of it are too small", "s = mid", "e = mid − 1", "return -1"], "answer": 0},
+    {"q": "Why is the loop condition s <= e and not s < e?", "options": ["When s == e there's still one number left to check", "To avoid overflow", "So it runs faster", "It doesn't matter"], "answer": 0},
+    {"q": "About how many looks for 1,000,000 numbers?", "options": ["About 20", "About 1,000", "About 500,000", "1,000,000"], "answer": 0}
+  ],
+  "steps": [
+    "Is the array sorted? Can there be duplicates? What do you return if the target is missing?",
+    "Search [-1,0,3,5,9,12] for 9 and for 2 by hand. How many looks each?",
+    "Checking every element: time? Why isn't that allowed here?",
+    "\"Sorted\" + \"find\" + \"O(log n)\": which pattern, and what does one look at the middle tell you?",
+    "What do s and e mean? How do you compute mid safely? What happens to s and e after each compare?",
+    "Code it, saying which half you throw away and why.",
+    "Dry-run target 2: what are s and e when the loop stops, and why does it stop?",
+    "Why O(log n)? How would you find the first position where target could be inserted (LC 35)?"
+  ]
+}

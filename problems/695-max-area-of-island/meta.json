@@ -1,0 +1,78 @@
+{
+  "id": 695,
+  "title": "Max Area of Island",
+  "keyIdea": "Flood each island once, counting its cells. DFS sinks a land cell (sets it to 0) and returns 1 + the areas from its 4 neighbours; water or off-grid returns 0. Track the largest.",
+  "approaches": [
+    {
+      "name": "BFS flood, counting pops",
+      "file": "bfs-area.cpp",
+      "idea": "For each unvisited 1: BFS, set cells to 0 when queued, area++ per pop; best = max(best, area).",
+      "time": "O(m·n)",
+      "space": "O(m·n)",
+      "why": "Each cell is queued at most once.",
+      "viz": "viz/max-area-of-island-bfs.html"
+    },
+    {
+      "name": "DFS that sinks and returns the area",
+      "file": "dfs-sink-area.cpp",
+      "best": true,
+      "idea": "dfs(r, c): out of bounds or 0 → 0; else set 0, return 1 + dfs of 4 neighbours. maxArea = max over islands.",
+      "time": "O(m·n)",
+      "space": "O(m·n) recursion worst case",
+      "why": "Each land cell is sunk once.",
+      "viz": "viz/max-area-of-island.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why set grid[r][c] = 0 before recursing?",
+      "options": [
+        "So neighbours that look back see water and return 0: nothing is counted twice",
+        "To save memory",
+        "To end the outer loop",
+        "It is set after"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does dfs(r, c) return?",
+      "options": [
+        "The number of land cells in the island part reachable from (r, c) that weren't sunk yet",
+        "1 or 0",
+        "The perimeter",
+        "The max so far"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How is this different from Number of Islands?",
+      "options": [
+        "Same flood, but each flood also counts its cells and you keep the maximum",
+        "It uses 8 directions",
+        "It needs sorting",
+        "No difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Time complexity?",
+      "options": [
+        "O(m·n)",
+        "O((m·n)²)",
+        "O(m + n)",
+        "O(m·n·log)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What counts as connected? Can you modify the grid?",
+    "Find the biggest island in Example 1 by hand.",
+    "How would you reuse Number of Islands?",
+    "\"Size of each connected group\" → what should the DFS return?",
+    "When do you mark a cell, and what are the base cases?",
+    "Code it, saying \"sink and return 1 + neighbours\".",
+    "Dry-run 11/10 with one more cell on its own.",
+    "Time and space? DFS vs BFS here?"
+  ]
+}

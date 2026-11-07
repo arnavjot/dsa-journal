@@ -1,0 +1,78 @@
+{
+  "id": 200,
+  "title": "Number of Islands",
+  "keyIdea": "Scan the grid; every unvisited '1' starts a new island. Flood it (BFS or DFS, 4 directions) marking every connected land cell visited, so it is counted once. Count the floods.",
+  "approaches": [
+    {
+      "name": "DFS that sinks the island",
+      "file": "dfs-sink.cpp",
+      "idea": "On a '1': count++, then recursively turn it and all connected land into '0'.",
+      "time": "O(m·n)",
+      "space": "O(m·n) recursion worst case",
+      "why": "Each cell is sunk at most once; no vis array, but it changes the grid.",
+      "viz": "viz/number-of-islands-dfs.html"
+    },
+    {
+      "name": "BFS with a visited array",
+      "file": "bfs.cpp",
+      "best": true,
+      "idea": "On an unvisited '1': BFS with a queue, marking cells visited when pushed; count++ after each BFS.",
+      "time": "O(m·n)",
+      "space": "O(m·n)",
+      "why": "Each cell is pushed and popped at most once.",
+      "viz": "viz/number-of-islands.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does each BFS/DFS start mean exactly one new island?",
+      "options": [
+        "The flood marks every cell of that island, so later scans skip all of them",
+        "Each start is a corner",
+        "Islands are squares",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why mark a cell visited when pushing, not when popping?",
+      "options": [
+        "So two neighbours can't both push the same cell",
+        "To save time only",
+        "Popping is too late for counting",
+        "No difference"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Do diagonal cells connect islands?",
+      "options": [
+        "No, only up, down, left and right",
+        "Yes",
+        "Only corners",
+        "Depends on n"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How does the DFS version avoid a vis array?",
+      "options": [
+        "It turns visited land into water ('0')",
+        "It uses a set",
+        "It sorts the grid",
+        "It counts twice"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What counts as connected? May you modify the grid?",
+    "Count the islands of Example 2 by hand.",
+    "For every land cell, check if it joins an earlier island: how messy is that?",
+    "\"Count connected groups in a grid\" → which technique?",
+    "When does a new island start, and how do you make sure it's counted once?",
+    "Code BFS with vis, saying \"new land → flood it → count\".",
+    "Dry-run the checkerboard 101/010/101.",
+    "Time and space? Compare BFS, DFS and Union-Find."
+  ]
+}

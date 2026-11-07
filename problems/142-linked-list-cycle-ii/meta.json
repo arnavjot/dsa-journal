@@ -1,0 +1,68 @@
+{
+  "id": 142,
+  "title": "Linked List Cycle II",
+  "keyIdea": "Same Floyd trick as LC 287, on a real linked list. Meet inside the loop, send one pointer back to head, move both 1 step: they meet at the cycle's first node. Unlike 287, the list might have no cycle, so check for NULL.",
+  "approaches": [
+    {
+      "name": "Brute force (hash set)",
+      "file": "brute.cpp",
+      "idea": "Walk the list and remember every node. The first node you see twice is where the cycle starts. Reach NULL → no cycle.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each node is visited once and stored once in the set.",
+      "viz": "viz/linked-list-cycle-ii-hash-set.html"
+    },
+    {
+      "name": "Floyd's cycle detection",
+      "file": "floyd.cpp",
+      "best": true,
+      "idea": "fast moves 2, slow moves 1. If fast hits NULL there's no cycle. If they meet, reset fast to head and move both 1 step until they meet again.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Phase 1 takes at most about n steps, phase 2 exactly L steps. Only two pointers, no extra memory.",
+      "viz": "viz/floyd.html#list"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does the loop check both fast != NULL and fast->next != NULL?",
+      "options": [
+        "Style only",
+        "fast jumps two nodes; if fast->next is NULL then fast->next->next would crash",
+        "To find the middle",
+        "Because slow could be NULL"
+      ],
+      "answer": 1
+    },
+    {
+      "q": "In phase 2, how far does fast move each iteration?",
+      "options": [
+        "2 nodes",
+        "1 node",
+        "Back to head every time",
+        "It doesn't move"
+      ],
+      "answer": 1
+    },
+    {
+      "q": "The cycle starts at head (L = 0). What happens right after fast = head?",
+      "options": [
+        "Infinite loop",
+        "fast == slow already, so the while loop is skipped and head is returned",
+        "It returns NULL",
+        "fast needs one full lap first"
+      ],
+      "answer": 1
+    }
+  ],
+  "steps": [
+    "Return the node or its value? Can there be no cycle? Can the cycle start at head?",
+    "Draw A→B→C→D→E→F→(back to C). Which node do you return?",
+    "A hash set of visited nodes: time and space?",
+    "Cycle + O(1) memory: which two pointers?",
+    "When does phase 1 end? In phase 2, who goes back to head and how fast does each move?",
+    "Code both phases; say why the loop checks fast and fast->next.",
+    "Dry-run L = 2, C = 4: where do they meet, then where do they meet again?",
+    "Explain L + x = k·C in one sentence. How would you get the cycle length?"
+  ]
+}

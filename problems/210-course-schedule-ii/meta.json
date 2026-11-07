@@ -1,0 +1,78 @@
+{
+  "id": 210,
+  "title": "Course Schedule II",
+  "keyIdea": "Return a topological order. Kahn: the order courses leave the indegree-0 queue is a valid order; if fewer than n come out there is a cycle → {}. Or DFS: check for a cycle, then push each course after its dependents and pop the stack.",
+  "approaches": [
+    {
+      "name": "DFS: cycle check, then topological sort",
+      "file": "dfs-cycle-then-topo.cpp",
+      "idea": "Pass 1: dfstrack cycle check. Pass 2: post-order DFS pushes each course after everything it unlocks; reverse = order.",
+      "time": "O(V + E)",
+      "space": "O(V + E)",
+      "why": "Two DFS passes, each visiting every course and edge once.",
+      "viz": "viz/course-schedule-ii-dfs.html"
+    },
+    {
+      "name": "Kahn's algorithm (BFS on indegrees)",
+      "file": "kahn-bfs.cpp",
+      "best": true,
+      "idea": "Queue indegree-0 courses; record each one popped; lower dependents' indegrees; return the record if it has all n.",
+      "time": "O(V + E)",
+      "space": "O(V + E)",
+      "why": "Each course is queued once and each edge relaxed once.",
+      "viz": "viz/course-schedule-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is the pop order of Kahn's queue a valid course order?",
+      "options": [
+        "A course is queued only after all its prerequisites have been popped",
+        "It is sorted",
+        "Because of BFS levels only",
+        "It isn't always valid"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When do you return an empty array?",
+      "options": [
+        "When fewer than n courses were taken (there is a cycle)",
+        "When n is 0",
+        "When there are no prerequisites",
+        "Never"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the DFS version, why is a course pushed AFTER its neighbours?",
+      "options": [
+        "Everything that depends on it is already on the stack, so it pops out before them",
+        "To save time",
+        "It is pushed before",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Is the answer unique?",
+      "options": [
+        "No, any valid order is accepted",
+        "Yes",
+        "Only for Kahn",
+        "Only for DFS"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What should be returned with a cycle? Is any valid order fine?",
+    "Find an order for 4 courses: 1 and 2 need 0, 3 needs 1 and 2.",
+    "Try all orders: cost?",
+    "\"Order respecting dependencies\" → topological sort: which two ways?",
+    "How does Kahn's algorithm build the order and detect a cycle?",
+    "Code it, saying \"indegree 0 → take it, record it\".",
+    "Dry-run the cycle example.",
+    "Time and space? How does the DFS version build the order?"
+  ]
+}

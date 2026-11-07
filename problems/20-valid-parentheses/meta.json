@@ -1,0 +1,39 @@
+{
+  "id": 20,
+  "title": "Valid Parentheses",
+  "keyIdea": "A closing bracket must match the most recently opened one that's still open. That's last in, first out, so a stack. Push openers; on a closer, the top must be its partner (pop it). Fail on a mismatch, on a closer with an empty stack, or on openers left at the end.",
+  "approaches": [
+    {
+      "name": "Keep deleting matched pairs",
+      "file": "brute.cpp",
+      "idea": "Repeatedly remove any adjacent \"()\", \"[]\" or \"{}\". A valid string shrinks to nothing.",
+      "time": "O(n²)", "space": "O(n)",
+      "why": "Each pass scans and erases in O(n), and up to n/2 passes are needed (e.g. \"((((...))))\")."
+    },
+    {
+      "name": "Stack",
+      "file": "stack.cpp",
+      "best": true,
+      "idea": "Push every opener. For a closer: empty stack → false; top isn't its partner → false; otherwise pop. At the end the stack must be empty.",
+      "time": "O(n)", "space": "O(n)",
+      "why": "One pass; each character is pushed or popped at most once. The stack can hold up to n openers.",
+      "viz": "viz/valid-parentheses.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why does a stack fit this problem?", "options": ["The last bracket opened must be the first one closed (last in, first out)", "Stacks are faster than arrays", "To count each bracket type", "To sort the brackets"], "answer": 0},
+    {"q": "Why isn't counting each bracket type enough?", "options": ["\"([)]\" has equal counts but closes in the wrong order", "Counting is O(n²)", "Counts can overflow", "It is enough"], "answer": 0},
+    {"q": "s = \"((\". Where does it fail?", "options": ["At the end: the stack still holds two openers", "On the first character", "It returns true", "On the second character"], "answer": 0},
+    {"q": "s = \")(\". Where does it fail?", "options": ["At index 0: a closer arrives while the stack is empty", "At the end", "At index 1", "It returns true"], "answer": 0}
+  ],
+  "steps": [
+    "Which characters can appear? Is an empty string valid? What exactly makes a string invalid?",
+    "Trace \"{[()]}\" and \"([)]\" by hand. Where does the second one go wrong?",
+    "Deleting matched pairs until nothing changes: why is it O(n²)?",
+    "Closers match the most recent open bracket: which data structure is last in, first out?",
+    "What do you push? What do you check on a closer? What's left to check after the loop?",
+    "Code it, naming the three ways to return false as you write them.",
+    "Dry-run \"(()\" and \")(\": which of the three failures does each hit?",
+    "Time and space? How would you return the length of the longest valid substring (LC 32)?"
+  ]
+}

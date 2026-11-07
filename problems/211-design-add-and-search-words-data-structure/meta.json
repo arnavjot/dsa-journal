@@ -1,0 +1,77 @@
+{
+  "id": 211,
+  "title": "Design Add and Search Words Data Structure",
+  "keyIdea": "addWord is a normal trie insert. search is a DFS over the pattern: a letter follows its link; a '.' tries every existing child and returns true as soon as one leads to a full match. At the end of the pattern, return the node's flag.",
+  "approaches": [
+    {
+      "name": "List of words, compare each",
+      "file": "word-list.cpp",
+      "idea": "Store words in a vector; search compares the pattern with every word of the same length.",
+      "time": "search O(n · L)",
+      "space": "O(total letters)",
+      "why": "Every search may look at every stored word."
+    },
+    {
+      "name": "Trie + DFS for dots",
+      "file": "trie-dfs.cpp",
+      "best": true,
+      "idea": "dfs(index, node): end → flag; '.' → try all children; letter → follow its link or fail.",
+      "time": "addWord O(L); search O(L) without dots, up to O(26^d · L) with d dots",
+      "space": "O(total letters × 26)",
+      "why": "Letters follow one path; each dot can branch into up to 26 children (LeetCode allows at most 2 dots).",
+      "viz": "viz/design-add-and-search-words-data-structure.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does a '.' in the pattern do in the DFS?",
+      "options": [
+        "Tries every existing child, one after another",
+        "Skips a letter",
+        "Matches only 'a'",
+        "Ends the search"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why return true as soon as one child succeeds?",
+      "options": [
+        "One full match is enough; the other branches don't matter",
+        "To save memory",
+        "Because only one child exists",
+        "It must check all children"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "After addWord(\"bad\"), what does search(\"ba\") return?",
+      "options": [
+        "false: the path exists but no word ends at \"ba\"",
+        "true",
+        "It crashes",
+        "Depends on dots"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is search slower with many dots?",
+      "options": [
+        "Each dot can branch into up to 26 children, multiplying the paths to try",
+        "Dots are longer",
+        "Dots create nodes",
+        "It isn't slower"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What can the pattern contain? How many dots at most? What does a dot match?",
+    "Add bad, dad, mad. Work out search .ad and b.. by hand on the trie.",
+    "Store words in a list and compare: time per search?",
+    "\"Prefix structure + wildcard\": what changes compared to a plain trie search?",
+    "What are the DFS parameters? What happens at a dot, at a letter, at the end?",
+    "Code it, saying \"letter follows one link, dot tries all, end returns flag\".",
+    "Dry-run add at, and, an, add; search a.d: which branches are tried?",
+    "Time with and without dots? Why does the 2-dot limit matter?"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": 46,
+  "title": "Permutations",
+  "keyIdea": "Decide position index: swap each candidate from index onward into it, recurse for index + 1, then swap back. At index == n the array is one permutation.",
+  "approaches": [
+    {
+      "name": "Swap, nums passed by value",
+      "file": "swap-copy.cpp",
+      "idea": "Same recursion, but each call gets its own copy of nums, so no swap back is needed.",
+      "time": "O(n·n!)",
+      "space": "O(n²) copies on the stack",
+      "why": "Same number of calls, plus an O(n) copy per call.",
+      "viz": "viz/permutations-copy.html"
+    },
+    {
+      "name": "Swap and swap back",
+      "file": "swap-backtrack.cpp",
+      "best": true,
+      "idea": "for i from index: swap(index, i), recurse(index + 1), swap(index, i) back.",
+      "time": "O(n·n!)",
+      "space": "O(n) recursion",
+      "why": "n! permutations, each copied once into the answer.",
+      "viz": "viz/permutations.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why swap back after the recursive call?",
+      "options": [
+        "nums is shared by reference; the next choice must start from the unchanged array",
+        "To sort the array",
+        "To skip duplicates",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does the pass-by-value version work without swapping back?",
+      "options": [
+        "Each call works on its own copy, so a child never changes the caller's array",
+        "It doesn't work",
+        "Because of sorting",
+        "Because n is small"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many permutations does an array of n distinct numbers have?",
+      "options": [
+        "n!",
+        "2ⁿ",
+        "n²",
+        "n"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does index mean in recurPermute(index)?",
+      "options": [
+        "The position being decided; everything before it is fixed",
+        "The number of results",
+        "The value to place",
+        "The array size"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are numbers distinct? Does the order of the output matter?",
+    "Write all permutations of [1,2,3] by hand. How did you make sure none were missed?",
+    "How many are there, and why?",
+    "\"All orderings\" → which technique?",
+    "What does each loop step swap, and why swap back?",
+    "Code it, saying \"swap in, recurse, swap back\".",
+    "Dry-run [0,1]: the swaps in order.",
+    "Time and space? What if nums can have duplicates (LC 47)?"
+  ]
+}

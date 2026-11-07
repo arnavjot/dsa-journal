@@ -1,0 +1,69 @@
+{
+  "id": 124,
+  "title": "Binary Tree Maximum Path Sum",
+  "keyIdea": "Post-order DFS. helper returns the best downward gain from a node (val + the better child gain, negatives clipped to 0). At each node the best path bending there is val + left + right; track the maximum in maxi.",
+  "approaches": [
+    {
+      "name": "DFS returning the one-side gain",
+      "file": "dfs-gain.cpp",
+      "best": true,
+      "idea": "left = max(helper(left), 0), right = max(helper(right), 0); maxi = max(maxi, val + left + right); return val + max(left, right).",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Each node is visited once; recursion depth = tree height.",
+      "viz": "viz/binary-tree-maximum-path-sum.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does helper return val + max(left, right), not val + left + right?",
+      "options": [
+        "The parent extends the path upward, and a path can only continue down one side",
+        "To avoid overflow",
+        "left + right is always negative",
+        "It returns the answer"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why max(helper(...), 0)?",
+      "options": [
+        "A negative branch lowers the sum, so don't take it at all",
+        "To avoid recursion",
+        "Values are always positive",
+        "To count nodes"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why start maxi at INT_MIN and not 0?",
+      "options": [
+        "If every value is negative, the answer is the largest single value, which is below 0",
+        "INT_MIN is faster",
+        "0 would overflow",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Where is the answer path allowed to bend?",
+      "options": [
+        "At exactly one node: the highest node on the path",
+        "Never",
+        "At every node",
+        "Only at the root"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Must the path go through the root? Can it be one node? Can values be negative?",
+    "Find the best path in [-10,9,20,null,null,15,7] by hand.",
+    "Try every pair of nodes as path ends: time?",
+    "\"Best path in a tree\" → what should each call return to its parent?",
+    "What goes into maxi at each node, and what is returned? Why clip at 0?",
+    "Code it, saying \"return one side, record both sides\".",
+    "Dry-run [2,-1]: the gains and maxi at each node?",
+    "Time and space? How is this like Diameter of Binary Tree (LC 543)?"
+  ]
+}

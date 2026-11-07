@@ -1,0 +1,77 @@
+{
+  "id": 21,
+  "title": "Merge Two Sorted Lists",
+  "keyIdea": "The smallest remaining value is always at the front of one of the two lists. Repeatedly splice the smaller front node after a tail pointer, then attach whatever is left of the other list in one step. Relink existing nodes; don't copy.",
+  "approaches": [
+    {
+      "name": "Copy into new nodes (first version)",
+      "file": "copy-nodes.cpp",
+      "idea": "Same comparisons, but every value is copied into a new ListNode, and both leftovers are copied in loops.",
+      "time": "O(m + n)",
+      "space": "O(m + n)",
+      "why": "Creates m + n new nodes instead of reusing the existing ones.",
+      "viz": "viz/merge-two-sorted-lists-copy.html"
+    },
+    {
+      "name": "Dummy node (Kunal's)",
+      "file": "dummy-node.cpp",
+      "idea": "Start from a fake node so the first splice is like every other; return dummy->next.",
+      "time": "O(m + n)",
+      "space": "O(1)",
+      "why": "Relinks nodes; one extra node for convenience.",
+      "viz": "viz/merge-two-sorted-lists-dummy.html"
+    },
+    {
+      "name": "Pick the real head first (your better version)",
+      "file": "in-place-head.cpp",
+      "best": true,
+      "idea": "Handle empty lists, choose the smaller front as head, then splice with temp and attach the rest.",
+      "time": "O(m + n)",
+      "space": "O(1)",
+      "why": "Every node is visited once and relinked, no new nodes at all.",
+      "viz": "viz/merge-two-sorted-lists.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why can the leftover list be attached with one assignment?",
+      "options": [
+        "It's already sorted and every value in it is ≥ everything merged so far",
+        "Because it's empty",
+        "Because it has one node",
+        "It can't, it needs a loop"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does a dummy node save you?",
+      "options": [
+        "The special case of choosing the head before the loop",
+        "Memory",
+        "The final attach",
+        "Comparisons"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the in-place version O(1) space but the first version O(m + n)?",
+      "options": [
+        "It relinks existing nodes instead of creating new ones",
+        "It uses recursion",
+        "It skips half the nodes",
+        "It doesn't compare values"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Are both lists sorted? Can either be empty? Should you build new nodes or reuse them?",
+    "Merge [1,2,4] and [1,3,4] by hand. Where does each node come from?",
+    "Copy everything into a new list: time and space?",
+    "\"Merge two sorted sequences\": which classic step does this mirror (merge sort)?",
+    "How do you choose the head, and what does temp point at during the loop?",
+    "Code it, saying \"take the smaller front, move temp\".",
+    "Dry-run [5] + [1,2,3,4]: how many loop steps, and what gets attached at the end?",
+    "Time and space? How does this help with Merge k Sorted Lists (LC 23)?"
+  ]
+}

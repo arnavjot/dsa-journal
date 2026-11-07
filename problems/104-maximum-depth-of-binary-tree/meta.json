@@ -1,0 +1,68 @@
+{
+  "id": 104,
+  "title": "Maximum Depth of Binary Tree",
+  "keyIdea": "The depth of a tree is 1 (the root) plus the deeper of its two subtrees. Ask both children for their depth, take the bigger, add 1. An empty tree has depth 0, so a leaf returns 1.",
+  "approaches": [
+    {
+      "name": "BFS: count levels",
+      "file": "bfs.cpp",
+      "idea": "Walk level by level with a queue; each full level processed adds 1.",
+      "time": "O(n)",
+      "space": "O(w)",
+      "why": "Every node is queued once. The queue holds one level at a time, at most the widest level w.",
+      "viz": "viz/maximum-depth-of-binary-tree-bfs.html"
+    },
+    {
+      "name": "Recursion (post-order)",
+      "file": "recursive.cpp",
+      "best": true,
+      "idea": "NULL → 0. Otherwise lh = maxDepth(left), rh = maxDepth(right), return 1 + max(lh, rh).",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "One call per node. The call stack is as deep as the tree height h.",
+      "viz": "viz/maximum-depth-of-binary-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does maxDepth return for a leaf?",
+      "options": [
+        "1: both NULL children return 0, so 1 + max(0, 0)",
+        "0",
+        "2",
+        "It depends on the value"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is this called post-order?",
+      "options": [
+        "A node computes its answer only after both children have returned",
+        "It visits the root first",
+        "It goes level by level",
+        "Because it uses a stack"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Space used by the recursion on a chain of n nodes?",
+      "options": [
+        "O(n): the call stack goes n deep",
+        "O(1)",
+        "O(log n)",
+        "O(n²)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Depth counted in nodes or edges? What's the depth of an empty tree?",
+    "Do [3,9,20,null,null,15,7] by hand. Which path is deepest?",
+    "Could you do it level by level (BFS)? What would you count?",
+    "\"Answer for a node depends on answers for its children\": which traversal order?",
+    "Base case? What exactly do you return from a non-empty node?",
+    "Code it, saying \"1 for me, plus my deeper side\".",
+    "Dry-run [1,null,2]: what does each call return?",
+    "Time and space (balanced vs chain)? How is Minimum Depth (LC 111) different?"
+  ]
+}

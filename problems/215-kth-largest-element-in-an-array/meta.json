@@ -1,0 +1,85 @@
+{
+  "id": 215,
+  "title": "Kth Largest Element in an Array",
+  "keyIdea": "Keep the k largest numbers in a min-heap of size k: push the first k, then for each later number bigger than the top, pop the top and push it. The top is the k-th largest.",
+  "approaches": [
+    {
+      "name": "Sort",
+      "file": "sort.cpp",
+      "idea": "Sort ascending, return nums[n − k].",
+      "time": "O(n log n)",
+      "space": "O(1) extra (in-place sort)",
+      "why": "Sorts everything even though only one position matters."
+    },
+    {
+      "name": "Quickselect (3-way partition)",
+      "file": "quickselect.cpp",
+      "idea": "Partition around a random pivot into < / == / >; keep only the side that contains index n − k.",
+      "time": "O(n) average, O(n²) worst",
+      "space": "O(1)",
+      "why": "Each step throws away part of the array; a bad pivot streak can still make it quadratic."
+    },
+    {
+      "name": "Min-heap of size k",
+      "file": "min-heap-size-k.cpp",
+      "best": true,
+      "idea": "Push the first k; for the rest, if element > top: pop, push. Return top.",
+      "time": "O(n log k)",
+      "space": "O(k)",
+      "why": "Each of n numbers does at most one pop and one push on a heap of size k; guaranteed, no bad cases.",
+      "viz": "viz/kth-largest-element-in-an-array.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why a min-heap to find the k-th LARGEST?",
+      "options": [
+        "Its top is the smallest of the k largest, which is exactly the k-th largest",
+        "Max-heaps are slower",
+        "To sort the array",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When does a later number enter the heap?",
+      "options": [
+        "Only when it is bigger than the current top",
+        "Always",
+        "When it is smaller",
+        "Every k-th number"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Quickselect vs heap?",
+      "options": [
+        "Quickselect is O(n) on average but O(n²) in the worst case; the heap is always O(n log k)",
+        "Heap is always faster",
+        "They are the same",
+        "Quickselect needs O(n) extra space"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Does \"k-th largest\" count duplicates?",
+      "options": [
+        "Yes: in [3,2,3,1,2,4,5,5,6] the 4th largest is 4",
+        "No",
+        "Only for k = 1",
+        "Depends on order"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Does k-th largest count duplicates separately? Is k always valid?",
+    "Find the 2nd largest of [3,2,1,5,6,4] by hand.",
+    "Sort: time? Can you avoid sorting everything?",
+    "\"k-th largest\" → which heap and which size?",
+    "What do you do with each number after the first k?",
+    "Code it, saying \"min-heap of size k, replace the top if bigger\".",
+    "Dry-run [3,2,3,1,2,4,5,5,6], k = 4.",
+    "Time and space? How does quickselect get O(n) on average?"
+  ]
+}

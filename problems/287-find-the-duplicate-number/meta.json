@@ -1,0 +1,48 @@
+{
+  "id": 287,
+  "title": "Find the Duplicate Number",
+  "keyIdea": "Draw an arrow i → nums[i]. The array becomes a road leading into a loop, and the duplicate is exactly where the road joins the loop. Floyd finds that spot in O(n) time and O(1) space without touching the array.",
+  "approaches": [
+    {
+      "name": "Brute force",
+      "file": "brute.cpp",
+      "idea": "Compare every pair (i, j). The first equal pair is the duplicate.",
+      "time": "O(n²)", "space": "O(1)",
+      "why": "Two nested loops: about n·n/2 comparisons. With n up to 10⁵ that's ~5·10⁹ checks, way too slow."
+    },
+    {
+      "name": "Cyclic sort",
+      "file": "cyclic-sort.cpp",
+      "idea": "Value v belongs at index v-1. Keep swapping each value into its home. The duplicate finds its home already taken, so it gets left at a wrong index. Scan for it.",
+      "time": "O(n)", "space": "O(1)",
+      "why": "Every swap puts one value in its final home, so there are at most n swaps. Every other step does i++, at most n times. Total ≤ 2n steps.",
+      "warn": "Modifies nums. LC 287 says you must not change the array, so mention this and move to Floyd.",
+      "viz": "viz/cyclic-sort.html"
+    },
+    {
+      "name": "Floyd's cycle detection",
+      "file": "floyd.cpp",
+      "best": true,
+      "idea": "Phase 1: slow moves 1, fast moves 2 until they meet inside the loop. Phase 2: one pointer restarts at 0, both move 1 step; they meet at the loop's start, which is the duplicate.",
+      "time": "O(n)", "space": "O(1)",
+      "why": "Phase 1 ends within one lap after slow enters the loop (≤ n steps). Phase 2 takes exactly L steps (≤ n). Only a few int variables.",
+      "viz": "viz/floyd.html#array"
+    }
+  ],
+  "quiz": [
+    {"q": "Why do both pointers start at index 0?", "options": ["No value is 0, so nothing points to 0 and it can never be inside the loop", "Index 0 always holds the duplicate", "It's the fastest place to start", "Any index works the same"], "answer": 0},
+    {"q": "Where are slow and fast when phase 1 ends?", "options": ["At the duplicate", "Somewhere inside the loop, usually not at its start", "At index 0", "At the last index"], "answer": 1},
+    {"q": "Why does phase 2 meet exactly at the loop's start?", "options": ["Because fast is faster", "L + x = k·C, so walking L steps from the meeting point finishes full laps and lands on the start", "Because the array is sorted", "It's a coincidence for small arrays"], "answer": 1},
+    {"q": "Why is cyclic sort not the final answer for LC 287?", "options": ["It's O(n²)", "It uses extra space", "It modifies the array, which the problem forbids", "It fails when the duplicate repeats many times"], "answer": 2}
+  ],
+  "steps": [
+    "Can you change the array? Is extra space allowed? n + 1 numbers, each from 1 to n?",
+    "Try [1,3,4,2,2]. Why must at least one duplicate exist?",
+    "Pairs, sorting, hash set: which rule does each one break?",
+    "Read i → nums[i] as a \"next\" pointer: what shape do you get?",
+    "Phase 1: slow and fast start at 0. Phase 2: who restarts, and where do they meet?",
+    "Code both phases; say why starting at index 0 is always safe.",
+    "Dry-run [1,3,4,2,2]: the meeting point, then the cycle start.",
+    "Why is the cycle start the duplicate? Time and space?"
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": 110,
+  "title": "Balanced Binary Tree",
+  "keyIdea": "Balanced means at every node the two subtree heights differ by at most 1. Compute heights bottom-up (like Max Depth) and check abs(left − right) > 1 at each node on the way back up: one pass, O(n).",
+  "approaches": [
+    {
+      "name": "Top-down: height at every node",
+      "file": "top-down.cpp",
+      "idea": "At each node compute both heights from scratch, check the difference, then recurse into both children.",
+      "time": "O(n²)",
+      "space": "O(h)",
+      "why": "height() is called again for every node's subtree: O(n²) on a chain, O(n log n) when balanced."
+    },
+    {
+      "name": "Bottom-up: one pass",
+      "file": "bottom-up.cpp",
+      "best": true,
+      "idea": "maxDepth returns the height as usual and sets isBalanced = false if abs(right − left) > 1 at any node.",
+      "time": "O(n)",
+      "space": "O(h)",
+      "why": "Each node's height is computed once and used by its parent.",
+      "viz": "viz/balanced-binary-tree.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Is checking only the root's two heights enough?",
+      "options": [
+        "No: every node must be within 1, a deeper node can break it",
+        "Yes",
+        "Only for full trees",
+        "Only if the root has two children"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the bottom-up version O(n)?",
+      "options": [
+        "Each height is computed once and reused by the parent",
+        "It stops early",
+        "It only visits leaves",
+        "It isn't, it's O(n²)"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Chain [1,2,null,3]: balanced?",
+      "options": [
+        "No: at node 1 the left height is 2 and the right is 0",
+        "Yes",
+        "Only node 3 is unbalanced",
+        "Empty trees only"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What exactly must hold, and at which nodes? What about an empty tree?",
+    "Check [1,2,2,3,3,null,null,4,4] by hand. Where does it break?",
+    "Calling height() at every node: time, and why?",
+    "\"Need the children's heights first\": which traversal, and what can you reuse?",
+    "What does your helper return, and how do you report a failure?",
+    "Code it, saying \"height up, flag on the side\".",
+    "Dry-run the chain [1,2,null,3]: which node fails?",
+    "Time and space? How would returning −1 for \"unbalanced\" let you stop early?"
+  ]
+}

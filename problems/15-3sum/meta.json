@@ -1,0 +1,67 @@
+{
+  "id": 15,
+  "title": "3Sum",
+  "keyIdea": "Sort. Fix nums[i] (skipping repeated values), then run two pointers j = i + 1, k = n − 1 on the rest: sum < 0 → j++, > 0 → k−−, = 0 → record and move both, skipping equal neighbours so no triplet repeats. O(n²).",
+  "approaches": [
+    {
+      "name": "Brute force: all triples + set",
+      "file": "brute.cpp",
+      "idea": "Try every i < j < k; sort each zero-sum triple and keep it in a set to remove repeats.",
+      "time": "O(n³ log n)",
+      "space": "O(answer)",
+      "why": "n³/6 triples; the set insert adds a log factor."
+    },
+    {
+      "name": "Sort + two pointers",
+      "file": "two-pointers.cpp",
+      "best": true,
+      "idea": "Sort; for each new value nums[i], two pointers find pairs summing to −nums[i]; skip duplicates for i, j and k.",
+      "time": "O(n²)",
+      "space": "O(1) extra (besides the answer / sort)",
+      "why": "n values of i × an O(n) sweep each; sorting is O(n log n).",
+      "viz": "viz/3sum.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why sort first?",
+      "options": [
+        "Two pointers need order, and equal values end up side by side for easy skipping",
+        "To find the max",
+        "Sorting is required by C++",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why skip i when nums[i] == nums[i − 1]?",
+      "options": [
+        "The same first number would find the same triplets again",
+        "It's negative",
+        "To save memory",
+        "It can't be part of a triplet"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "After recording a triplet, why move BOTH j and k?",
+      "options": [
+        "With nums[i] fixed, changing only one side can't give zero again with the same other value",
+        "To skip the loop",
+        "Only j should move",
+        "For speed only"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Triplets of values or indices? Must they be unique? Can numbers repeat?",
+    "Do [-1,0,1,2,-1,-4] by hand after sorting. Where do duplicates appear?",
+    "Three nested loops: time, and how would you remove repeated triplets?",
+    "Fix one number, then it's Two Sum II: which pattern?",
+    "How do you avoid repeated triplets for i, and for j/k?",
+    "Code it, saying \"sort, fix i, squeeze j and k\".",
+    "Dry-run [-2,0,0,2,2,-2,0]: which steps skip duplicates?",
+    "Time? How does this extend to 4Sum (LC 18)?"
+  ]
+}

@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Same Tree (BFS) Stepper</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<style>
+/* Layout: one column workbench — presets, the tree(s) with return-value badges and the call stack, controls, then code + numbers */
+:root{
+  --bg:#f4f6f9; --surface:#ffffff; --ink:#1a2130; --muted:#5b6679; --line:#d6dce6; --edge:#9aa5b8;
+  --cur:#d9661f; --cur-soft:#fcebdc; --st:#7446d1; --st-soft:#efe9fb;
+  --hit:#cf2f55; --hit-soft:#fbe4ea; --ok:#0f8a5f; --ok-soft:#e2f5ec;
+  --code-bg:#f0f2f6; --hl:#fff1c2;
+  --f-body:"Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --st:#a98bff; --st-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#10141b; --surface:#171d27; --ink:#e7ebf2; --muted:#9ba6b7; --line:#2b3442; --edge:#5f6b7e;
+  --cur:#ff9650; --cur-soft:#3a2716; --st:#a98bff; --st-soft:#251d3d;
+  --hit:#ff6a8a; --hit-soft:#3a1d27; --ok:#4fd19c; --ok-soft:#16302a;
+  --code-bg:#121821; --hl:#3a3418; color-scheme:dark }
+
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-block:24px 48px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{margin:4px 0 0;color:var(--muted);max-width:76ch}
+.sub code,.why code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+.presets{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button,select,input{font:inherit;color:var(--ink)}
+.btn{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:500}
+.btn:hover{border-color:var(--edge)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--st);outline-offset:2px}
+.custom{display:flex;gap:6px;flex:1 1 260px;min-width:0}
+.custom input{flex:1;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:var(--f-mono);font-size:13px}
+.err{color:var(--hit);font-size:13px;min-height:1em;margin-top:-10px}
+
+.label{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow-x:auto}
+.stage svg{display:block;width:100%;min-width:600px;height:auto;margin:0 auto}
+
+.cell rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.cell .v{font-family:var(--f-mono);font-weight:700;font-size:20px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.cell .i{font-family:var(--f-mono);font-size:11px;fill:var(--muted);text-anchor:middle}
+.cell.done rect{fill:var(--code-bg)}
+.cell.later .v{fill:var(--muted)}
+.cell.matched rect{fill:var(--ok-soft);stroke:var(--ok)}
+.cell.cur rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.cell.bad rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.cell.partner rect{stroke:var(--st);stroke-width:3}
+.arc{fill:none;stroke:var(--ok);stroke-width:2;opacity:.5;transition:opacity .3s}
+.arc.now{opacity:1;stroke-width:3}
+.chip{transition:opacity .3s}
+.chip rect{fill:var(--st-soft);stroke:var(--st);stroke-width:1.5}
+.chip text{font-family:var(--f-mono);font-size:18px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.chip.top rect{stroke-width:3}
+.chip.bad rect{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.chip.fresh rect{fill:var(--st);}
+.chip.fresh text{fill:#fff}
+.chip.ghost rect{fill:none;stroke:var(--ok);stroke-dasharray:4 3}
+.chip.ghost text{fill:var(--ok)}
+.stackbox{fill:none;stroke:var(--line);stroke-width:1.5}
+.ann{font-family:var(--f-body);font-size:12px;fill:var(--muted);text-anchor:middle}
+.ann.left{text-anchor:start}
+.empty{font-family:var(--f-body);font-size:13px;fill:var(--muted);font-style:italic;transition:opacity .3s}
+.tok{transition:transform .45s cubic-bezier(.3,.7,.3,1), opacity .3s}
+.tok text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:#fff;text-anchor:middle;dominant-baseline:central}
+.tok.i rect{fill:var(--cur)} .tok.top rect{fill:var(--st)}
+.verdict{transition:opacity .3s}
+.verdict rect{stroke-width:2}
+.verdict text{font-family:var(--f-mono);font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.verdict.t rect{fill:var(--ok-soft);stroke:var(--ok)} .verdict.t text{fill:var(--ok)}
+.verdict.f rect{fill:var(--hit-soft);stroke:var(--hit)} .verdict.f text{fill:var(--hit)}
+@media (prefers-reduced-motion:reduce){.tok,.arc,.chip,.verdict,.cell rect{transition:none}}
+
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.counter{font-family:var(--f-mono);font-size:13px;color:var(--muted);margin-left:auto;font-variant-numeric:tabular-nums}
+.phase{font-weight:700;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}
+@media (max-width:760px){.grid{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:10px}
+pre.code{margin:0;background:var(--code-bg);border-radius:8px;padding:10px 0;font-family:var(--f-mono);font-size:12.5px;line-height:1.7;overflow-x:auto}
+pre.code span{display:block;padding:0 12px;white-space:pre;min-height:1.7em;width:max-content;min-width:100%;box-sizing:border-box}
+pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--st)}
+.msg{font-size:15px}
+.msg code,.math code{font-family:var(--f-mono);font-size:13px;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.msg .eq{font-family:var(--f-mono);font-size:13.5px;display:block;margin:6px 0;padding:8px 10px;background:var(--code-bg);border-radius:8px;overflow-x:auto;white-space:pre}
+.math{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;align-items:baseline;margin:0}
+.math dt{color:var(--muted)}
+.math dd{margin:0;font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:600;min-width:0;overflow-wrap:anywhere}
+.math .wait{color:var(--muted);font-weight:400;opacity:.6}
+.math .dim{color:var(--muted);font-weight:400}
+.why{font-size:14px;color:var(--muted);border-left:3px solid var(--st);padding:2px 0 2px 12px;max-width:80ch;margin:0}
+.why b{color:var(--ink)}
+.why + .why{margin-top:-8px}
+.tk rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.5;transition:fill .3s, stroke .3s}
+.tk text{font-family:var(--f-mono);font-size:16px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.tk .i{font-size:11px;font-weight:400;fill:var(--muted)}
+.tk.op rect{fill:var(--st-soft)}
+.tk.done rect{fill:var(--code-bg)} .tk.done text:not(.i){fill:var(--muted)}
+.tk.cur rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.slot rect{fill:var(--st-soft);stroke:var(--st);stroke-width:1.5}
+.slot text{font-family:var(--f-mono);font-size:16px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.slot.fresh rect{fill:var(--st)} .slot.fresh text{fill:#fff}
+.slot.res rect{fill:var(--ok-soft);stroke:var(--ok);stroke-width:3}
+.calc{font-family:var(--f-mono);font-size:14px;font-weight:700;fill:var(--ink)}
+.calc.b{fill:var(--cur)} .calc.a{fill:var(--st)} .calc.r{fill:var(--ok)}
+.calc.dim{font-family:var(--f-body);font-weight:400;font-size:12px;fill:var(--muted)}
+.tn{transition:transform .5s cubic-bezier(.3,.7,.3,1)}
+.tn circle{fill:var(--surface);stroke:var(--edge);stroke-width:2;transition:fill .3s, stroke .3s}
+.tn text{font-family:var(--f-mono);font-size:15px;font-weight:700;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
+.tn.cur circle{fill:var(--cur-soft);stroke:var(--cur);stroke-width:3}
+.tn.done circle{fill:var(--ok-soft);stroke:var(--ok)}
+.tn.open circle{stroke:var(--st);stroke-width:2.5}
+.tn.kid circle{fill:var(--st-soft);stroke:var(--st);stroke-width:2.5}
+.te{stroke:var(--edge);stroke-width:2;transition:all .5s cubic-bezier(.3,.7,.3,1)}
+.lr{font-family:var(--f-mono);font-size:10px;font-weight:700;fill:var(--muted);text-anchor:middle;dominant-baseline:central}
+.lr.k{fill:var(--st)}
+.cs rect{fill:var(--code-bg);stroke:var(--line)}
+.cs text{font-family:var(--f-mono);font-size:12px;font-weight:700;fill:var(--ink);dominant-baseline:central}
+.cs.top rect{fill:var(--cur-soft);stroke:var(--cur);stroke-width:2}
+.cshead{font-family:var(--f-body);font-size:12px;font-weight:600;fill:var(--muted)}
+.badge rect{fill:var(--surface);stroke:var(--st);stroke-width:1.5}
+.badge text{font-family:var(--f-mono);font-size:11px;font-weight:700;fill:var(--st);text-anchor:middle;dominant-baseline:central}
+.badge.ok rect{stroke:var(--ok)} .badge.ok text{fill:var(--ok)}
+.badge.bad rect{stroke:var(--hit);fill:var(--hit-soft)} .badge.bad text{fill:var(--hit)}
+.tn.bad circle{fill:var(--hit-soft);stroke:var(--hit);stroke-width:3}
+.tn.ghost circle{fill:none;stroke:var(--edge);stroke-dasharray:4 3}
+.tn.ghost text{fill:var(--muted);font-size:10px;font-weight:600}
+.tn.ghost.bad circle{fill:var(--hit-soft);stroke:var(--hit);stroke-dasharray:4 3}
+.te.path{stroke:var(--ok);stroke-width:5}
+.te.best{stroke:#c9a227;stroke-width:5}
+.te.ghost{stroke-dasharray:4 4}
+.treelab{font-family:var(--f-body);font-size:13px;font-weight:700;fill:var(--muted);text-anchor:middle}
+</style>
+</head>
+<body>
+<header class="sitebar" id="sitebar"><div class="sitebar-in">
+  <a class="sb-brand" href="../#"><span class="sb-logo">{}</span>DSA Journal</a>
+  <nav><a href="../#">Patterns</a><a href="../#revise">Revise</a><a href="../#history">History</a></nav>
+  <a class="sb-info" href="../#info" title="Interview script" aria-label="Open the interview script">i</a>
+  <a class="sb-prof" id="sbProf" href="../#profile" title="Profiles" aria-label="Profiles"></a>
+</div></header>
+<div class="wrap">
+<a class="vback" id="vback" href="../#same-tree"><span class="arr" aria-hidden="true">←</span><span>Back to the problem</span></a>
+  <header>
+    <h1>Same Tree with a queue of pairs</h1>
+    <p class="sub">Instead of recursion, keep a queue of <b>pairs</b>: a node from p and the node at the same position in q. Pop a pair: both NULL → fine, skip; one NULL or different values → false. Otherwise push the two left children as a pair and the two right children as a pair. Queue empty → true.</p>
+  </header>
+  <div class="legend"><span><i class="dot" style="background:var(--cur)"></i>pair just popped</span><span><i class="dot" style="background:var(--ok)"></i>pair matched</span><span><i class="dot" style="background:var(--hit)"></i>difference found</span></div>
+  <div class="presets" id="presets"></div>
+  <div class="err" id="err"></div>
+  <div class="stage"><svg id="g" role="img" aria-label="Trees p and q side by side, with the queue of pairs"></svg></div>
+  <div class="controls">
+    <button class="btn" id="reset">⏮ Reset</button>
+    <button class="btn" id="prev">← Prev</button>
+    <button class="btn primary" id="next">Next →</button>
+    <button class="btn" id="play">▶ Play</button>
+    <select class="btn" id="speed" aria-label="Speed"><option value="1400">Slow</option><option value="900" selected>Normal</option><option value="450">Fast</option></select>
+    <span class="phase" id="phase">Setup</span>
+    <span class="counter" id="counter">frame 1 / 1</span>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="label">The code</div><pre class="code" id="code"></pre></div>
+    <div class="card"><div class="label">What just happened</div><div class="msg" id="msg"></div>
+      <div class="label" style="margin-top:6px">The numbers</div><dl class="math" id="math"></dl></div>
+  </div>
+  <p class="why"><b>Why push NULL pairs:</b> it keeps the code short: the "both NULL" check handles them when they come out. They are what make the shape check work.</p><p class="why"><b>Same time:</b> each position is looked at once, O(n). The queue holds up to a whole level (O(w)), while recursion uses O(h).</p>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const PRESETS = [{"key": "ex1", "label": "Example 1: [1,2,3] vs [1,2,3]", "input": ["1,2,3", "1,2,3"]}, {"key": "ex2", "label": "Same values, different shape", "input": ["1,2", "1,null,2"]}, {"key": "ex3", "label": "Different value: [1,2,1] vs [1,1,2]", "input": ["1,2,1", "1,1,2"]}, {"key": "big", "label": "Bigger, one leaf differs", "input": ["5,3,8,1,4,7,9", "5,3,8,1,4,7,6"]}, {"key": "emp", "label": "Both empty", "input": ["", ""]}];
+const CODE = ["class Solution {", "public:", "    bool isSameTree(TreeNode* p, TreeNode* q) {", "        queue<pair<TreeNode*, TreeNode*>> qu;    // compare matching positions level by level", "        qu.push({p, q});", "        while (!qu.empty()) {", "            auto [a, b] = qu.front(); qu.pop();", "            if (a == NULL && b == NULL) continue;", "            if (a == NULL || b == NULL || a->val != b->val) return false;", "            qu.push({a->left, b->left});", "            qu.push({a->right, b->right});", "        }", "        return true;", "    }", "};"];
+const INPUT_HINT = "your own: 1,2,3 ; 1,2,3";
+
+// level-order text (with null) → {nodes:[{val,l,r}], root}
+function parseTree(txt){
+  const items = txt.split(/[\s,]+/).filter(Boolean).map(x => /^null$/i.test(x) ? null : +x);
+  if(items.some(x => x !== null && !Number.isInteger(x))) throw 'Use whole numbers or null, like 3,9,20,null,null,15,7.';
+  if(!items.length || items[0] === null) return {nodes:[], root:null};
+  const nodes = [{val:items[0], l:null, r:null}], q = [0];
+  let k = 1;
+  while(q.length && k < items.length){
+    const p = q.shift();
+    for(const side of ['l', 'r']){
+      if(k >= items.length) break;
+      const v = items[k++];
+      if(v !== null){ nodes.push({val:v, l:null, r:null}); nodes[p][side] = nodes.length - 1; q.push(nodes.length - 1); }
+    }
+  }
+  return {nodes, root:0};
+}
+const NW = 62, LV = 72, TY0 = 48;
+// one tree laid out by in-order position; ids get a prefix so several trees can share one picture
+function layoutTree(T, x0, pre){
+  const out = [], edges = []; let x = 0;
+  const walk = (id, d) => { if(id === null) return; const n = T.nodes[id];
+    walk(n.l, d + 1); out.push({id: pre + id, val: n.val, x: x0 + x * NW + NW / 2, y: TY0 + d * LV}); x++; walk(n.r, d + 1);
+    if(n.l !== null) edges.push([pre + id, pre + n.l, 'L']); if(n.r !== null) edges.push([pre + id, pre + n.r, 'R']); };
+  walk(T.root, 0);
+  return {nodes: out, edges, width: x * NW};
+}
+const height = (T, id) => id === null ? 0 : 1 + Math.max(height(T, T.nodes[id].l), height(T, T.nodes[id].r));
+
+
+const L = (s, after = -1) => { const i = CODE.findIndex((l, k) => k > after && l.includes(s)); if(i < 0) throw new Error('no code line: ' + s); return i; };
+
+function readCustom(txt){
+  const parts = txt.split(/;|\|/);
+  if(parts.length !== 2) throw 'Write the two trees with a ; between them, like 1,2,3 ; 1,2,3.';
+  const A = parseTree(parts[0]), B = parseTree(parts[1]);
+  if(A.nodes.length > 10 || B.nodes.length > 10) throw 'Keep each tree to 10 nodes or fewer so both fit.';
+  if([...A.nodes, ...B.nodes].some(n => Math.abs(n.val) > 999)) throw 'Keep values between -999 and 999.';
+  return parts;
+}
+// lay out the union shape so matching positions line up; missing nodes become dashed "null" ghosts
+function prepare(input){
+  const [ta, tb] = Array.isArray(input) ? input : input.split(';');
+  const A = parseTree(ta), B = parseTree(tb);
+  const U = {nodes: [], root: null};
+  const mk = (a, b) => { if(a === null && b === null) return null; const id = U.nodes.length; U.nodes.push({a, b, l:null, r:null});
+    const na = a === null ? null : A.nodes[a], nb = b === null ? null : B.nodes[b];
+    U.nodes[id].l = mk(na ? na.l : null, nb ? nb.l : null); U.nodes[id].r = mk(na ? na.r : null, nb ? nb.r : null); return id; };
+  U.root = mk(A.root, B.root);
+  const nodes = [], edges = []; let x = 0;
+  const walk = (u, d) => { if(u === null) return; const n = U.nodes[u]; walk(n.l, d + 1); n.x = x++; n.d = d; walk(n.r, d + 1); };
+  walk(U.root, 0);
+  const width = x * NW, OFF = width + 60;
+  [['p', 'a', A, 30], ['q', 'b', B, 30 + OFF]].forEach(([pre, key, T, x0]) => {
+    U.nodes.forEach((n, u) => {
+      const real = n[key];
+      nodes.push({id: pre + u, val: real === null ? null : T.nodes[real].val, ghost: real === null, x: x0 + n.x * NW + NW / 2, y: TY0 + 26 + n.d * LV});
+      [['l', 'L'], ['r', 'R']].forEach(([s, lab]) => { if(n[s] !== null) edges.push([pre + u, pre + n[s], lab]); });
+    });
+  });
+  const labels = U.root === null ? [] : [{x: 30 + width / 2, text: 'p'}, {x: 30 + OFF + width / 2, text: 'q'}];
+
+  const F = [], cls = {}, badge = {};
+  const v = (u, k) => u === 'nn' || U.nodes[u][k] === null ? 'NULL' : (k === 'a' ? A : B).nodes[U.nodes[u][k]].val;
+  const callName = s => s[0] === 'nn' ? '(NULL, NULL)' : `(${v(+s[0].slice(1), 'a')}, ${v(+s[0].slice(1), 'b')})`;
+  const P = {F, nodes, edges, labels, csTitle: 'queue of pairs (top = front)', csEmpty: c => c ? 'empty' : '—', maxStack: Math.max(4, U.nodes.length + 2), callName};
+  let q = [U.root === null ? 'nn' : U.root], pops = 0;
+  const ent = x => x === 'nn' ? ['nn'] : ['p' + x, 'q' + x];
+  const qs = () => q.slice().reverse().map(ent);
+  F.push({stack: qs(), cls: {}, badge: {}, lines: [L('queue<pair'), L('qu.push({p, q})')], ph: 'Setup', msg: '<span class="eq">qu.push({p, q})</span>Start with the two roots as one pair.', rows: [['pairs popped', '0']]});
+  while(q.length){
+    const u = q.shift(); pops++;
+    if(u === 'nn'){
+      F.push({stack: qs(), cls: {...cls}, badge: {...badge}, lines: [L('while (!qu.empty())'), L('auto [a, b]'), L('if (a == NULL && b == NULL) continue')], ph: 'NULL pair', msg: '<span class="eq">a == NULL && b == NULL → continue</span>Both trees have nothing here: that matches.', rows: [['pairs popped', `${pops}`], ['queue size', `${q.length}`]]});
+      continue;
+    }
+    const n = U.nodes[u], ids = ['p' + u, 'q' + u];
+    const oneNull = n.a === null || n.b === null, diff = !oneNull && A.nodes[n.a].val !== B.nodes[n.b].val;
+    if(oneNull || diff){
+      ids.forEach(i => cls[i] = 'bad');
+      F.push({stack: qs(), cur: ids, cls: {...cls}, badge: {...badge}, lines: [L('auto [a, b]'), L('if (a == NULL || b == NULL')], ph: 'Done',
+        msg: `<span class="eq">a = ${v(u, 'a')}, b = ${v(u, 'b')} → return false</span>` + (oneNull ? 'Only one tree has a node here: different shape.' : 'Different values at the same position.'), rows: [['pairs popped', `${pops}`], ['answer', 'false']]});
+      return P;
+    }
+    ids.forEach(i => cls[i] = 'done'); badge['p' + u] = {t: '=', c: 'ok'};
+    q.push(n.l === null ? 'nn' : n.l, n.r === null ? 'nn' : n.r);
+    F.push({stack: qs(), cur: ids, cls: {...cls}, badge: {...badge}, lines: [L('auto [a, b]'), L('if (a == NULL && b == NULL)'), L('if (a == NULL || b == NULL'), L('qu.push({a->left'), L('qu.push({a->right')], ph: 'Pair matches',
+      msg: `<span class="eq">a->val = b->val = ${v(u, 'a')}\npush (left, left), push (right, right)</span>`, rows: [['pairs popped', `${pops}`], ['queue size', `${q.length}`]]});
+  }
+  F.push({stack: [], cls: {...cls}, badge: {...badge}, lines: [L('return true')], ph: 'Done', msg: '<span class="eq">queue empty → return true</span>Every position matched in shape and value.', rows: [['answer', 'true']]});
+  return P;
+}
+
+
+function render(){
+  const {P} = S;
+  const maxX = Math.max(0, ...P.nodes.map(n => n.x)), maxY = Math.max(TY0, ...P.nodes.map(n => n.y));
+  S.CSX = Math.max(maxX + 130, 300);   // room for the widest badge on the right-most node
+  const W = Math.max(S.CSX + 210, 600), H = Math.max(maxY + 56, 70 + (P.maxStack + 1) * 30, 170);
+  let g = `<g id="edges"></g>`;
+  (P.labels || []).forEach(l => { g += `<text class="treelab" x="${l.x}" y="18">${l.text}</text>`; });
+  P.nodes.forEach(n => { g += `<g class="tn${n.ghost ? ' ghost' : ''}" id="tn-${n.id}" style="transform:translate(${n.x}px,${n.y}px)"><circle r="20"/><text>${n.ghost ? 'null' : n.val}</text></g>`; });
+  g += `<g id="badges"></g><text class="cshead" x="${S.CSX}" y="22">${P.csTitle || 'call stack (top = running)'}</text><g id="cs"></g>`;
+  const svg = $('g'); svg.setAttribute('viewBox', `0 0 ${W} ${H}`); svg.style.maxWidth = Math.round(W * 1.3) + 'px'; svg.innerHTML = g;
+  S.pos = Object.fromEntries(P.nodes.map(n => [n.id, n]));
+  $('code').innerHTML = CODE.map((l, i) => `<span id="ln-${i}">${l.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>`).join('');
+}
+function update(){
+  const f = S.F[cur], {P, pos} = S;
+  const same = (x, y) => String(x) === String(y);
+  const onPath = (set, a, b) => set && set.some(([x, y]) => (same(x, a) && same(y, b)) || (same(x, b) && same(y, a)));
+  $('edges').innerHTML = P.edges.map(([a, b, lab]) => {
+    const A = pos[a], B = pos[b], mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+    const cls = 'te' + (onPath(f.best, a, b) ? ' best' : '') + (onPath(f.path, a, b) ? ' path' : '') + (B.ghost ? ' ghost' : '');
+    return `<line class="${cls}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}"/><circle cx="${mx + (lab === 'L' ? -9 : 9)}" cy="${my - 6}" r="8" fill="var(--surface)"/><text class="lr" x="${mx + (lab === 'L' ? -9 : 9)}" y="${my - 6}">${lab}</text>`;
+  }).join('');
+  P.nodes.forEach(n => {
+    const c = (f.cls || {})[n.id];
+    const isCur = (f.cur || []).some(x => same(x, n.id)), isOpen = (f.stack || []).some(s => s.some(x => same(x, n.id)));
+    $('tn-' + n.id).setAttribute('class', 'tn' + (n.ghost ? ' ghost' : '') + (c ? ' ' + c : '') + (isCur ? ' cur' : '') + (isOpen && !isCur ? ' open' : ''));
+  });
+  $('badges').innerHTML = Object.entries(f.badge || {}).map(([id, b]) => {
+    const p = pos[id]; const w = b.t.length * 6.8 + 12;
+    return `<g class="badge${b.c ? ' ' + b.c : ''}"><rect x="${p.x + 24}" y="${p.y - 9}" width="${w}" height="18" rx="5"/><text x="${p.x + 24 + w / 2}" y="${p.y}">${b.t}</text></g>`;
+  }).join('');
+  const st = f.stack || [];
+  $('cs').innerHTML = st.length ? st.slice().reverse().map((s, k) => `<g class="cs${k === 0 ? ' top' : ''}"><rect x="${S.CSX}" y="${32 + k * 30}" width="196" height="26" rx="6"/><text x="${S.CSX + 10}" y="${45 + k * 30}">${P.callName(s)}</text></g>`).join('')
+    : `<text class="ann left" x="${S.CSX}" y="48" style="font-style:italic">${P.csEmpty ? P.csEmpty(cur) : cur ? 'all calls returned' : 'not started'}</text>`;
+  CODE.forEach((_, i) => $('ln-' + i).classList.toggle('on', !!f.lines.includes(i)));
+  fixBranches();
+  $('msg').innerHTML = f.msg; $('phase').textContent = f.ph; $('counter').textContent = `frame ${cur + 1} / ${S.F.length}`;
+  $('math').innerHTML = (f.rows || []).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
+  $('prev').disabled = cur === 0; $('next').disabled = cur === S.F.length - 1;
+}
+let S = null, cur = 0, timer = null;
+function load(input, key){
+  stop(); const P = prepare(input); S = {P, F: P.F}; cur = 0; render(); update();
+  document.querySelectorAll('[data-preset]').forEach(b => b.setAttribute('aria-pressed', b.dataset.preset === key ? 'true' : 'false'));
+}
+function onCustom(e){
+  e.preventDefault();
+  let input; try { input = readCustom($('customIn').value.replace(/[\[\]]/g, ' ')); } catch(m){ $('err').textContent = m; return; }
+  $('err').textContent = ''; load(input, null);
+}
+function step(d){ const n = cur + d; if(n < 0 || n >= S.F.length) return false; cur = n; update(); return true; }
+function stop(){ if(timer){ clearInterval(timer); timer = null; } $('play').textContent = '▶ Play'; }
+function play(){ if(timer){ stop(); return; } if(cur === S.F.length - 1){ cur = 0; update(); } $('play').textContent = '❚❚ Pause'; timer = setInterval(() => { if(!step(1)) stop(); }, +$('speed').value); }
+$('presets').innerHTML = PRESETS.map(p => `<button class="btn" data-preset="${p.key}">${p.label}</button>`).join('') +
+  `<form class="custom" id="customForm"><input id="customIn" placeholder="${INPUT_HINT}" aria-label="Your own input"><button class="btn" type="submit">Run</button></form>`;
+document.querySelectorAll('[data-preset]').forEach(b => b.onclick = () => { $('err').textContent = ''; const x = PRESETS.find(q => q.key === b.dataset.preset); load(x.input, x.key); });
+$('customForm').addEventListener('submit', onCustom);
+$('next').onclick = () => { stop(); step(1); }; $('prev').onclick = () => { stop(); step(-1); };
+$('reset').onclick = () => { stop(); cur = 0; update(); }; $('play').onclick = play;
+$('speed').onchange = () => { if(timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if(['INPUT','SELECT'].includes(e.target.tagName)) return;
+  if(e.key === 'ArrowRight'){ stop(); step(1); e.preventDefault(); } else if(e.key === 'ArrowLeft'){ stop(); step(-1); e.preventDefault(); } else if(e.key === ' '){ play(); e.preventDefault(); }
+});
+load(PRESETS[0].input, PRESETS[0].key);
+// Only light an if-line when its body actually runs: if the else part runs, or execution goes past it, the condition was false.
+function fixBranches(){
+  const sp = [...document.querySelectorAll('#code span')]; if(!sp.length) return;
+  const code = sp.map(s => s.textContent), ind = l => l.match(/^\s*/)[0].length, on = i => sp[i].classList.contains('on');
+  const strip = l => l.replace(/\/\/.*$/, '');
+  for(let h = 0; h < code.length; h++){
+    if(!/^(\}\s*)?(else\s+)?if\s*\(/.test(code[h].trim())) continue;
+    let depth = 0, he = h, started = false;
+    for(let k = h; k < code.length; k++){ for(const ch of strip(code[k])){ if(ch === '('){ depth++; started = true; } else if(ch === ')') depth--; } he = k; if(started && depth <= 0) break; }
+    const tail = strip(code[he]).trim(), d = ind(code[h]);
+    const oneLine = !/\{\s*$/.test(tail) && /;\s*$/.test(tail);
+    let k = he + 1; const body = [];
+    if(!oneLine) while(k < code.length && (!code[k].trim() || ind(code[k]) > d)){ if(code[k].trim()) body.push(k); k++; }
+    let e = k; if(e < code.length && ind(code[e]) === d && /^\}\s*$/.test(code[e].trim())) e++;
+    const els = [], et = e < code.length ? code[e].trim() : '';
+    if(e < code.length && ind(code[e]) === d && /^(\}\s*)?else\b/.test(et) && !/^(\}\s*)?else\s+if\b/.test(et)){
+      els.push(e); let j = e + 1; while(j < code.length && (!code[j].trim() || ind(code[j]) > d)){ if(code[j].trim()) els.push(j); j++; }
+    }
+    const hdr = []; for(let x = h; x <= he; x++) hdr.push(x);
+    if(!hdr.some(on)) continue;
+    const bOn = body.some(on), eOn = els.some(on);
+    const off = oneLine ? eOn : (!bOn && (eOn || (body.length > 0 && sp.some((_, x) => x > he && !body.includes(x) && on(x)))));
+    if(off) hdr.forEach(x => sp[x].classList.remove('on'));
+  }
+}
+</script>
+<style id="split-css">
+@media (min-width:880px){
+  .wrap.split-on{max-width:1380px}
+  .split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:16px;align-items:start}
+  .split-right{position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto;border-radius:12px}
+  .split-right pre.code{font-size:11.5px}
+}
+.split-left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.split-left > *{margin-top:0;margin-bottom:0}
+.split-right{min-width:0}
+@media (max-width:879px){.split-right{margin-top:12px}}
+</style>
+<script id="split-js">
+// Side-by-side layout: picture + controls + explanation on the left, the code on the right.
+// Only moves existing elements (ids and event handlers stay the same).
+(function(){
+  const code = document.getElementById('code'), msg = document.getElementById('msg');
+  const stage = document.querySelector('.stage'), controls = document.querySelector('.controls');
+  if(!code || !msg || !stage || !controls || document.querySelector('.split')) return;
+  const codeCard = code.closest('.card'), msgCard = msg.closest('.card');
+  if(!codeCard || !msgCard || codeCard === msgCard) return;
+  const grid = codeCard.parentElement;
+  const split = document.createElement('div'), left = document.createElement('div'), right = document.createElement('div');
+  split.className = 'split'; left.className = 'split-left'; right.className = 'split-right';
+  stage.parentElement.insertBefore(split, stage);
+  left.append(stage, controls, msgCard); right.append(codeCard); split.append(left, right);
+  if(grid && grid.classList.contains('grid') && !grid.children.length) grid.remove();
+  const wrap = split.closest('.wrap'); if(wrap) wrap.classList.add('split-on');
+  // keep the highlighted line in view inside the code panel (only scrolls the panel, never the page)
+  let pending = false;
+  const follow = () => { pending = false;
+    if(right.scrollHeight <= right.clientHeight + 2) return;
+    const on = code.querySelector('span.on'); if(!on) return;
+    const box = right.getBoundingClientRect(), r = on.getBoundingClientRect();
+    if(r.top < box.top + 40 || r.bottom > box.bottom - 40) right.scrollTop += (r.top - box.top) - box.height / 3;
+  };
+  new MutationObserver(() => { if(!pending){ pending = true; requestAnimationFrame(follow); } }).observe(code, {subtree: true, attributes: true, attributeFilter: ['class'], childList: true});
+})();
+</script>
+<script id="gaps-js">
+// Display only: hide blank code lines that just add space (doubled, right after "{", right before "}").
+(function(){
+  const blank = s => !s.textContent.trim();
+  const tidy = pre => {
+    const L = [...pre.children].filter(e => e.tagName === 'SPAN');
+    L.forEach((s, i) => {
+      s.classList.remove('gap-hide'); if (!blank(s)) return;
+      let p = i - 1; while (p >= 0 && blank(L[p]) && !L[p].classList.contains('gap-hide')) { break; }
+      const prev = i > 0 ? L[i - 1] : null;
+      let n = i + 1; while (n < L.length && blank(L[n])) n++;
+      let q = i - 1; while (q >= 0 && blank(L[q])) q--;
+      const prevText = q >= 0 ? L[q].textContent.trim() : '', nextText = n < L.length ? L[n].textContent.trim() : '';
+      if ((prev && blank(prev)) || /[{:]$/.test(prevText) || /^}/.test(nextText) || q < 0 || n >= L.length) s.classList.add('gap-hide');
+    });
+  };
+  const run = () => document.querySelectorAll('pre.code').forEach(tidy);
+  run();
+  document.querySelectorAll('pre.code').forEach(p => new MutationObserver(run).observe(p, {childList: true}));
+})();
+</script>
+<style id="gaps-css">pre.code span.gap-hide{display:none}</style>
+<style id="theme-fix">
+/* readable colours in both themes: labels on solid colour chips are white in light mode and dark in dark mode
+   (the dark theme's fills are bright), and faded items stay legible */
+:root{--on-fill:#fff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--on-fill:#10141b}}
+:root[data-theme="dark"]{--on-fill:#10141b}
+.tok text,.vbt text,.chip.fresh text,.slot.fresh text,.chipi.fresh text,.carry text,.row.fresh text:not(.k),.fchip.fresh text,.car.in text{fill:var(--on-fill)}
+.vt,.ptr span{color:var(--on-fill)}
+.vc.dim{opacity:.62}
+.vbar.dim{opacity:.6}
+.math .wait{opacity:1}
+.tn.todo circle{opacity:1;fill:var(--surface);stroke:color-mix(in srgb,var(--edge) 50%,var(--surface))}
+.tn.todo text{opacity:1;fill:color-mix(in srgb,var(--ink) 45%,var(--surface))}
+.cell.out .v{opacity:.6}
+.cell.skip .v,.cell.off,.day.later .tv,.day.later .price{opacity:.65}
+.legend .dot{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ink) 28%,transparent)}
+</style>
+<style id="compact-css">
+@media (min-width:880px){
+  html{zoom:.9}
+  .err:empty{display:none}
+  .err{margin-top:-4px}
+  body{font-size:14px}
+  .wrap{padding-block:20px 28px;gap:12px;padding-left:clamp(40px,7vw,130px);padding-right:clamp(40px,7vw,130px)}
+  .wrap.split-on{max-width:1440px}
+  .vback{font-size:13px;padding:5px 12px 5px 9px;margin-bottom:4px}
+  .vback .arr{font-size:16px}
+  header h1,h1{font-size:22px;margin-top:6px}
+  .sub{font-size:13.5px;line-height:1.5;margin-top:8px;max-width:110ch}
+  .legend{font-size:12px;gap:10px;margin-top:4px}
+  .presets{gap:6px}
+  .presets .btn,.presets input,.presets select{font-size:13px;padding:4px 10px}
+  .controls{gap:6px}
+  .controls .btn,.controls select{font-size:13px;padding:5px 11px}
+  .card{padding:10px 12px;gap:8px}
+  .split{grid-template-columns:minmax(0,1.45fr) minmax(300px,1fr);gap:12px}
+  .split-left{gap:8px}
+  .split-right{top:8px;max-height:calc(100vh - 16px)}
+  .split-right pre.code{font-size:11px;line-height:1.55}
+  .msg{font-size:14px}
+  .msg .eq{font-size:12.5px;margin:4px 0;padding:6px 9px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .math{font-size:13px;gap:2px 12px}
+  .stage svg{max-height:min(calc(100vh - 380px),440px);min-height:180px}
+  .vc{min-width:28px;padding:4px 5px;font-size:13px;border-radius:7px}
+  .vc.sm{min-width:22px;padding:3px 3px;font-size:12px}
+  .vlab{font-size:11px;padding-top:18px}
+  .vchip{font-size:12px;padding:2px 7px}
+}
+</style>
+<script id="compact-js">
+// The code panel fills exactly the space left on screen below its top edge, so it never runs past the bottom.
+(function(){
+  const fit = () => { const r = document.querySelector('.split-right'); if(!r || innerWidth < 880) return;
+    r.style.maxHeight = Math.max(240, innerHeight - Math.max(8, r.getBoundingClientRect().top) - 8) + 'px'; };
+  addEventListener('scroll', fit, {passive: true}); addEventListener('resize', fit); addEventListener('load', fit); setTimeout(fit, 50);
+  // Next / Prev / Play: bring the picture to the top so the controls, "What just happened" and the code are all on screen.
+  const align = () => { const sp = document.querySelector('.split'); if(!sp || innerWidth < 880) return;
+    const top = document.querySelector('.presets') || sp;   // example buttons stay fully visible above the picture
+    const target = Math.min(Math.max(0, top.getBoundingClientRect().top + scrollY - 10), document.documentElement.scrollHeight - innerHeight);
+    if(Math.abs(scrollY - target) > 4) scrollTo({top: target, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'}); };
+  ['next', 'prev', 'play'].forEach(id => { const b = document.getElementById(id); if(b) b.addEventListener('click', align); });
+  document.addEventListener('keydown', e => { if(['ArrowRight', 'ArrowLeft', ' '].includes(e.key) && !/INPUT|TEXTAREA|SELECT/.test((e.target.tagName || ''))) setTimeout(align, 0); });
+})();
+</script>
+<style id="vback-css">
+.sitebar,.vback{--sb-acc:#7446d1;--sb-soft:#efe9fb;--sb-surface:#ffffff;--sb-sunk:#eef1f5;--sb-ink:#1a2130;--sb-muted:#5b6679;--sb-line:#d6dce6}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sitebar,:root:not([data-theme="light"]) .vback{--sb-acc:#a98bff;--sb-soft:#251d3d;--sb-surface:#171d27;--sb-sunk:#121821;--sb-ink:#e7ebf2;--sb-muted:#9ba6b7;--sb-line:#2b3442}}
+:root[data-theme="dark"] .sitebar,:root[data-theme="dark"] .vback{--sb-acc:#a98bff;--sb-soft:#251d3d;--sb-surface:#171d27;--sb-sunk:#121821;--sb-ink:#e7ebf2;--sb-muted:#9ba6b7;--sb-line:#2b3442}
+.sitebar{background:var(--sb-surface);border-bottom:1px solid var(--sb-line)}
+.sitebar-in{max-width:1440px;margin:0 auto;display:flex;align-items:center;gap:6px;padding:10px max(16px,env(safe-area-inset-left,0px))}
+@media (min-width:880px){.sitebar-in{padding-left:clamp(40px,7vw,130px);padding-right:clamp(40px,7vw,130px)}}
+.sb-brand{font-weight:700;font-size:17px;text-decoration:none;color:var(--sb-ink);margin-right:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.sitebar .sb-logo{width:22px;height:22px;border-radius:6px;background:var(--sb-acc);display:inline-grid;place-items:center;color:var(--sb-surface);font-style:normal;font-family:var(--f-mono);font-size:12px}
+.sitebar nav{display:flex;gap:2px}
+.sitebar nav a{text-decoration:none;padding:6px 10px;border-radius:8px;color:var(--sb-muted);font-weight:600;font-size:14px}
+.sitebar nav a:hover{background:var(--sb-soft);color:var(--sb-acc)}
+.sb-info{width:32px;height:32px;border-radius:50%;border:2px solid var(--sb-acc);background:var(--sb-surface);color:var(--sb-acc);font-weight:700;font-family:var(--f-mono);display:grid;place-items:center;text-decoration:none;flex:0 0 auto;box-sizing:border-box;font-size:15px}
+.sb-info:hover{background:var(--sb-soft)}
+.sb-prof{width:32px;height:32px;border-radius:50%;border:2px solid var(--sb-line);background:var(--sb-sunk);color:var(--sb-muted);display:grid;place-items:center;text-decoration:none;font-weight:700;font-size:14px;flex:0 0 auto;box-sizing:border-box}
+.sb-prof.me{background:var(--sb-acc);border-color:var(--sb-acc);color:var(--sb-surface)}
+.vback{display:inline-flex;align-items:center;gap:8px;width:fit-content;font-size:15px;font-weight:600;color:var(--sb-ink);text-decoration:none;
+  padding:7px 14px 7px 10px;border:1px solid var(--sb-line);border-radius:10px;background:var(--sb-surface)}
+.vback .arr{font-size:20px;line-height:1;color:var(--sb-acc)}
+.vback:hover{border-color:var(--sb-acc)}
+</style>
+<script id="vback-js">
+// Back to the problem: if we came from the journal, go back in history (keeps its scroll); otherwise follow the link.
+// profile icon: the signed-in profile's initial (same as the journal's top bar), else a person icon
+(function(){ const b = document.getElementById('sbProf'); if (!b) return;
+  let ini = '';
+  try { const P = JSON.parse(localStorage.getItem('dsa-journal-profiles-v1') || 'null');
+    if (P && P.active === 'owner' && localStorage.getItem('dsa-journal-is-owner') === '1') ini = 'A';
+    else if (P && P.active) { const u = (P.list || []).find(x => x.id === P.active); if (u) ini = u.name && u.name !== 'User' ? u.name.trim()[0].toUpperCase() : '*'; } } catch {}
+  const person = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="8.5" r="4" fill="currentColor"/><path d="M4 20.5c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5" fill="currentColor"/></svg>';
+  if (ini === '*') { b.innerHTML = person; b.classList.add('me'); }        // signed in without a name
+  else if (ini) { b.textContent = ini; b.classList.add('me'); b.title = 'Profiles'; }
+  else b.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="12" cy="8.5" r="4" fill="currentColor"/><path d="M4 20.5c.8-4.2 4-6.5 8-6.5s7.2 2.3 8 6.5" fill="currentColor"/></svg>';
+})();
+const vb = document.getElementById('vback');
+// a visualizer shared by several problems picks its link from the #hash it was opened with
+try { const alt = JSON.parse(vb.dataset.alt || '{}')[location.hash.slice(1)]; if (alt) vb.href = alt[0]; } catch {}
+vb.addEventListener('click', e => {
+  try { const r = new URL(document.referrer); if (r.origin === location.origin && r.pathname === new URL('../', location.href).pathname && history.length > 1) { e.preventDefault(); history.back(); } } catch {}
+});
+</script>
+</body>
+</html>

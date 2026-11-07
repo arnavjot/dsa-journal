@@ -1,0 +1,59 @@
+{
+  "id": 271,
+  "title": "Encode and Decode Strings",
+  "keyIdea": "Write each string as length + '#' + text. When decoding, read digits up to the first '#' to get the length, then take exactly that many characters, whatever they are. A separator alone can't work because words can contain it.",
+  "approaches": [
+    {
+      "name": "Length prefix: len#word",
+      "file": "length-prefix.cpp",
+      "best": true,
+      "idea": "encode: for each s, append to_string(s.size()) + '#' + s. decode: find '#' from i, parse the length, take substr(j + 1, length), jump i past it.",
+      "time": "O(total length)",
+      "space": "O(total length)",
+      "why": "Every character is written once and read once.",
+      "viz": "viz/encode-and-decode-strings.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why not just join the words with '#'?",
+      "options": [
+        "A word containing '#' would be split in the wrong place",
+        "'#' is slow",
+        "It uses more memory",
+        "It works fine"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "While decoding, could the '#' you stop at be inside a word?",
+      "options": [
+        "No: decoding always starts at a length, and whole words are jumped over",
+        "Yes, often",
+        "Only for empty words",
+        "Only at the end"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How is an empty string encoded?",
+      "options": [
+        "\"0#\": length 0, then nothing",
+        "As nothing",
+        "As \"#\"",
+        "It can't be"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can strings contain any character, including # and digits? Can a string be empty?",
+    "Encode [\"a#b\",\"12\",\"#\"] by hand. Would a plain separator work?",
+    "Why does joining with a separator (or escaping) get messy?",
+    "\"Make the format self-describing\": what do you write before each word?",
+    "How does decode know where the length ends and where the word ends?",
+    "Code both functions, saying \"length, hash, then exactly length chars\".",
+    "Decode \"4#neet4#code\" step by step: i, j, length.",
+    "Time and space? What would you change for very long strings (fixed-width length)?"
+  ]
+}

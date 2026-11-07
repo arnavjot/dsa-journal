@@ -1,0 +1,78 @@
+{
+  "id": 131,
+  "title": "Palindrome Partitioning",
+  "keyIdea": "Backtracking on the first piece: for every end i from start, if s[start..i] is a palindrome, take it and partition the rest from i + 1, then remove it. start == n → save. Optionally precompute pal[i][j] so each check is O(1).",
+  "approaches": [
+    {
+      "name": "Precomputed palindrome table",
+      "file": "palindrome-table.cpp",
+      "idea": "Fill pal[i][j] = s[i] == s[j] && (j − i < 2 || pal[i + 1][j − 1]) bottom-up, then backtrack with O(1) lookups.",
+      "time": "O(n·2ⁿ)",
+      "space": "O(n²) table",
+      "why": "Same number of partitions; each palindrome check drops from O(n) to O(1).",
+      "viz": "viz/palindrome-partitioning-table.html"
+    },
+    {
+      "name": "Backtracking + two-pointer check",
+      "file": "backtracking.cpp",
+      "best": true,
+      "idea": "for i from start: sub = s[start..i]; if isPalindrome(sub): push, backtrack(i + 1), pop.",
+      "time": "O(n·2ⁿ)",
+      "space": "O(n) recursion",
+      "why": "Up to 2ⁿ⁻¹ ways to cut the string, each built and checked in O(n).",
+      "viz": "viz/palindrome-partitioning.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does each loop step in backtrack decide?",
+      "options": [
+        "Where the current first piece ends",
+        "Which character to delete",
+        "Whether to reverse the string",
+        "The number of pieces"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why only recurse when the piece is a palindrome?",
+      "options": [
+        "A non-palindrome piece can never be part of a valid answer, so that branch is cut",
+        "To save memory",
+        "Palindromes are shorter",
+        "It recurses anyway"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the table version, why fill rows from the bottom (i = n − 1 down)?",
+      "options": [
+        "pal[i][j] needs pal[i + 1][j − 1], which is in the row below",
+        "It is faster",
+        "Top-down is wrong for strings",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many ways are there to cut a string of length n into pieces?",
+      "options": [
+        "2ⁿ⁻¹ (each gap is cut or not)",
+        "n!",
+        "n²",
+        "n"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What counts as a partition? Can a piece be a single character?",
+    "Partition \"aab\" by hand. Which first pieces work?",
+    "Try every way to cut the string and check every piece: how many cuts are there?",
+    "\"All ways to split into valid pieces\" → which technique?",
+    "What does the loop choose? When do you recurse, and when do you save?",
+    "Code it, saying \"choose a palindrome first piece, recurse on the rest, undo\".",
+    "Dry-run \"abba\".",
+    "Time and space? How does a palindrome table speed up the checks?"
+  ]
+}

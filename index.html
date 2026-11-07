@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DSA Journal</title>
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="assets/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="theme-color" content="#7446d1">
+<meta name="description" content="NeetCode 150 journal: notes, step-by-step visualizers, a daily plan and timed revision.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="brand" href="#"><i>{}</i>DSA Journal</a>
+  <nav>
+    <a href="#" data-nav="home">Patterns</a>
+    <a href="#revise" data-nav="revise">Revise</a>
+    <a href="#history" data-nav="history">History</a>
+  </nav>
+  <button class="info-btn" id="infoBtn" title="Interview script" aria-label="Open the interview script">i</button>
+  <div class="prof"><button class="prof-btn" id="profBtn" aria-haspopup="true" aria-expanded="false" title="Profiles" aria-label="Profiles"></button>
+    <div class="prof-menu" id="profMenu" hidden></div></div>
+</div></header>
+
+<main id="view" class="wrap"><p class="muted">Loading…</p></main>
+
+<dialog id="info">
+  <div class="dlg-head"><h2>Interview toolkit</h2><button class="btn sm" id="infoClose">Close</button></div>
+  <div class="dlg-tabs">
+    <button class="chip" data-itab="cx" aria-pressed="true">Constraints → complexity</button>
+    <button class="chip" data-itab="steps" aria-pressed="false">The 8 steps</button>
+    <button class="chip" data-itab="stuck" aria-pressed="false">Never-stuck protocol</button>
+  </div>
+  <div class="dlg-body">
+    <div data-ipane="cx">
+      <p class="muted" style="margin-top:0">Roughly 10⁸ simple operations run in about a second. Read n, pick the complexity.</p>
+      <table>
+        <thead><tr><th>n up to</th><th>Target</th><th>Usually means</th></tr></thead>
+        <tbody>
+          <tr><td>10–12</td><td>O(n!)</td><td>Permutations, backtracking</td></tr>
+          <tr><td>20–25</td><td>O(2ⁿ)</td><td>Subsets, bitmask DP</td></tr>
+          <tr><td>100–500</td><td>O(n³)</td><td>3 nested loops, interval DP</td></tr>
+          <tr><td>10³–10⁴</td><td>O(n²)</td><td>Every pair, 2-D DP</td></tr>
+          <tr><td>10⁵–10⁶</td><td>O(n log n)</td><td>Sorting, heap, binary search</td></tr>
+          <tr><td>10⁶–10⁸</td><td>O(n)</td><td>Hash map, two pointers, sliding window, one pass</td></tr>
+          <tr><td>&gt; 10⁸</td><td>O(log n) / O(1)</td><td>Binary search, math</td></tr>
+        </tbody>
+      </table>
+      <p class="say">Space counts too: an extra array or hash map is O(n). Recursion uses O(depth) stack space.</p>
+    </div>
+    <div data-ipane="steps" hidden>
+      <p class="muted" style="margin-top:0">Say it out loud. This is how you always have an approach, and it's exactly what the interviewer grades.</p>
+      <ol>
+        <li><b>Restate + clarify (1 min)</b>Repeat the problem in your own words. Ask: input size? value ranges? sorted? duplicates? empty input? expected output on ties? Asking size is secretly asking what complexity they want.</li>
+        <li><b>Work a tiny example by hand (1 min)</b>4–6 elements, plus one edge case. This exposes the pattern.</li>
+        <li><b>Name the brute force + its complexity (1 min)</b>Always. "Brute force is every pair, O(n²); let's do better." You've banked a working answer and shown judgment.</li>
+        <li><b>Pattern-match out loud (1–2 min)</b>Say the trigger: "'longest substring with a condition', that's a variable sliding window."</li>
+        <li><b>State the plan before coding (1 min)</b>Data structures + loop shape + complexity target. Get a nod.</li>
+        <li><b>Code it (10–15 min), narrating</b>Leave vertical space, name variables properly (left, right, seen, count, not i2, x). Don't erase, cross out.</li>
+        <li><b>Dry-run on your example (3–5 min)</b>Trace every variable through the tiny example, then the edge case (empty / single / all-same). Finding your own bug scores higher than lucking into correctness.</li>
+        <li><b>State final complexity + one extension</b>"O(n) time, O(k) space; if the array didn't fit in memory I'd stream it in chunks." Free seniority signal.</li>
+      </ol>
+    </div>
+    <div data-ipane="stuck" hidden>
+      <p class="muted" style="margin-top:0">Don't recognize the problem? Ask these in order. One almost always unlocks the pattern.</p>
+      <ol>
+        <li><b>Would sorting help?</b>Two pointers, intervals, greedy, or binary search.</li>
+        <li><b>Can I trade space for time with a hash map?</b>Counting, seen-before, complement lookup (Two Sum shape).</li>
+        <li><b>Best / longest / shortest contiguous thing?</b>Sliding window (or Kadane / prefix sum).</li>
+        <li><b>Pairs / adjacency / reachability on a grid or network?</b>BFS / DFS. BFS if it says shortest or minimum steps.</li>
+        <li><b>k-th / top-k / most frequent?</b>Heap (or quickselect / bucket sort).</li>
+        <li><b>Count the ways / min cost to reach the end, overlapping subproblems?</b>DP: define state, recurrence, base case, order.</li>
+      </ol>
+      <p class="say"><b>Still stuck?</b> Say: "Let me start with the brute force and look for the bottleneck." Then optimize the bottleneck with the list above. Interviewers pass people who reason; they fail people who freeze or bluff.</p>
+    </div>
+  </div>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

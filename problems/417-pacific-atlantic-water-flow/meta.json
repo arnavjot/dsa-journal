@@ -1,0 +1,77 @@
+{
+  "id": 417,
+  "title": "Pacific Atlantic Water Flow",
+  "keyIdea": "Reverse the flow: DFS from the Pacific edges (top, left) and from the Atlantic edges (bottom, right), only stepping to neighbours that are as high or higher. Cells reached by both floods are the answer.",
+  "approaches": [
+    {
+      "name": "Search downhill from every cell",
+      "file": "dfs-from-every-cell.cpp",
+      "idea": "For each cell, follow water to equal or lower neighbours and see which edges it reaches.",
+      "time": "O((m·n)²)",
+      "space": "O(m·n)",
+      "why": "A fresh search of up to m·n cells starts from each of the m·n cells."
+    },
+    {
+      "name": "DFS uphill from both oceans",
+      "file": "dfs-from-oceans.cpp",
+      "best": true,
+      "idea": "dfs(edge cell, ocean): mark it, move to neighbours with height ≥ current. Two visited grids; answer = cells in both.",
+      "time": "O(m·n)",
+      "space": "O(m·n)",
+      "why": "Each flood visits every cell at most once.",
+      "viz": "viz/pacific-atlantic-water-flow.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why start from the ocean edges instead of from each cell?",
+      "options": [
+        "Two floods (one per ocean) visit each cell once, instead of a full search per cell",
+        "It is the only correct way",
+        "Edges are higher",
+        "To sort heights"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When climbing up from an ocean, which neighbours can you move to?",
+      "options": [
+        "Neighbours with height ≥ the current cell",
+        "Lower neighbours",
+        "Any neighbour",
+        "Only equal ones"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Which edges belong to the Pacific?",
+      "options": [
+        "Top row and left column",
+        "Bottom row and right column",
+        "All four edges",
+        "Only the corners"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does a cell need to be in the answer?",
+      "options": [
+        "It is reached by both the Pacific flood and the Atlantic flood",
+        "It is on an edge",
+        "It is the highest cell",
+        "It is reached by either flood"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Which edges are which ocean? Can water flow to equal heights?",
+    "Mark Example 1 by hand: which cells drain to both?",
+    "Search from every cell: cost?",
+    "\"Can this cell reach the edge?\" asked for every cell → which trick from Surrounded Regions?",
+    "Which way do you move when starting from the ocean, and why?",
+    "Code it, saying \"flood uphill from each ocean, answer = both\".",
+    "Dry-run the 3×3 bowl: why is the centre not included?",
+    "Time and space?"
+  ]
+}

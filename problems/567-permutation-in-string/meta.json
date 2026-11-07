@@ -1,0 +1,67 @@
+{
+  "id": 567,
+  "title": "Permutation in String",
+  "keyIdea": "A permutation of s1 = a window of s2 with exactly s1's letter counts. Slide a fixed window of length s1.length() over s2, updating 26 counts by one letter out and one letter in, and compare the count arrays.",
+  "approaches": [
+    {
+      "name": "Sort every window",
+      "file": "brute.cpp",
+      "idea": "For each window of length m in s2, sort it and compare with sorted s1.",
+      "time": "O(n · m log m)",
+      "space": "O(m)",
+      "why": "n windows, each sorted in O(m log m)."
+    },
+    {
+      "name": "Fixed sliding window of counts",
+      "file": "sliding-window.cpp",
+      "best": true,
+      "idea": "Count s1 and the first window; then for each step remove s2[i − m], add s2[i], and compare the two 26-count arrays.",
+      "time": "O(26 · n)",
+      "space": "O(26)",
+      "why": "Each slide updates two counts in O(1); comparing vectors costs 26.",
+      "viz": "viz/permutation-in-string.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is the window size fixed at s1.length()?",
+      "options": [
+        "A permutation has exactly as many letters as s1",
+        "To save memory",
+        "Because s2 is longer",
+        "It isn't fixed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How many counts change when the window slides one step?",
+      "options": [
+        "At most two: one letter leaves, one enters",
+        "All 26",
+        "One",
+        "s1.length()"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "\"ab\" in \"eidboaoo\" → ?",
+      "options": [
+        "false: \"bo\" and \"oa\" have the wrong letters",
+        "true",
+        "Only if k = 1",
+        "Error"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Contiguous substring? Lowercase only? What if s1 is longer than s2?",
+    "Find a permutation of \"ab\" in \"eidbaooo\" by hand. How long is every candidate?",
+    "Sort every window and compare: time?",
+    "\"Same letters, fixed length, contiguous\": which window type, and what do you compare?",
+    "What changes when the window moves by one?",
+    "Code it, saying \"one out, one in, compare\".",
+    "Dry-run \"adc\" in \"dcda\": which window matches?",
+    "Time and space? How would a \"matches\" counter avoid comparing all 26 slots each step?"
+  ]
+}

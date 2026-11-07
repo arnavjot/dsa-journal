@@ -1,0 +1,68 @@
+{
+  "id": 36,
+  "title": "Valid Sudoku",
+  "keyIdea": "Check the filled cells once: each digit must be new in its row, its column and its 3×3 box. Keep 27 sets (9 rows, 9 columns, 9 boxes); box index = (i / 3) * 3 + j / 3.",
+  "approaches": [
+    {
+      "name": "Three passes: rows, columns, boxes",
+      "file": "three-passes.cpp",
+      "idea": "For each i, check row i, column i and box i with fresh 9-slot counters.",
+      "time": "O(81)",
+      "space": "O(9)",
+      "why": "Each cell is read three times; only 9-slot arrays at a time.",
+      "viz": "viz/valid-sudoku-three-passes.html"
+    },
+    {
+      "name": "One pass with 27 sets",
+      "file": "sets.cpp",
+      "best": true,
+      "idea": "For every filled cell: if its digit is already in rows[i], cols[j] or boxes[box] → false; otherwise insert into all three.",
+      "time": "O(81)",
+      "space": "O(81)",
+      "why": "81 cells, O(1) set operations each. The board is always 9×9, so it's constant either way.",
+      "viz": "viz/valid-sudoku.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Which box is cell (4, 7) in?",
+      "options": [
+        "(4/3)*3 + 7/3 = 3 + 2 = 5",
+        "4",
+        "7",
+        "2"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Must the board be solvable to be valid?",
+      "options": [
+        "No: only the filled cells are checked against the three rules",
+        "Yes",
+        "Only if it's full",
+        "Only rows matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why check all three sets before inserting?",
+      "options": [
+        "A repeat in any of row, column or box makes the board invalid",
+        "To save memory",
+        "Only the row matters",
+        "Order doesn't matter"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Only filled cells? Does it need to be solvable? Board always 9×9?",
+    "Find the duplicate in Example 2 by hand.",
+    "Checking each row, column and box separately: how many passes?",
+    "\"Have I seen this digit here before?\": which structure, and how many of them?",
+    "How do you number the 9 boxes from (i, j)?",
+    "Code it, saying \"row set, column set, box set\".",
+    "Dry-run the \"Same box\" example: which cell fails and why?",
+    "Time and space? How would bitmasks replace the sets?"
+  ]
+}

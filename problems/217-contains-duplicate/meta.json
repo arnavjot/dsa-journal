@@ -1,0 +1,47 @@
+{
+  "id": 217,
+  "title": "Contains Duplicate",
+  "keyIdea": "Remember what you've already seen. A hash set answers \"have I met this number before?\" in O(1) on average, so one pass over the array is enough. Check first, then insert.",
+  "approaches": [
+    {
+      "name": "Brute force",
+      "file": "brute.cpp",
+      "idea": "Compare every pair (i, j) with i < j. If any two are equal, return true.",
+      "time": "O(n²)", "space": "O(1)",
+      "why": "About n·(n−1)/2 pairs. With n up to 10⁵ that's ~5·10⁹ comparisons, too slow."
+    },
+    {
+      "name": "Sort, then check neighbours",
+      "file": "sorting.cpp",
+      "idea": "After sorting, equal numbers sit next to each other, so one pass comparing nums[i] with nums[i-1] finds any repeat.",
+      "time": "O(n log n)", "space": "O(1) extra",
+      "why": "Sorting costs O(n log n); the scan after it is O(n). No extra container (std::sort uses O(log n) stack).",
+      "warn": "Changes the order of nums. Fine here, but say it out loud in an interview."
+    },
+    {
+      "name": "Hash set",
+      "file": "hash-set.cpp",
+      "best": true,
+      "idea": "Walk the array once. For each number, ask the set if it's already there: yes → return true. No → insert it and keep going.",
+      "time": "O(n)", "space": "O(n)",
+      "why": "n numbers, each with one count() and at most one insert(), both O(1) on average. The set can grow to n numbers.",
+      "viz": "viz/contains-duplicate.html"
+    }
+  ],
+  "quiz": [
+    {"q": "Why does the code call seen.count(num) before seen.insert(num)?", "options": ["If it inserted first, count would always find the number it just added and every array would look like it has a duplicate", "It's faster that way", "insert would crash on a duplicate", "Order doesn't matter"], "answer": 0},
+    {"q": "Why is seen.count(num) O(1) on average?", "options": ["The set only looks in the one bucket that num hashes to, not at every stored number", "The set is sorted", "It stops after the first element", "It uses binary search"], "answer": 0},
+    {"q": "What does the hash set approach trade for its O(n) time?", "options": ["Nothing", "O(n) extra memory for the set", "It changes the array", "It only works on positive numbers"], "answer": 1},
+    {"q": "You can't use extra memory but may change the array. Best option?", "options": ["Hash set", "Sort, then compare neighbours: O(n log n), O(1) extra", "Brute force is the only way", "Use a map"], "answer": 1}
+  ],
+  "steps": [
+    "How big can the array get? Can you change it? Do you need to say which number repeats?",
+    "Try [1,2,3,1] and [1,2,3,4]. When can you stop early?",
+    "Every pair: time? Sorting first: time, and what does it change?",
+    "\"Have I seen this before?\": which container answers that in O(1)?",
+    "Check before insert, or insert before check? Why does the order matter?",
+    "Code the one pass with seen.count and seen.insert.",
+    "Dry-run [1,2,3,1]: what's in seen when i = 3?",
+    "Time and space? How would LC 219 (repeat within distance k) change it?"
+  ]
+}

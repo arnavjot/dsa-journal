@@ -1,0 +1,95 @@
+{
+  "id": 746,
+  "title": "Min Cost Climbing Stairs",
+  "keyIdea": "dp[i] = cost[i] + min(dp[i − 1], dp[i − 2]) is the cheapest total to stand on step i. Start on step 0 or 1; the top is reached from the last two steps: answer = min(dp[n − 1], dp[n − 2]). Two variables give O(1) space.",
+  "approaches": [
+    {
+      "name": "Plain recursion",
+      "file": "recursion.cpp",
+      "idea": "solve(i) = cost[i] + min(solve(i − 1), solve(i − 2)).",
+      "time": "O(2ⁿ)",
+      "space": "O(n) stack",
+      "why": "Each call branches twice and the same subproblems are solved again and again."
+    },
+    {
+      "name": "Memoization (top-down)",
+      "file": "memoization.cpp",
+      "idea": "Same recursion, caching each step's answer in dp.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each step is solved once.",
+      "viz": "viz/min-cost-climbing-stairs-memo.html"
+    },
+    {
+      "name": "Your tabulation (bottom-up array)",
+      "file": "tabulation.cpp",
+      "idea": "dp[0] = cost[0], dp[1] = cost[1]; dp[i] = cost[i] + min(dp[i − 1], dp[i − 2]).",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One pass, but keeps the whole dp array.",
+      "viz": "viz/min-cost-climbing-stairs-tabulation.html"
+    },
+    {
+      "name": "Two variables",
+      "file": "two-variables.cpp",
+      "best": true,
+      "idea": "Same recurrence keeping only prev2 and prev1.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Only the last two values are ever read.",
+      "viz": "viz/min-cost-climbing-stairs.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does dp[i] mean?",
+      "options": [
+        "The cheapest total cost to stand on step i, having paid cost[i]",
+        "The cost to reach the top",
+        "cost[i] alone",
+        "The number of ways"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the answer min(dp[n − 1], dp[n − 2])?",
+      "options": [
+        "The top is one jump past the end, reachable from either of the last two steps",
+        "The top is step n − 1",
+        "Because of the base case",
+        "It is dp[n − 1]"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why do steps 0 and 1 start at their own cost?",
+      "options": [
+        "You may start on either one directly, paying only that step",
+        "They are free",
+        "They cost 0",
+        "Because i starts at 2"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How does the space go from O(n) to O(1)?",
+      "options": [
+        "Only dp[i − 1] and dp[i − 2] are read, so keep two variables",
+        "Sort the costs",
+        "Use recursion",
+        "It can't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Where can you start? Where is the top? Do you pay when you leave or when you step on?",
+    "Solve [10,15,20] by hand.",
+    "Plain recursion: why is it exponential?",
+    "\"Cheapest way using the last one or two choices\" → which technique?",
+    "What are dp[i], the recurrence, the base cases and the answer?",
+    "Code it, saying \"cost here plus the cheaper of the last two\".",
+    "Dry-run [1,100,1,1,1,100,1,1,100,1].",
+    "Time and space for recursion, memo, table, two variables?"
+  ]
+}

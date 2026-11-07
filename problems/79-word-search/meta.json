@@ -1,0 +1,69 @@
+{
+  "id": 79,
+  "title": "Word Search",
+  "keyIdea": "Try every cell as the start. dfs(i, j, index): out of bounds or wrong letter → false; last letter → true; otherwise mark the cell #, try the 4 neighbours for index + 1, restore the cell, return whether any worked.",
+  "approaches": [
+    {
+      "name": "DFS + backtracking from every cell",
+      "file": "dfs-backtracking.cpp",
+      "best": true,
+      "idea": "Mark the current cell # so the path can't reuse it, try down / up / right / left, then put the letter back.",
+      "time": "O(m·n · 3^L)",
+      "space": "O(L) recursion",
+      "why": "Each of the m·n starts can branch into at most 3 new directions per letter (the 4th is where you came from).",
+      "viz": "viz/word-search.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why mark the cell with # before recursing?",
+      "options": [
+        "So the same path can't use that cell twice (# never matches a letter)",
+        "To mark the answer",
+        "To speed up the bounds check",
+        "To delete it"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why restore board[i][j] = temp afterwards?",
+      "options": [
+        "Other paths may need that cell; the board must be unchanged for them",
+        "To print the board",
+        "It is not needed",
+        "To end recursion"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does \"ABCB\" return false on the example board?",
+      "options": [
+        "The only path would need the same B cell twice",
+        "There is no C",
+        "B is not on the board",
+        "The word is too long"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why 3^L and not 4^L?",
+      "options": [
+        "After the first letter, one of the 4 neighbours is the cell you came from (marked #)",
+        "Corners only have 3",
+        "It is 4^L",
+        "Because of ||"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can a cell be reused? Do diagonals count? What about a one-letter word?",
+    "Find ABCCED on the example board by hand. Why can't ABCB be found?",
+    "Is there anything smarter than trying every start? What does each start cost?",
+    "\"Find a path in a grid with no reuse\" → which technique?",
+    "What are the stop conditions, in order? When do you mark and restore?",
+    "Code it, saying \"check, mark, try 4 ways, restore\".",
+    "Dry-run SEE on the example board.",
+    "Time and space? How does Word Search II (LC 212) handle many words at once?"
+  ]
+}

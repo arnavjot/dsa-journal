@@ -1,0 +1,67 @@
+{
+  "id": 875,
+  "title": "Koko Eating Bananas",
+  "keyIdea": "Whether speed k finishes in h hours flips once from no to yes as k grows, so binary search the answer range 1 … max(piles). For a guess k, hours = Σ ceil(pile / k); fits → try slower (right = mid − 1), else faster.",
+  "approaches": [
+    {
+      "name": "Try every speed",
+      "file": "linear.cpp",
+      "idea": "For k = 1, 2, …, compute the hours; return the first k that fits.",
+      "time": "O(n · max)",
+      "space": "O(1)",
+      "why": "Up to max(piles) speeds (10⁹), each costing O(n): far too slow."
+    },
+    {
+      "name": "Binary search on the answer",
+      "file": "binary-search.cpp",
+      "best": true,
+      "idea": "left = 1, right = max(piles). mid fits (hours ≤ h) → ans = mid, right = mid − 1; else left = mid + 1.",
+      "time": "O(n log max)",
+      "space": "O(1)",
+      "why": "log₂(max) guesses, each summing n piles.",
+      "viz": "viz/koko-eating-bananas.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why can you binary search when nothing is sorted?",
+      "options": [
+        "\"Fast enough?\" is false then true as k grows; it flips exactly once",
+        "Because piles are sorted",
+        "Because h is small",
+        "You can't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Hours for a pile of 7 at speed 3?",
+      "options": [
+        "3 (ceil(7/3))",
+        "2",
+        "7",
+        "1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is hours a long long?",
+      "options": [
+        "The total can exceed int when piles are huge and the speed is 1",
+        "For precision",
+        "Because h is long",
+        "It doesn't need to be"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can Koko eat from two piles in one hour? What's the smallest and largest useful speed? Is h ≥ number of piles?",
+    "Try speeds 3, 4 and 5 for [3,6,7,11], h = 8.",
+    "Trying every speed: time, and why too slow?",
+    "\"Find the minimum k where a yes/no check flips\": which pattern?",
+    "What's the check for a given k? What do you do with mid when it passes or fails?",
+    "Code it, saying \"binary search on the answer\".",
+    "Dry-run [30,11,23,4,20], h = 6: which mids do you try?",
+    "Time and space? Which other problems are \"binary search on the answer\" (LC 1011, 410)?"
+  ]
+}
