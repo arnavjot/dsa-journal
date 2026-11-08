@@ -1,0 +1,88 @@
+{
+  "id": 269,
+  "title": "Alien Dictionary",
+  "keyIdea": "Neighbouring words give the rules: the first letter where they differ says which comes first. Those rules are edges between letters, and a topological sort of that graph is the alphabet. Two ways to fail: a word placed before its own prefix (\"abc\" then \"ab\"), or a cycle in the rules.",
+  "approaches": [
+    {
+      "name": "DFS post-order (3 states)",
+      "file": "dfs-postorder.cpp",
+      "idea": "Same rules. DFS each letter; add it to out after all the letters it must precede are finished, then reverse out. Meeting a letter still on the current path (state 1) is a cycle → \"\".",
+      "time": "O(C)",
+      "space": "O(1)",
+      "why": "C = total characters in all words: each is read once to collect letters and once while comparing neighbours. The letter graph has at most 26 nodes and 26² edges, so the DFS is a constant amount of work; the recursion is at most 26 deep.",
+      "viz": "viz/alien-dictionary-dfs.html"
+    },
+    {
+      "name": "Kahn's algorithm (BFS on indegrees)",
+      "file": "kahn-bfs.cpp",
+      "best": true,
+      "idea": "Compare each word with the next: the first differing letters give one rule u → v (indegree[v]++). A longer word before its own prefix → \"\". Then queue letters with indegree 0, append each one taken, lower its followers' indegrees. If some letters were never taken, they are in a cycle → \"\".",
+      "time": "O(C)",
+      "space": "O(1)",
+      "why": "C = total characters in all words, read a constant number of times. The graph is at most 26 letters with a 26 × 26 table, so Kahn's part is constant work and the extra space is fixed (26² booleans, 26 indegrees).",
+      "viz": "viz/alien-dictionary.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Words \"wrt\" then \"wrf\". What rule do you get?",
+      "options": [
+        "t comes before f",
+        "w comes before r",
+        "f comes before t",
+        "Nothing"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why compare only neighbouring words, not every pair?",
+      "options": [
+        "If each neighbour pair is in order, the whole list is; other pairs add no new rules beyond what the sort implies",
+        "To save memory only",
+        "Non-neighbours can never differ",
+        "It is required by the queue"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Words [\"abc\", \"ab\"]. What is the answer?",
+      "options": [
+        "\"\": a word can never come before its own prefix",
+        "\"abc\"",
+        "\"cba\"",
+        "Any order of a, b, c"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "After Kahn's algorithm, 3 letters are in the order but 5 letters appear in the words. What happened?",
+      "options": [
+        "The other 2 are in a cycle, so return \"\"",
+        "They had no rules, so add them at the end",
+        "The queue was too small",
+        "Nothing, return the 3"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "A letter appears in the words but in no rule. Where does it go?",
+      "options": [
+        "Anywhere: it starts with indegree 0 and still must be in the answer",
+        "Nowhere: leave it out",
+        "Always last",
+        "Always first"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What if no order works? Can the same word repeat? Must every letter that appears be in the answer?",
+    "Work [\"wrt\",\"wrf\",\"er\",\"ett\",\"rftt\"] by hand: which rule does each neighbouring pair give?",
+    "Brute force: try every order of the letters. Cost?",
+    "\"Order that respects pairwise rules\" → which pattern? What are the nodes and edges?",
+    "How do you get the rules, and which two cases make the answer impossible?",
+    "Code it: collect letters, one rule per neighbour pair, then Kahn's queue.",
+    "Dry-run [\"z\",\"x\",\"z\"] and [\"abc\",\"ab\"].",
+    "Time and space in terms of C (total characters)? How would the DFS version detect a cycle?"
+  ]
+}
