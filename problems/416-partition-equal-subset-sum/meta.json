@@ -1,0 +1,96 @@
+{
+  "id": 416,
+  "title": "Partition Equal Subset Sum",
+  "keyIdea": "Two equal halves exist only if some subset adds up to total / 2 (odd total → false). That is subset sum: for each number, take it or skip it. dp[index][sum] = can the numbers from index on bring sum to target; each row only needs the row below, so two rows are enough.",
+  "approaches": [
+    {
+      "name": "Recursion",
+      "file": "recursion.cpp",
+      "idea": "Take or skip each number, tracking the running sum; true when it hits target.",
+      "time": "O(2ⁿ)",
+      "space": "O(n)",
+      "why": "Two choices per number with nothing saved; the stack is n deep.",
+      "warn": "Too slow for n = 200."
+    },
+    {
+      "name": "Memoization",
+      "file": "memoization.cpp",
+      "idea": "Same recursion; save the answer for each (index, sum) in dp so it is solved once.",
+      "time": "O(n × target)",
+      "space": "O(n × target)",
+      "why": "n × (target + 1) states, O(1) work each; the dp table plus an n-deep stack.",
+      "viz": "viz/partition-equal-subset-sum-memo.html"
+    },
+    {
+      "name": "Tabulation",
+      "file": "tabulation.cpp",
+      "idea": "dp[row][target] = true for every row; fill index from n − 1 up and sum from target down: dp[index][sum] = dp[index + 1][sum + arr[index]] || dp[index + 1][sum]. Answer dp[0][0].",
+      "time": "O(n × target)",
+      "space": "O(n × target)",
+      "why": "Two nested loops over n indexes and target + 1 sums; the whole table is kept.",
+      "viz": "viz/partition-equal-subset-sum-tabulation.html"
+    },
+    {
+      "name": "Tabulation, two rows",
+      "file": "tabulation-space-optimised.cpp",
+      "best": true,
+      "idea": "Your active code: each row only reads the row below, so keep curr and next of size target + 1; after each index, next = curr. Answer next[0].",
+      "time": "O(n × target)",
+      "space": "O(target)",
+      "why": "Same two loops; only two rows of target + 1 are stored.",
+      "viz": "viz/partition-equal-subset-sum.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why look for a subset with sum = total / 2?",
+      "options": [
+        "If one subset has half the total, the remaining numbers have the other half",
+        "Because the array is sorted",
+        "To halve the running time",
+        "It only works for even n"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[1, 2, 3, 5]: why is the answer false immediately?",
+      "options": [
+        "The total 11 is odd, so it can't split into two equal integer halves",
+        "5 is too big",
+        "There are only 4 numbers",
+        "1 + 2 + 3 = 6 ≠ 5"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can the table be reduced to two rows?",
+      "options": [
+        "Row index only reads row index + 1",
+        "The table is symmetric",
+        "Only the last column matters",
+        "Memoization needs it"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does dp[index][target] equal, and why?",
+      "options": [
+        "true: the sum already reached the target, nothing more is needed",
+        "false",
+        "It depends on arr[index]",
+        "It is never used"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "All numbers positive? Must both parts be non-empty? What if the total is odd?",
+    "Work [1,5,11,5] by hand: which subset makes 11?",
+    "Brute force: every subset. Cost?",
+    "\"Split into two equal sums\" → which classic DP problem does it reduce to?",
+    "State: what does dp[index][sum] mean, and what are the take / skip transitions?",
+    "Code the two-row tabulation.",
+    "Dry-run [1,2,3] (target 3).",
+    "Time and space? Could one row be enough?"
+  ]
+}
