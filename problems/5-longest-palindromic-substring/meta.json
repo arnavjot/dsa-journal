@@ -1,0 +1,78 @@
+{
+  "id": 5,
+  "title": "Longest Palindromic Substring",
+  "keyIdea": "Every palindrome has a middle: one letter or two. From each of the 2n − 1 middles, expand i left and j right while s[i] == s[j]; the last matching window is the longest palindrome with that middle. Keep the longest overall.",
+  "approaches": [
+    {
+      "name": "DP table",
+      "file": "dp-table.cpp",
+      "idea": "dp[i][j] = s[i] == s[j] and (length ≤ 2 or dp[i + 1][j − 1]). Fill i from n − 1 down, j from i up; remember the longest true cell.",
+      "time": "O(n²)",
+      "space": "O(n²)",
+      "why": "n(n + 1)/2 cells, each filled in O(1) from the cell diagonally inside it; the table itself is n × n.",
+      "viz": "viz/longest-palindromic-substring-dp.html"
+    },
+    {
+      "name": "Expand around center",
+      "file": "expand-around-center.cpp",
+      "best": true,
+      "idea": "Your code: for each center, expand(center, center) for odd lengths and expand(center, center + 1) for even lengths; keep the longer result in maxi.",
+      "time": "O(n²)",
+      "space": "O(1)",
+      "why": "2n − 1 middles, each expanding at most n/2 steps. Only a few indices are kept (passing s as const string& avoids copying it on every call).",
+      "viz": "viz/longest-palindromic-substring.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why expand from both (c, c) and (c, c + 1)?",
+      "options": [
+        "Odd-length palindromes have one middle letter, even-length ones have two",
+        "To check both directions",
+        "To avoid going out of bounds",
+        "It's only needed for the last letter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When the loop stops at i and j, which substring is the palindrome?",
+      "options": [
+        "s[i + 1 .. j − 1]",
+        "s[i .. j]",
+        "s[i .. j − 1]",
+        "s[i + 1 .. j]"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the DP table, why fill i from n − 1 down?",
+      "options": [
+        "dp[i][j] needs dp[i + 1][j − 1], which is in the row below",
+        "To find the longest first",
+        "Because j starts at n − 1",
+        "Any order works"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Both approaches are O(n²) time. Why is expanding the better answer?",
+      "options": [
+        "It uses O(1) extra space instead of an n × n table",
+        "It is O(n)",
+        "The DP is wrong for even lengths",
+        "It handles one letter differently"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Any longest palindrome is fine? What about a one-letter string?",
+    "Work \"babad\" and \"cbbd\" by hand: list the middles and how far each expands.",
+    "Brute force: check every substring. Cost?",
+    "\"Longest palindromic substring\" → which two techniques?",
+    "Why two expansions per index, and what does expand return?",
+    "Code expand and the loop over centers.",
+    "Dry-run \"cbbd\": which middle finds \"bb\"?",
+    "Time and space? How does the DP table version compare?"
+  ]
+}

@@ -692,13 +692,13 @@
     "id": 5,
     "title": "Longest Palindromic Substring",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 647,
     "title": "Palindromic Substrings",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 91,
