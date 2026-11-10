@@ -710,7 +710,7 @@
     "id": 322,
     "title": "Coin Change",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 152,
