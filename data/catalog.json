@@ -680,13 +680,13 @@
     "id": 198,
     "title": "House Robber",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 213,
     "title": "House Robber II",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 5,

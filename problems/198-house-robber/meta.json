@@ -1,0 +1,105 @@
+{
+  "id": 198,
+  "title": "House Robber",
+  "keyIdea": "At each house: rob it and jump to i + 2, or skip it and go to i + 1. best(i) = max(nums[i] + best(i + 2), best(i + 1)). Fill from the right; only the next two values are ever needed, so two variables are enough.",
+  "approaches": [
+    {
+      "name": "Recursion",
+      "file": "recursion.cpp",
+      "idea": "Try both choices at every house with no saving: rob (index + 2) or skip (index + 1).",
+      "time": "O(2ⁿ)",
+      "space": "O(n)",
+      "why": "Each call branches into two, and the same index is solved again and again (like Fibonacci). The stack is at most n deep.",
+      "warn": "Too slow for n = 100: the same subproblems are recomputed exponentially many times."
+    },
+    {
+      "name": "Memoization (last house as base)",
+      "file": "memoization-last-house-base.cpp",
+      "idea": "Your commented version: stop at the last house and return nums[index]; only call index + 2 when that house exists (tempAns stays 0 otherwise). Save each answer in dp.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each index is computed once and then read from dp; dp and the recursion stack are O(n).",
+      "viz": "viz/house-robber-memo-last-house.html"
+    },
+    {
+      "name": "Memoization",
+      "file": "memoization.cpp",
+      "idea": "Same recursion, but save best(index) in dp the first time; base case: index past the end → 0.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each index 0..n − 1 is computed once (2 calls each), everything else is a dp lookup. dp array plus recursion stack: O(n).",
+      "viz": "viz/house-robber-memo.html"
+    },
+    {
+      "name": "Tabulation",
+      "file": "tabulation.cpp",
+      "idea": "dp of size n + 2 with dp[n] = dp[n + 1] = 0; fill i from n − 1 down to 0 with dp[i] = max(nums[i] + dp[i + 2], dp[i + 1]); answer dp[0].",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One loop over the houses; the dp array has n + 2 entries.",
+      "viz": "viz/house-robber-tabulation.html"
+    },
+    {
+      "name": "Two variables",
+      "file": "two-variables.cpp",
+      "best": true,
+      "idea": "Your active code: the tabulation keeping only next1 = best(i + 1) and next2 = best(i + 2). curr = max(nums[i] + next2, next1), then shift.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass over the houses; only two numbers are stored.",
+      "viz": "viz/house-robber.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does robbing house i send you to i + 2, not i + 1?",
+      "options": [
+        "House i + 1 is a neighbour, so it can't be robbed too",
+        "To go faster",
+        "Because dp[i + 1] is unknown",
+        "It doesn't, both are fine"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "nums = [2, 1, 1, 2]. What is the answer?",
+      "options": [
+        "4 (rob the two 2s, skipping two houses in a row)",
+        "3",
+        "2",
+        "6"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can the dp array be replaced by two variables?",
+      "options": [
+        "dp[i] only reads dp[i + 1] and dp[i + 2]",
+        "The answer is always in dp[0]",
+        "The array is sorted",
+        "Memoization needs it"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Plain recursion without dp takes how long?",
+      "options": [
+        "O(2ⁿ): the same index is solved many times",
+        "O(n)",
+        "O(n²)",
+        "O(n log n)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can amounts be 0? Is n ever 0? Are neighbours only i − 1 and i + 1?",
+    "Work [2,7,9,3,1] by hand from the right. Then [2,1,1,2]: why isn't 'every other house' enough?",
+    "Brute force: every subset with no two neighbours. Cost?",
+    "\"Choose or skip each item, best total\" → which pattern?",
+    "State the recurrence and the base case. Which direction do you fill?",
+    "Code the two-variable version.",
+    "Dry-run [1,2,3,1].",
+    "Time and space? How does House Robber II (circle) change it?"
+  ]
+}

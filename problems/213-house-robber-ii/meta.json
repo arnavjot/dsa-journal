@@ -1,0 +1,78 @@
+{
+  "id": 213,
+  "title": "House Robber II",
+  "keyIdea": "The houses are in a circle, so house 0 and house n − 1 can't both be robbed. Any plan leaves out the first house or the last one, so run House Robber on 0..n − 2 and on 1..n − 1 and take the larger. One house: just rob it.",
+  "approaches": [
+    {
+      "name": "Memoization on two ranges",
+      "file": "memoization.cpp",
+      "idea": "Your code: solveUsingMem(start, end) = most money from houses start..end (rob → start + 2, skip → start + 1). Called on 0..n − 2 with dp1 and on 1..n − 1 with dp2.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "Each range has at most n − 1 houses, each solved once; two dp arrays of size n plus the recursion stack.",
+      "viz": "viz/house-robber-ii-memo.html"
+    },
+    {
+      "name": "Two variables on each range",
+      "file": "two-variables.cpp",
+      "best": true,
+      "idea": "Same two cases, but each one is the House Robber two-variable loop (next1, next2) over its range, right to left.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Two passes over at most n − 1 houses; only two numbers kept per pass.",
+      "viz": "viz/house-robber-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why run House Robber twice?",
+      "options": [
+        "Every valid plan skips the first house or the last, so one of the two runs contains it",
+        "To double-check the answer",
+        "Because the array is sorted",
+        "To handle negative amounts"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "nums = [2, 3, 2]. What is the answer?",
+      "options": [
+        "3 (houses 0 and 2 are neighbours in the circle)",
+        "4",
+        "2",
+        "7"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does n == 1 need its own check?",
+      "options": [
+        "Both ranges 0..n − 2 and 1..n − 1 would be empty and give 0",
+        "Recursion fails on one element",
+        "dp can't have size 1",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In your memo version, why two dp arrays?",
+      "options": [
+        "The two cases end at different houses, so their saved answers mean different things",
+        "One is for odd houses, one for even",
+        "To save time",
+        "One is a backup"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "What changes when the houses form a circle? What about one house?",
+    "Work [2,3,2] and [1,2,3,1] by hand.",
+    "Brute force: every subset with no two neighbours, counting first and last as neighbours. Cost?",
+    "\"House Robber, but in a circle\" → how do you reduce it to the line version?",
+    "Which two ranges, and how do you combine them?",
+    "Code it reusing the two-variable House Robber.",
+    "Dry-run [9,1,1,9]: what does each case give?",
+    "Time and space? What would break if you only ran it once on the whole array?"
+  ]
+}
