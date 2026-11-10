@@ -728,7 +728,7 @@
     "id": 300,
     "title": "Longest Increasing Subsequence",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 416,

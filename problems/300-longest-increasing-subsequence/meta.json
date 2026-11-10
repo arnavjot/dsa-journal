@@ -1,0 +1,111 @@
+{
+  "id": 300,
+  "title": "Longest Increasing Subsequence",
+  "keyIdea": "Keep ans, where ans[k] = smallest tail of an increasing subsequence of length k + 1 (always sorted). A number bigger than ans.back() extends it; otherwise binary-search the first ans[k] ≥ it and replace. The size of ans is the answer: O(n log n).",
+  "approaches": [
+    {
+      "name": "Recursion",
+      "file": "recursion.cpp",
+      "idea": "At each index: take it (if it's bigger than the previous taken one) or skip it.",
+      "time": "O(2ⁿ)",
+      "space": "O(n)",
+      "why": "Two choices per index with no saving; the stack goes n deep.",
+      "warn": "Too slow for n = 2500."
+    },
+    {
+      "name": "Memoization",
+      "file": "memoization.cpp",
+      "idea": "Same take/skip recursion; state (curr, prev) saved in dp[curr][prev + 1] (prev = -1 means nothing taken yet, hence the + 1).",
+      "time": "O(n²)",
+      "space": "O(n²)",
+      "why": "n × (n + 1) states, O(1) each; the table is n + 1 by n + 1."
+    },
+    {
+      "name": "Tabulation",
+      "file": "tabulation.cpp",
+      "idea": "Fill dp[curr][prev + 1] from curr = n − 1 down and prev = curr − 1 down to −1, reading the row below; answer dp[0][0].",
+      "time": "O(n²)",
+      "space": "O(n²)",
+      "why": "Two nested loops over curr and prev; the full table is (n + 1)²."
+    },
+    {
+      "name": "Tabulation, two rows",
+      "file": "tabulation-space-optimised.cpp",
+      "idea": "Each row only reads the row below, so keep currrow and nextrow.",
+      "time": "O(n²)",
+      "space": "O(n)",
+      "why": "Same loops; only two rows of n + 1."
+    },
+    {
+      "name": "Binary search with lower_bound",
+      "file": "lower-bound.cpp",
+      "idea": "Your commented version: the tails array, with lower_bound finding the first ans[k] ≥ num[i].",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "n numbers, one O(log n) lower_bound each; ans has at most n entries.",
+      "viz": "viz/longest-increasing-subsequence-lower-bound.html"
+    },
+    {
+      "name": "Binary search (tails array)",
+      "file": "binary-search.cpp",
+      "best": true,
+      "idea": "Your active code: push when num[i] > ans.back(), else your binarySearch returns the first ans[k] ≥ num[i] and you replace it.",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "n numbers, one O(log n) binary search each over the sorted tails; ans has at most n entries.",
+      "viz": "viz/longest-increasing-subsequence.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does ans[k] mean in the binary search method?",
+      "options": [
+        "The smallest number that can end an increasing subsequence of length k + 1",
+        "The k-th number of the LIS",
+        "How many numbers are smaller than nums[k]",
+        "The LIS ending at index k"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Is ans at the end always a real increasing subsequence of nums?",
+      "options": [
+        "No, only its length is guaranteed",
+        "Yes, always",
+        "Only if nums is sorted",
+        "Only its first element"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why search for the first value ≥ x (not > x)?",
+      "options": [
+        "The subsequence must be strictly increasing, so an equal value replaces rather than extends",
+        "To make it faster",
+        "lower_bound can't do > ",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the memo version, why dp[curr][prev + 1]?",
+      "options": [
+        "prev can be −1 (nothing taken yet), so shift it by 1 to get a valid index",
+        "To leave room for the answer",
+        "Because arrays start at 1",
+        "It's a mistake"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Strictly increasing? Subsequence (can skip) not subarray? n up to 2500?",
+    "Work [10,9,2,5,3,7,101,18] by hand: what is one LIS?",
+    "Brute force: every subsequence. Cost?",
+    "\"Longest increasing subsequence\" → which DP state, and which O(n log n) trick?",
+    "Explain the tails array: when do you push, when do you replace?",
+    "Code the binary search version with your own binarySearch.",
+    "Dry-run [3,4,1,2,5]: what is ans at the end, and why isn't it the LIS?",
+    "Time and space of each version?"
+  ]
+}
