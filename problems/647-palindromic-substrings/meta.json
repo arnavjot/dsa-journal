@@ -1,0 +1,79 @@
+{
+  "id": 647,
+  "title": "Palindromic Substrings",
+  "keyIdea": "Expand around each of the 2n − 1 middles (one letter or two). Every successful step outward is one more palindrome with that middle, so add up how far each middle expands.",
+  "approaches": [
+    {
+      "name": "DP table",
+      "file": "dp-table.cpp",
+      "idea": "dp[i][j] = s[i] == s[j] and (length ≤ 2 or dp[i + 1][j − 1]); fill i from n − 1 down and count the true cells.",
+      "time": "O(n²)",
+      "space": "O(n²)",
+      "why": "n(n + 1)/2 cells, each O(1); the table is n × n.",
+      "viz": "viz/palindromic-substrings-dp.html"
+    },
+    {
+      "name": "Expand around center",
+      "file": "expand-around-center.cpp",
+      "best": true,
+      "idea": "Your code: expand(center, center) + expand(center, center + 1) for each center; each returns how many palindromes it found.",
+      "time": "O(n²)",
+      "space": "O(1)",
+      "why": "2n − 1 middles, each expanding at most n/2 steps; only counters are kept (pass s as const string& to avoid copying).",
+      "viz": "viz/palindromic-substrings.html",
+      "warn": "The loop checks i < s.length(); it should be j < s.length(). It still works because i only goes down, and when j reaches the end, s[j] is the end character '\\0', which never equals a letter."
+    }
+  ],
+  "quiz": [
+    {
+      "q": "\"aaa\": how many palindromic substrings?",
+      "options": [
+        "6: a, a, a, aa, aa, aaa",
+        "3",
+        "4",
+        "1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does each successful expansion step add exactly one palindrome?",
+      "options": [
+        "Each step gives a new, longer palindrome with that middle, and no other middle produces it",
+        "Because the count starts at 1",
+        "It doesn't, some are counted twice",
+        "Only odd middles count"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In your expand loop, what should the middle condition be?",
+      "options": [
+        "j < s.length() (i only moves left, so i < s.length() is always true)",
+        "i < s.length()",
+        "i <= j",
+        "j >= 0"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the difference from Longest Palindromic Substring?",
+      "options": [
+        "Same expansion; count every step instead of keeping only the longest",
+        "It needs a different technique",
+        "It only counts odd lengths",
+        "It needs sorting first"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Do substrings at different positions count separately even if they are equal? One-letter substrings count?",
+    "Count for \"abc\" and \"aaa\" by hand.",
+    "Brute force: check every substring. Cost?",
+    "\"Count palindromic substrings\" → which technique, and how is it different from LC 5?",
+    "What does expand return, and why two calls per index?",
+    "Code it.",
+    "Dry-run \"aaa\": how much does each middle add?",
+    "Time and space? How would the DP table count them?"
+  ]
+}

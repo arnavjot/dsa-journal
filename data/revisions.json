@@ -97,5 +97,7 @@
  "min-cost-climbing-stairs": {"box":0,"due":"2026-12-12","log":[],"updated":"1"},
  "alien-dictionary": {"box":0,"due":"2026-12-13","log":[],"updated":"1"},
  "house-robber": {"box":0,"due":"2026-12-14","log":[],"updated":"1"},
- "house-robber-ii": {"box":0,"due":"2026-12-15","log":[],"updated":"1"}
+ "house-robber-ii": {"box":0,"due":"2026-12-15","log":[],"updated":"1"},
+ "longest-palindromic-substring": {"box":0,"due":"2026-12-16","log":[],"updated":"1"},
+ "palindromic-substrings": {"box":0,"due":"2026-12-17","log":[],"updated":"1"}
 }
