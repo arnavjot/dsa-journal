@@ -1,0 +1,93 @@
+{
+  "id": 62,
+  "title": "Unique Paths",
+  "keyIdea": "Every path from top-left to bottom-right takes exactly n − 1 rights and m − 1 downs, m + n − 2 steps in all. Paths differ only in which of those steps are downs, so the answer is C(m + n − 2, m − 1). The DP view gives the same number: paths(r, c) = paths from the cell below + paths from the cell to the right.",
+  "approaches": [
+    {
+      "name": "Memoization from the start",
+      "file": "memoization.cpp",
+      "idea": "count(r, c) = count(r + 1, c) + count(r, c + 1); a cell on the last row or last column has exactly 1 path. Save each answer in dp.",
+      "time": "O(m × n)",
+      "space": "O(m × n)",
+      "why": "Each of the m × n cells is solved once with O(1) work; dp table plus a stack up to m + n deep."
+    },
+    {
+      "name": "Memoization from the end",
+      "file": "memoization-from-end.cpp",
+      "idea": "Same recurrence the other way round: count(r, c) = count(r − 1, c) + count(r, c − 1) on 1-based sizes; row 1 or column 1 has 1 path.",
+      "time": "O(m × n)",
+      "space": "O(m × n)",
+      "why": "Same m × n states; the dp is (m + 1) × (n + 1) because it is 1-based."
+    },
+    {
+      "name": "Tabulation",
+      "file": "tabulation.cpp",
+      "idea": "Fill dp with 1s (first row and column have one path), then dp[i][j] = dp[i − 1][j] + dp[i][j − 1]. Answer dp[m − 1][n − 1].",
+      "time": "O(m × n)",
+      "space": "O(m × n)",
+      "why": "Two nested loops over the grid; the whole table is kept. One row of size n would be enough."
+    },
+    {
+      "name": "Combinatorics",
+      "file": "combinatorics.cpp",
+      "best": true,
+      "idea": "Your active code: N = m + n − 2 steps, r = m − 1 of them down, answer C(N, r) built as res = res × (N − r + i) / i for i = 1..r.",
+      "time": "O(m)",
+      "space": "O(1)",
+      "why": "One loop of m − 1 steps and three variables. After step i, res = C(N − r + i, i), so each division is exact.",
+      "viz": "viz/unique-paths.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "How many steps does every path take in an m × n grid?",
+      "options": [
+        "m + n − 2: n − 1 rights and m − 1 downs",
+        "m × n",
+        "It depends on the path",
+        "m + n"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the answer C(m + n − 2, m − 1)?",
+      "options": [
+        "A path is fixed once you choose which m − 1 of the steps are downs",
+        "Each cell is visited once",
+        "There are m − 1 rows to skip",
+        "It is the number of cells on the diagonal"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In res = res * (N - r + i) / i, why multiply before dividing?",
+      "options": [
+        "After each step res is C(N − r + i, i), a whole number, so dividing last is exact",
+        "Division is slower than multiplication",
+        "To avoid dividing by zero",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the DP, why is every cell in the first row and first column 1?",
+      "options": [
+        "You can only reach them by going straight right or straight down",
+        "They are the base of the recursion stack",
+        "Because dp starts filled with 1",
+        "They are never used"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Moves only right or down? Grid size limits? How big can the answer get?",
+    "Count the paths in a 3 × 2 grid by hand. What do all of them have in common?",
+    "Brute force: try every path recursively. Cost?",
+    "\"Count grid paths, only right / down\" → which DP, and which formula?",
+    "Plan the loop that builds C(N, r) without overflow or fractions.",
+    "Code the combinatorics version.",
+    "Dry-run m = 3, n = 7.",
+    "Time and space? How would one obstacle change the approach?"
+  ]
+}
