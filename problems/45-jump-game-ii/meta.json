@@ -1,0 +1,49 @@
+{
+  "id": 45,
+  "title": "Jump Game II",
+  "keyIdea": "BFS without a queue. The indexes reachable with j jumps form a window [.., curEnd]. While scanning it, track farthest = max(i + nums[i]). When i reaches curEnd, you must jump: jumps++, curEnd = farthest.",
+  "approaches": [
+    {
+      "name": "Greedy BFS levels",
+      "file": "bfs-levels.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). for i < n − 1: farthest = max(farthest, i + nums[i]); if i == curEnd: jumps++, curEnd = farthest.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, three ints.",
+      "viz": "viz/jump-game-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does each window [old curEnd + 1, curEnd] represent?",
+      "options": [
+        "Indexes first reachable with exactly that many jumps (a BFS level)",
+        "Indexes with value 0",
+        "The last jump only",
+        "Nothing special"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why loop only to n − 2?",
+      "options": [
+        "Once on the last index no jump is needed; jumping at i = n − 1 would overcount",
+        "To avoid going out of bounds",
+        "Because the last value is 0",
+        "For speed only"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "The end is always reachable? Fewest jumps?",
+    "Example 1 by hand: which jumps?",
+    "Brute force: BFS or DP over every jump. Cost?",
+    "\"Fewest jumps\" + \"reach ranges\" → BFS by windows.",
+    "Plan jumps, curEnd, farthest.",
+    "Code it.",
+    "Dry-run [2,3,1,1,4].",
+    "Time and space?"
+  ]
+}

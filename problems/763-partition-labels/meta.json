@@ -1,0 +1,49 @@
+{
+  "id": 763,
+  "title": "Partition Labels",
+  "keyIdea": "A part must contain every copy of each letter in it. Record each letter's last index; scan with end = max(end, last[s[i]]). When i == end, nothing in the current part appears later, so cut there. Cutting as early as possible gives the most parts.",
+  "approaches": [
+    {
+      "name": "Greedy with last occurrence",
+      "file": "last-occurrence.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). last[c] = last index of c; scan, extend end, cut when i == end and push end − start + 1.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Two passes; the last array has 26 entries.",
+      "viz": "viz/partition-labels.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "When is it safe to cut after index i?",
+      "options": [
+        "When i is the last occurrence of every letter seen in the current part (i == end)",
+        "When s[i] changes",
+        "When a letter repeats",
+        "Every 3 letters"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does cutting as early as possible give the most parts?",
+      "options": [
+        "Each cut is at the first legal place, so later parts get as much room as possible",
+        "Because parts must be equal",
+        "It gives the fewest parts",
+        "It doesn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Each letter in at most one part; maximise the number of parts; return the sizes?",
+    "Example 2 (eccbbbbdec) by hand.",
+    "Brute force: try every set of cuts. Cost?",
+    "\"Each letter in one part\" → which index of each letter matters?",
+    "Plan the last array and the scan.",
+    "Code it.",
+    "Dry-run Example 1's first part.",
+    "Time and space?"
+  ]
+}

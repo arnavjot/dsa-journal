@@ -824,43 +824,43 @@
     "id": 55,
     "title": "Jump Game",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 45,
     "title": "Jump Game II",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 134,
     "title": "Gas Station",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 846,
     "title": "Hand of Straights",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 1899,
     "title": "Merge Triplets to Form Target Triplet",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 763,
     "title": "Partition Labels",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 678,
     "title": "Valid Parenthesis String",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    }
   ]
  },

@@ -1,0 +1,49 @@
+{
+  "id": 134,
+  "title": "Gas Station",
+  "keyIdea": "If the total gas is less than the total cost, no start works. Otherwise, drive from a candidate start keeping a tank; whenever it goes negative at i, every station from start to i fails too, so restart at i + 1. The last start is the answer.",
+  "approaches": [
+    {
+      "name": "Greedy one pass",
+      "file": "one-pass.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). total and tank both add gas[i] − cost[i]; if tank < 0, start = i + 1 and tank = 0; return start if total ≥ 0 else −1.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, three ints.",
+      "viz": "viz/gas-station.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Tank goes negative at i starting from s. Why skip all of s..i?",
+      "options": [
+        "Any station between them is reached from s with tank ≥ 0, so starting there with 0 is no better",
+        "Because they have no gas",
+        "Only s fails, the others must be checked",
+        "To save time only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is total ≥ 0 enough to trust the final start?",
+      "options": [
+        "start survives to the end, and the stations before it have a net surplus that covers the wrap-around",
+        "Because the answer is unique",
+        "It isn't enough",
+        "Because total is the tank"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Circular route, unique answer if one exists?",
+    "Example 1 by hand: why start at 3?",
+    "Brute force: simulate from every start. Cost?",
+    "\"Circular, running sum goes negative\" → which greedy?",
+    "Plan total, tank, start.",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space?"
+  ]
+}

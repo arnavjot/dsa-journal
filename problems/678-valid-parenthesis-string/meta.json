@@ -1,0 +1,59 @@
+{
+  "id": 678,
+  "title": "Valid Parenthesis String",
+  "keyIdea": "Track the range [lo, hi] of how many '(' could be open after each character. '(' → both +1; ')' → both −1; '*' → lo − 1, hi + 1. If hi < 0, there are too many ')' → false. Clamp lo at 0. Valid if lo == 0 at the end.",
+  "approaches": [
+    {
+      "name": "Greedy range of open brackets",
+      "file": "range-of-open.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). lo/hi updated per character; fail when hi < 0; lo = max(lo, 0); return lo == 0.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, two ints.",
+      "viz": "viz/valid-parenthesis-string.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What do lo and hi mean?",
+      "options": [
+        "The fewest and the most '(' that could be open, over all choices for the '*'s",
+        "Positions of the first and last '('",
+        "Counts of '(' and ')'",
+        "The answer's bounds"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why clamp lo to 0?",
+      "options": [
+        "A negative count means that choice closed too many; those choices are thrown away",
+        "To avoid overflow",
+        "Because lo is unsigned",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When is the string valid at the end?",
+      "options": [
+        "lo == 0: some choice leaves nothing open",
+        "hi == 0",
+        "lo == hi",
+        "hi ≥ 0"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "'*' can be '(', ')' or empty? Empty string valid?",
+    "Check '(*))' by hand.",
+    "Brute force: try all 3^k choices for the '*'s. Cost?",
+    "\"Unknown characters in brackets\" → track a range instead of one count.",
+    "Plan lo/hi updates and the two checks.",
+    "Code it.",
+    "Dry-run '(*))'.",
+    "Time and space? DP or two-stack alternatives?"
+  ]
+}
