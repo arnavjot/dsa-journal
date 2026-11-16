@@ -138,5 +138,8 @@
   "set-matrix-zeroes": {"box":0,"due":"2027-01-22","log":[],"updated":"1"},
   "plus-one": {"box":0,"due":"2027-01-23","log":[],"updated":"1"},
   "multiply-strings": {"box":0,"due":"2027-01-24","log":[],"updated":"1"},
-  "detect-squares": {"box":0,"due":"2027-01-25","log":[],"updated":"1"}
+  "detect-squares": {"box":0,"due":"2027-01-25","log":[],"updated":"1"},
+  "decode-ways": {"box":0,"due":"2027-01-26","log":[],"updated":"1"},
+  "maximum-product-subarray": {"box":0,"due":"2027-01-27","log":[],"updated":"1"},
+  "word-break": {"box":0,"due":"2027-01-28","log":[],"updated":"1"}
 }

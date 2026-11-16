@@ -704,7 +704,7 @@
     "id": 91,
     "title": "Decode Ways",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 322,
@@ -716,13 +716,13 @@
     "id": 152,
     "title": "Maximum Product Subarray",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 139,
     "title": "Word Break",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 300,
