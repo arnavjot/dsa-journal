@@ -1,0 +1,49 @@
+{
+  "id": 66,
+  "title": "Plus One",
+  "keyIdea": "Add 1 from the last digit. A digit below 9 increments and you return; a 9 becomes 0 and the carry moves left. If the loop finishes, every digit was 9: insert a 1 at the front.",
+  "approaches": [
+    {
+      "name": "Carry from the end",
+      "file": "carry-from-end.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). From the right: if digit < 9, ++ and return; else set 0 and continue; after the loop insert 1 in front.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "At most one pass; the only extra space is the new leading digit for all-9s input.",
+      "viz": "viz/plus-one.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "When can you return early?",
+      "options": [
+        "As soon as a digit is below 9: it absorbs the 1 with no carry",
+        "After the first digit",
+        "Never",
+        "When a digit is 0"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[9,9,9] + 1?",
+      "options": [
+        "[1,0,0,0]",
+        "[9,9,10]",
+        "[0,0,0]",
+        "[1,0,0]"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Digits most-significant first, no leading zeros?",
+    "Do [1,9,9] and [9] by hand.",
+    "Brute force: convert to a number? Why does that overflow?",
+    "\"Add with carry on a digit array\" → walk from the right.",
+    "Plan the early return and the all-9s case.",
+    "Code it.",
+    "Dry-run [9,9].",
+    "Time and space?"
+  ]
+}

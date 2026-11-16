@@ -926,7 +926,7 @@
     "id": 73,
     "title": "Set Matrix Zeroes",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 202,
@@ -938,7 +938,7 @@
     "id": 66,
     "title": "Plus One",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 50,
@@ -951,13 +951,13 @@
     "id": 43,
     "title": "Multiply Strings",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 2013,
     "title": "Detect Squares",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    }
   ]
  },

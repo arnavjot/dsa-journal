@@ -1,0 +1,59 @@
+{
+  "id": 73,
+  "title": "Set Matrix Zeroes",
+  "keyIdea": "If a cell is 0, zero its whole row and column, in place. Use row 0 and column 0 as the \"zero this row/column\" markers, after saving in two booleans whether they had zeros of their own. Mark, fill the inside, then the header row and column last.",
+  "approaches": [
+    {
+      "name": "First row and column as markers",
+      "file": "first-row-col-markers.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Save firstRowZero / firstColZero; for inside zeros set matrix[i][0] = matrix[0][j] = 0; zero inside cells whose header is 0; then the headers.",
+      "time": "O(m × n)",
+      "space": "O(1)",
+      "why": "A few passes over the grid; only two extra booleans.",
+      "viz": "viz/set-matrix-zeroes.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why not zero rows and columns as soon as you see a 0?",
+      "options": [
+        "The new zeros would then trigger more rows and columns that shouldn't be zeroed",
+        "It is slower",
+        "It uses more memory",
+        "It works fine"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why are row 0 and column 0 handled last?",
+      "options": [
+        "They hold the marks; zeroing them early would wipe or fake marks",
+        "Because they are smaller",
+        "For readability only",
+        "They aren't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Simplest O(m + n) space idea?",
+      "options": [
+        "Two arrays: which rows and which columns contain a 0",
+        "Copy the matrix",
+        "A queue of cells",
+        "Sort the rows"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "In place? Can the matrix have one row or column?",
+    "Example 2 by hand: which cells end up 0?",
+    "Brute force: copy the matrix, or store zero rows/cols in sets. Space?",
+    "\"In place, O(1) space\" → where can the marks live?",
+    "Plan the two booleans, mark, fill, headers.",
+    "Code it.",
+    "Dry-run Example 2.",
+    "Time and space?"
+  ]
+}
