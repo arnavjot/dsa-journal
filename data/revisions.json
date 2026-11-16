@@ -115,5 +115,6 @@
   "meeting-rooms-ii": {"box":0,"due":"2026-12-30","log":[],"updated":"1"},
   "minimum-interval-to-include-each-query": {"box":0,"due":"2026-12-31","log":[],"updated":"1"},
   "happy-number": {"box":0,"due":"2027-01-01","log":[],"updated":"1"},
-  "spiral-matrix": {"box":0,"due":"2027-01-02","log":[],"updated":"1"}
+  "spiral-matrix": {"box":0,"due":"2027-01-02","log":[],"updated":"1"},
+  "maximum-subarray": {"box":0,"due":"2027-01-03","log":[],"updated":"1"}
 }

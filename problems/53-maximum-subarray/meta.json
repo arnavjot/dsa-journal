@@ -1,0 +1,77 @@
+{
+  "id": 53,
+  "title": "Maximum Subarray",
+  "keyIdea": "Kadane's: walk once with a running sum. Record it whenever it beats the best so far. If it drops below 0, reset it to 0: a negative prefix can only make any subarray that continues from it smaller, so the next subarray should start fresh.",
+  "approaches": [
+    {
+      "name": "Extreme brute force",
+      "file": "brute-three-loops.cpp",
+      "idea": "Your commented version: for every start i and end j, add nums[i..j] again from scratch.",
+      "time": "O(n³)",
+      "space": "O(1)",
+      "why": "n² pairs, each summed in up to n steps.",
+      "warn": "TLE for n = 10⁵."
+    },
+    {
+      "name": "Better: two loops",
+      "file": "better-two-loops.cpp",
+      "idea": "Your commented version: for each start i, extend j and keep a running sum, so each subarray costs O(1).",
+      "time": "O(n²)",
+      "space": "O(1)",
+      "why": "n² (i, j) pairs, O(1) each.",
+      "warn": "Still TLE for n = 10⁵."
+    },
+    {
+      "name": "Kadane's algorithm",
+      "file": "kadane.cpp",
+      "best": true,
+      "idea": "Your active code: sum += nums[i]; maxi = max(maxi, sum); if sum < 0, sum = 0.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, two ints.",
+      "viz": "viz/maximum-subarray.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why reset sum to 0 when it goes negative?",
+      "options": [
+        "A negative prefix only lowers any subarray that continues from it, so starting fresh is never worse",
+        "To avoid overflow",
+        "Because the answer is never negative",
+        "To skip negative numbers"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why start maxi at INT_MIN instead of 0?",
+      "options": [
+        "If every number is negative, the answer is the largest (still negative) number",
+        "INT_MIN is faster",
+        "To handle empty arrays",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why update maxi before the sum < 0 check?",
+      "options": [
+        "So a single negative number can still be recorded as the answer",
+        "It is just style",
+        "Otherwise sum overflows",
+        "To reset maxi too"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Subarray = contiguous, non-empty? Can all numbers be negative?",
+    "Find the best subarray of [−2,1,−3,4,−1,2,1,−5,4] by hand.",
+    "Brute force: every (i, j). O(n³) → O(n²) with a running sum.",
+    "\"Best contiguous sum in one pass\" → which classic algorithm?",
+    "Plan: running sum, best, and when to reset.",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space? How would you also return the subarray (start, end)?"
+  ]
+}
