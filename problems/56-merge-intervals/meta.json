@@ -1,0 +1,59 @@
+{
+  "id": 56,
+  "title": "Merge Intervals",
+  "keyIdea": "Sort by start. Walk the intervals keeping the merged list: if the next interval starts after the last merged one ends, it starts a new group; otherwise it overlaps, so stretch the last end to max(end, its end).",
+  "approaches": [
+    {
+      "name": "Sort and merge",
+      "file": "sort-and-merge.cpp",
+      "best": true,
+      "idea": "Your code: sort, then push a new interval or extend ans.back()[1].",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "The sort dominates; one pass after it. The answer list can hold n intervals.",
+      "viz": "viz/merge-intervals.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "After sorting by start, which interval can the current one overlap?",
+      "options": [
+        "Only the last interval in ans",
+        "Any interval in ans",
+        "Only the next one in the input",
+        "None"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[1,4] and [4,5]: merge or not?",
+      "options": [
+        "Merge into [1,5]; 4 > 4 is false",
+        "Keep both",
+        "Merge into [4,4]",
+        "It depends on the order"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why max(ans.back()[1], intervals[i][1]) and not just intervals[i][1]?",
+      "options": [
+        "The new interval may sit entirely inside the last one, like [1,10] and [2,3]",
+        "To sort the ends",
+        "max is faster",
+        "For negative numbers"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is the input sorted? Do touching intervals like [1,4],[4,5] merge?",
+    "Merge [1,3],[2,6],[8,10],[15,18] by hand.",
+    "Brute force: compare every pair repeatedly until nothing merges. Cost?",
+    "\"Overlapping intervals\" → what to sort by first?",
+    "Plan: sort, then push or extend the last one.",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space? How does Insert Interval differ?"
+  ]
+}

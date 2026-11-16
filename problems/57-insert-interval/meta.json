@@ -1,0 +1,59 @@
+{
+  "id": 57,
+  "title": "Insert Interval",
+  "keyIdea": "The list is sorted and disjoint, so it splits into three runs: intervals that end before newInterval starts (copy), intervals that overlap it (merge into newInterval), and the rest (copy). No sort needed.",
+  "approaches": [
+    {
+      "name": "Three phases",
+      "file": "three-phases.cpp",
+      "best": true,
+      "idea": "Your code: while end < new start → copy; while start ≤ new end → merge into newInterval; push newInterval; copy the rest.",
+      "time": "O(n)",
+      "space": "O(n)",
+      "why": "One pass, each interval looked at once; the result holds up to n + 1 intervals.",
+      "viz": "viz/insert-interval.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Which test puts an interval in the first (copy-before) phase?",
+      "options": [
+        "intervals[i][1] < newInterval[0]: it ends before newInterval starts",
+        "intervals[i][0] < newInterval[0]",
+        "intervals[i][1] < newInterval[1]",
+        "It is the first interval"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the overlap phase, why is the condition intervals[i][0] <= newInterval[1]?",
+      "options": [
+        "Phase 1 already removed everything ending too early, so starting by newInterval's end means overlap",
+        "To keep the list sorted",
+        "It checks for duplicates",
+        "It finds the last interval"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is this O(n) while Merge Intervals is O(n log n)?",
+      "options": [
+        "The input is already sorted, so no sort is needed",
+        "It uses a heap",
+        "It skips the merge",
+        "It is not O(n)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Is the list sorted and non-overlapping? Can it be empty?",
+    "Insert [4,8] into [[1,2],[3,5],[6,7],[8,10],[12,16]] by hand.",
+    "Brute force: append, sort, run Merge Intervals. Cost?",
+    "\"Sorted disjoint list + one new interval\" → which three groups?",
+    "Write the three loop conditions.",
+    "Code it.",
+    "Dry-run Example 2.",
+    "Time and space? Could you do it in place?"
+  ]
+}
