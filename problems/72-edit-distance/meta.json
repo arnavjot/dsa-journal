@@ -1,0 +1,96 @@
+{
+  "id": 72,
+  "title": "Edit Distance",
+  "keyIdea": "Compare word1[i] with word2[j]. Same letter → keep it, move both on for free. Otherwise try all three edits, each costing 1: insert word2[j] (j + 1), delete word1[i] (i + 1), replace word1[i] with word2[j] (both + 1), and keep the cheapest. Base: one word used up → insert or delete everything left in the other. Each cell needs only its right, below and diagonal neighbours, so two columns (or rows) are enough.",
+  "approaches": [
+    {
+      "name": "Recursion",
+      "file": "recursion.cpp",
+      "idea": "Match → solve(i + 1, j + 1); else 1 + min(insert, delete, replace).",
+      "time": "O(3^(n + m))",
+      "space": "O(n + m)",
+      "why": "Three branches on every mismatch with nothing saved; the stack is up to n + m deep.",
+      "warn": "Too slow (TLE) for 500-letter words. Your comment about passing by reference is right: by value would copy both strings on every call."
+    },
+    {
+      "name": "Memoization",
+      "file": "memoization.cpp",
+      "idea": "Same recursion; save each (i, j) answer in dp.",
+      "time": "O(n × m)",
+      "space": "O(n × m)",
+      "why": "n × m states with O(1) work each; dp table plus a stack up to n + m deep.",
+      "viz": "viz/edit-distance-memo.html"
+    },
+    {
+      "name": "Tabulation",
+      "file": "tabulation.cpp",
+      "idea": "Last row = m − col, last column = n − row. Fill i from n − 1 down and j from m − 1 down with the same rule. Answer dp[0][0].",
+      "time": "O(n × m)",
+      "space": "O(n × m)",
+      "why": "Two nested loops; the whole table is kept.",
+      "viz": "viz/edit-distance-tabulation.html"
+    },
+    {
+      "name": "Tabulation, two columns",
+      "file": "tabulation-space-optimised.cpp",
+      "best": true,
+      "idea": "Your active code: j is the outer loop, so keep two columns indexed by i. next = column j + 1 (starts as n − i), curr = column j with curr[n] = m − j. Insert reads next[i], delete curr[i + 1], replace/match next[i + 1]. Answer next[0].",
+      "time": "O(n × m)",
+      "space": "O(n)",
+      "why": "Same two loops; only two arrays of n + 1 (n = word1 length) are stored.",
+      "viz": "viz/edit-distance.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "word1[i] ≠ word2[j]. Which state does 'insert word2[j]' lead to?",
+      "options": [
+        "(i, j + 1): word2's letter is now matched, word1 hasn't moved",
+        "(i + 1, j)",
+        "(i + 1, j + 1)",
+        "(i, j)"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is dp[i][m] (word2 used up)?",
+      "options": [
+        "n − i: delete every letter left in word1",
+        "0",
+        "m − i",
+        "Infinity"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is a matching letter free (no + 1)?",
+      "options": [
+        "Keeping the same letter needs no edit, and it's never worse than editing",
+        "Because replace costs 0",
+        "Matches are counted at the end",
+        "It isn't; matches cost 1"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In your two-column version, why is the space O(n) and not O(m)?",
+      "options": [
+        "The outer loop is j, so the arrays are columns indexed by i (word1), of size n + 1",
+        "Because n ≤ m",
+        "Because only the diagonal is stored",
+        "It is O(m)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Which edits are allowed, and does each cost 1? Can either word be empty?",
+    "Work horse → ros by hand: which three edits?",
+    "Brute force: try all three edits at every mismatch. Cost?",
+    "\"Turn one string into another with fewest edits\" → which 2-D DP?",
+    "State dp[i][j], base cases, and where insert / delete / replace go.",
+    "Code the two-column tabulation.",
+    "Dry-run horse → ros.",
+    "Time and space? How would you print the actual edits?"
+  ]
+}

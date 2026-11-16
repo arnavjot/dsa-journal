@@ -794,7 +794,7 @@
     "id": 72,
     "title": "Edit Distance",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 312,
@@ -943,6 +943,7 @@
    {
     "id": 50,
     "title": "Pow(x, n)",
+    "lc": "powx-n",
     "difficulty": "Medium",
     "solved": false
    },
