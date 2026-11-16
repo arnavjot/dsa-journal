@@ -366,7 +366,7 @@ function tidyCode(t) {
 }
 async function renderProblem(p) {
   const v = $('#view');
-  const lc = `https://leetcode.com/problems/${p.slug}/`;
+  const lc = `https://leetcode.com/problems/${p.lc || p.slug}/`;
   const rec = recOf(p);
   const head = `
     <div class="phead"><a class="crumb" href="#"><span class="arr" aria-hidden="true">←</span>${esc(p.cat.name)}</a>${isOwner() ? '' : p.solved ? '<button class="btn solved-btn" id="unmark" title="Tap to unmark">✓ Solved</button>' : '<button class="btn primary" id="markSolved">✓ Mark solved</button>'}</div>
@@ -554,7 +554,7 @@ function renderRevise() {
       <div class="card" style="display:flex;flex-direction:column;gap:14px">
         <div class="label">${esc(p.cat.name)} · ${d <= 0 ? (d < 0 ? `${-d} days overdue` : 'due today') : `not due for ${d} days`}</div>
         <h2 style="font-size:24px">#${p.id} ${esc(p.title)} <span class="diff ${p.difficulty}">${p.difficulty}</span></h2>
-        <div><a class="btn" href="https://leetcode.com/problems/${p.slug}/" target="_blank" rel="noopener">Open on LeetCode ↗</a></div>
+        <div><a class="btn" href="https://leetcode.com/problems/${p.lc || p.slug}/" target="_blank" rel="noopener">Open on LeetCode ↗</a></div>
         <div><div id="timer" class="timer">${lim}:00</div><div class="tbar" style="margin-top:10px"><i id="tbar" style="width:0"></i></div>
         <div class="muted" style="font-size:13px;margin-top:6px">${lim}-minute target for ${p.difficulty}. Don't open your notes until you rate.</div></div>
         <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn primary" id="tbtn">▶ Start timer</button><button class="btn" id="skip">Skip this one</button></div>
