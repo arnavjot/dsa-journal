@@ -1,0 +1,49 @@
+{
+  "id": 190,
+  "title": "Reverse Bits",
+  "keyIdea": "32 times: shift ans left, copy n's lowest bit into ans's lowest bit, shift n right. The bit taken first ends up leftmost, so the bits come out reversed.",
+  "approaches": [
+    {
+      "name": "Shift and build",
+      "file": "shift-and-build.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code): ans = (ans << 1) | (n & 1); n >>= 1; 32 times.",
+      "time": "O(32) = O(1)",
+      "space": "O(1)",
+      "why": "Exactly 32 steps.",
+      "viz": "viz/reverse-bits.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why loop all 32 times even if n is small?",
+      "options": [
+        "Leading zeros of n become trailing zeros of the answer",
+        "To be safe",
+        "Because of signed numbers",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does (ans << 1) | (n & 1) do?",
+      "options": [
+        "Makes room on the right of ans and puts n's lowest bit there",
+        "Adds n to ans",
+        "Reverses n directly",
+        "Doubles n"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Unsigned 32-bit? Called many times?",
+    "Reverse 4-bit 0110 by hand.",
+    "Brute force: to a 32-char string, reverse, parse. Cost?",
+    "\"Reverse / rebuild bits\" → shift one out, shift one in.",
+    "Plan the loop.",
+    "Code it.",
+    "Dry-run the low bits of 43261596.",
+    "Time and space? Follow-up: cache bytes."
+  ]
+}

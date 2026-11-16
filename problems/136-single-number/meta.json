@@ -1,0 +1,59 @@
+{
+  "id": 136,
+  "title": "Single Number",
+  "keyIdea": "XOR all numbers. x ^ x = 0, x ^ 0 = x, and XOR is order-independent, so every pair cancels and the one number that appears once is left.",
+  "approaches": [
+    {
+      "name": "XOR everything",
+      "file": "xor.cpp",
+      "best": true,
+      "idea": "Your code: ans ^= nums[i] for every i.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, one int.",
+      "viz": "viz/single-number.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What is 5 ^ 3 ^ 5?",
+      "options": [
+        "3",
+        "5",
+        "0",
+        "13"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does the order of numbers not matter?",
+      "options": [
+        "XOR is commutative and associative",
+        "Because the array is sorted",
+        "It does matter",
+        "Because pairs are next to each other"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What would a hash-set solution cost?",
+      "options": [
+        "O(n) time and O(n) space",
+        "O(1) space",
+        "O(n²) time",
+        "O(log n) time"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Exactly one single, all others exactly twice? Negatives?",
+    "XOR [4,1,2,1,2] by hand.",
+    "Brute force: count each number (hash map). Cost?",
+    "\"Everything twice except one, O(1) space\" → which operator?",
+    "Plan: one variable, XOR in every number.",
+    "Code it.",
+    "Dry-run Example 2.",
+    "Time and space? What if every other number appeared three times (LC 137)?"
+  ]
+}

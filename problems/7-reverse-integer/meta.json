@@ -1,0 +1,59 @@
+{
+  "id": 7,
+  "title": "Reverse Integer",
+  "keyIdea": "Pop digits off the end with x % 10 and push them onto sum with sum * 10 + digit. Before pushing, if |sum| > INT_MAX / 10, the × 10 would overflow, so return 0. % keeps x's sign, so negatives work on their own.",
+  "approaches": [
+    {
+      "name": "Pop and push digits",
+      "file": "pop-and-push.cpp",
+      "best": true,
+      "idea": "Your logic (first written in Java): while x != 0, return 0 if |sum| > INT_MAX / 10; sum = sum * 10 + x % 10; x /= 10.",
+      "time": "O(log x)",
+      "space": "O(1)",
+      "why": "One step per decimal digit (at most 10); two ints.",
+      "viz": "viz/reverse-integer.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why check |sum| > INT_MAX / 10 before multiplying?",
+      "options": [
+        "If it is bigger, sum * 10 is past INT_MAX, which is an overflow",
+        "To skip leading zeros",
+        "To handle negative numbers",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is |sum| == 214748364 safe?",
+      "options": [
+        "x then has one digit left, and it can only be 1 or 2, so the result still fits",
+        "It never happens",
+        "Because of abs",
+        "It isn't safe"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is −123 % 10 in C++?",
+      "options": [
+        "−3",
+        "3",
+        "7",
+        "−7"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "32-bit signed only? Return 0 on overflow? No 64-bit allowed?",
+    "Reverse 123, −123 and 120 by hand.",
+    "Brute force: to_string, reverse, stoll and range check. Why might that not be allowed?",
+    "\"Build a number digit by digit\" → pop with % 10, push with × 10.",
+    "Plan the overflow check before the push.",
+    "Code it.",
+    "Dry-run 1534236469.",
+    "Time and space?"
+  ]
+}
