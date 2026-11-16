@@ -752,7 +752,7 @@
     "id": 1143,
     "title": "Longest Common Subsequence",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 309,

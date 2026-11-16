@@ -1,0 +1,96 @@
+{
+  "id": 1143,
+  "title": "Longest Common Subsequence",
+  "keyIdea": "Compare text1[i] with text2[j]. If they match, take the letter in both and move both on: 1 + lcs(i + 1, j + 1). If not, one of them is not used, so try skipping each: max(lcs(i, j + 1), lcs(i + 1, j)). That is n × m states; each row only needs the row below and the cell to its right, so two rows are enough.",
+  "approaches": [
+    {
+      "name": "Recursion",
+      "file": "recursion.cpp",
+      "idea": "Match → 1 + solve(i + 1, j + 1); no match → max(solve(i, j + 1), solve(i + 1, j)).",
+      "time": "O(2^(n + m))",
+      "space": "O(n + m)",
+      "why": "Two branches on every mismatch with nothing saved; the stack is up to n + m deep.",
+      "warn": "Too slow for 1000-letter strings. It also passes both strings by value, so every call copies them."
+    },
+    {
+      "name": "Memoization",
+      "file": "memoization.cpp",
+      "idea": "Same recursion with strings by reference; save each (i, j) answer in dp.",
+      "time": "O(n × m)",
+      "space": "O(n × m)",
+      "why": "n × m states with O(1) work each; dp table plus a stack up to n + m deep.",
+      "viz": "viz/longest-common-subsequence-memo.html"
+    },
+    {
+      "name": "Tabulation",
+      "file": "tabulation.cpp",
+      "idea": "dp of size (n + 1) × (m + 1), all 0. Fill i from n − 1 down and j from m − 1 down: match → 1 + dp[i + 1][j + 1], else max(dp[i + 1][j], dp[i][j + 1]). Answer dp[0][0].",
+      "time": "O(n × m)",
+      "space": "O(n × m)",
+      "why": "Two nested loops; the whole table is kept.",
+      "viz": "viz/longest-common-subsequence-tabulation.html"
+    },
+    {
+      "name": "Tabulation, two rows",
+      "file": "tabulation-space-optimised.cpp",
+      "best": true,
+      "idea": "Your active code: row i reads only next (row i + 1) and curr[j + 1] (already filled, to the right), so keep two rows of m + 1; after each i, next = curr. Answer next[0].",
+      "time": "O(n × m)",
+      "space": "O(m)",
+      "why": "Same two loops; only two rows of m + 1 are stored.",
+      "viz": "viz/longest-common-subsequence.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "text1[i] == text2[j]. Why is it safe to take 1 + lcs(i + 1, j + 1) without also trying to skip?",
+      "options": [
+        "Matching these two letters never gives a shorter answer than skipping one of them",
+        "Because the strings are sorted",
+        "Skipping is tried later by the loop",
+        "It isn't safe; it's a heuristic"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "On a mismatch, why max(lcs(i, j + 1), lcs(i + 1, j))?",
+      "options": [
+        "At least one of the two letters is not in the common subsequence, so skip one or the other",
+        "To count both letters",
+        "Because the diagonal is always smaller",
+        "To avoid going out of bounds"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the two-row version, which cells does curr[j] read?",
+      "options": [
+        "next[j + 1], next[j] and curr[j + 1]",
+        "Only next[j]",
+        "curr[j − 1] and next[j − 1]",
+        "Every cell of next"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does dp have an extra row and column of 0s?",
+      "options": [
+        "They stand for an empty rest of a string: LCS with nothing is 0",
+        "To store the answer",
+        "For 1-based indexing only",
+        "To mark visited cells"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Subsequence, not substring? Lowercase only? Lengths up to 1000?",
+    "Work abcde / ace by hand: which letters line up?",
+    "Brute force: every subsequence of one string, checked against the other. Cost?",
+    "\"Two strings, keep the order, longest common\" → which 2-D DP?",
+    "State and transitions for dp[i][j]: match vs mismatch.",
+    "Code the two-row tabulation.",
+    "Dry-run abcde / ace.",
+    "Time and space? How would you print the actual subsequence?"
+  ]
+}
