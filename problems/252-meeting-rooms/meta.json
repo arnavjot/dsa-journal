@@ -1,0 +1,49 @@
+{
+  "id": 252,
+  "title": "Meeting Rooms",
+  "keyIdea": "One person can attend every meeting only if no two overlap. After sorting by start, any clash must be with the meeting just before, so check start[i] < end[i − 1] for each neighbour.",
+  "approaches": [
+    {
+      "name": "Sort by start, check neighbours",
+      "file": "sort-by-start.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Sort; return false if any meeting starts before the previous one ends.",
+      "time": "O(n log n)",
+      "space": "O(1)",
+      "why": "The sort dominates; one pass after it.",
+      "viz": "viz/meeting-rooms.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is comparing only neighbours enough after sorting?",
+      "options": [
+        "Earlier meetings started even sooner; if i doesn't clash with i − 1, it can't clash with them unless i − 1 does",
+        "Because there are at most two meetings",
+        "Sorting removes overlaps",
+        "It isn't enough"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[1,5] and [5,8]: can one person attend both?",
+      "options": [
+        "Yes; one ends exactly when the other starts",
+        "No",
+        "Only if sorted",
+        "Only with two rooms"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Does [1,5],[5,8] count as a clash? Empty list?",
+    "Example [[0,30],[5,10],[15,20]]: why is it false?",
+    "Brute force: compare every pair. Cost?",
+    "\"Any two intervals overlap?\" → sort by start.",
+    "Plan: sort, then check each neighbour.",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space? How does Meeting Rooms II extend this?"
+  ]
+}

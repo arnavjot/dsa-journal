@@ -1,0 +1,59 @@
+{
+  "id": 1851,
+  "title": "Minimum Interval to Include Each Query",
+  "keyIdea": "Answer queries offline, from smallest to largest. Sort intervals by left end; for each query push every interval that has started (keyed by size), pop from the top while it has already ended, and the top is the smallest interval containing the query.",
+  "approaches": [
+    {
+      "name": "Sort + min-heap (offline queries)",
+      "file": "sort-and-heap.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Sort intervals by left and query indexes by value; heap of (size, right); push started, pop ended, read the top.",
+      "time": "O(n log n + q log q)",
+      "space": "O(n + q)",
+      "why": "Each interval is pushed and popped at most once; both lists are sorted once.",
+      "viz": "viz/minimum-interval-to-include-each-query.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why sort the queries?",
+      "options": [
+        "As queries grow, an interval that started stays started and one that ended stays ended, so each is pushed/popped once",
+        "To print the answers in order",
+        "Because the heap needs it",
+        "It is not needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is it safe to pop an interval whose right < q for good?",
+      "options": [
+        "Later queries are even larger, so it can never contain them",
+        "It is the largest",
+        "It was already used",
+        "Because of the size key"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why keep the original query index?",
+      "options": [
+        "The answers must come back in the input order",
+        "To break ties",
+        "To count queries",
+        "For the heap key"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Intervals inclusive? Size = right − left + 1? Answer −1 if none?",
+    "Example 1 by hand: smallest interval for each query.",
+    "Brute force: scan all intervals per query. Cost?",
+    "\"Many queries, intervals, smallest containing\" → offline: sort both + heap.",
+    "Plan: what goes in the heap, and when to push and pop?",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space?"
+  ]
+}

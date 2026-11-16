@@ -1,0 +1,68 @@
+{
+  "id": 202,
+  "title": "Happy Number",
+  "keyIdea": "Repeatedly replace n by the sum of the squares of its digits. The sequence either reaches 1 (happy) or falls into a cycle. Detect the cycle with Floyd's slow/fast pointers instead of a set: slow takes one step, fast two; if they meet somewhere other than 1, it loops forever.",
+  "approaches": [
+    {
+      "name": "Floyd, do-while",
+      "file": "floyd-do-while.cpp",
+      "idea": "Your commented version: do { slow 1 step, fast 2 steps; if slow == 1 return true } while (slow != fast); return false.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "Numbers drop below 243 almost at once, and the cycle there is short; two ints of state.",
+      "viz": "viz/happy-number-do-while.html"
+    },
+    {
+      "name": "Floyd, while loop",
+      "file": "floyd-while.cpp",
+      "best": true,
+      "idea": "Your active code: loop while slow or fast isn't 1; move them; if they meet at something other than 1, return false. When both are 1, return true.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "Same steps as the do-while; two ints of state.",
+      "viz": "viz/happy-number.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why must the sequence either reach 1 or repeat?",
+      "options": [
+        "For any number with 4+ digits the digit-square sum is smaller, so values stay in a small range and must repeat",
+        "Because n is positive",
+        "It always reaches 1",
+        "Because of Floyd"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does your do-while version need do-while?",
+      "options": [
+        "slow and fast both start at n, so while (slow != fast) would never run",
+        "do-while is faster",
+        "To check 1 first",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does slow == fast mean in your while version, when it isn't 1?",
+      "options": [
+        "The numbers are going round a cycle without 1, so n is not happy",
+        "n is happy",
+        "fast skipped 1",
+        "An overflow"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Positive n only? Up to 2³¹ − 1?",
+    "Follow 19 and 2 by hand.",
+    "Brute force: store every value in a set until 1 or a repeat. Cost?",
+    "\"Sequence that might cycle, detect with O(1) space\" → which technique?",
+    "Plan: findSquare, then slow/fast loop and exit conditions.",
+    "Code it.",
+    "Dry-run 19.",
+    "Time and space? Why does every unhappy number hit the 4 → 16 → … cycle?"
+  ]
+}

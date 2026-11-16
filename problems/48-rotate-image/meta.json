@@ -1,0 +1,59 @@
+{
+  "id": 48,
+  "title": "Rotate Image",
+  "keyIdea": "Rotating 90° clockwise sends [i][j] to [j][n − 1 − i]. Do it in two in-place steps: transpose ([i][j] ↔ [j][i], only above the diagonal) and then reverse every row.",
+  "approaches": [
+    {
+      "name": "Transpose, then reverse rows",
+      "file": "transpose-reverse.cpp",
+      "best": true,
+      "idea": "Your code: swap matrix[i][j] with matrix[j][i] for j > i, then reverse each row.",
+      "time": "O(n²)",
+      "space": "O(1)",
+      "why": "Each cell is touched a constant number of times; everything is in place.",
+      "viz": "viz/rotate-image.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does the inner loop start at j = i + 1?",
+      "options": [
+        "Each pair is swapped once; swapping it twice would undo the transpose",
+        "To skip the first column",
+        "To avoid going out of bounds",
+        "It is faster but not needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Where does matrix[i][j] end up after a clockwise rotation?",
+      "options": [
+        "[j][n − 1 − i]",
+        "[n − 1 − j][i]",
+        "[j][i]",
+        "[n − 1 − i][n − 1 − j]"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How would you rotate counter-clockwise instead?",
+      "options": [
+        "Transpose, then reverse every column (or reverse rows first, then transpose)",
+        "Transpose twice",
+        "Reverse rows only",
+        "Not possible in place"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "In place? Square only? Clockwise?",
+    "Rotate the 3 × 3 example by hand: where does each corner go?",
+    "Brute force: copy into a new matrix. Cost, and why is it not allowed?",
+    "\"Rotate in place\" → which two simple flips make a rotation?",
+    "Plan the transpose loop bounds and the row reversal.",
+    "Code it.",
+    "Dry-run the 3 × 3 example.",
+    "Time and space? Counter-clockwise?"
+  ]
+}

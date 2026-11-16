@@ -1,0 +1,69 @@
+{
+  "id": 50,
+  "title": "Pow(x, n)",
+  "keyIdea": "Write n in binary. Square x over and over (x, x², x⁴, x⁸…) and multiply the answer by the powers whose bit is 1: x¹³ = x⁸ · x⁴ · x¹. That is about log₂ n steps. For negative n use 1/x, and keep n in a long long because −(−2³¹) overflows an int.",
+  "approaches": [
+    {
+      "name": "Binary exponentiation",
+      "file": "binary-exponentiation.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). N = |n| as long long, x = 1/x if n < 0; while N > 0: if the lowest bit is 1, ans *= x; x *= x; N >>= 1.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "One loop step per bit of n; three variables.",
+      "viz": "viz/pow-x-n.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "How many loop steps does fast power take for n = 1,000,000?",
+      "options": [
+        "About 20 (the number of bits)",
+        "1,000,000",
+        "1,000",
+        "500,000"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why store n in a long long?",
+      "options": [
+        "−n overflows an int when n = −2³¹",
+        "To make it faster",
+        "Doubles need long long",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "n = 13 = 1101₂. Which powers are multiplied into ans?",
+      "options": [
+        "x¹, x⁴, x⁸",
+        "x¹, x², x⁴, x⁸",
+        "x¹³ only",
+        "x², x⁴"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How is a negative n handled?",
+      "options": [
+        "x^−n = (1/x)^n: flip x, then use |n|",
+        "Return a negative number",
+        "Swap x and n",
+        "It isn't allowed"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can n be negative or −2³¹? Can x be 0? What precision is needed?",
+    "Work 2¹⁰ and 2⁻² by hand.",
+    "Brute force: multiply x by itself |n| times. Cost, and why it TLEs?",
+    "\"Huge exponent\" → which trick halves the work each step?",
+    "Plan: flip for negatives, then the bit loop.",
+    "Code it iteratively.",
+    "Dry-run 3¹³.",
+    "Time and space? What about the recursive version x^n = (x^(n/2))²?"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "id": 253,
+  "title": "Meeting Rooms II",
+  "keyIdea": "Process meetings by start time. Keep a min-heap of the end times of busy rooms. If the room that frees earliest is free by this meeting's start, reuse it (pop); then push this meeting's end. The largest heap size is the number of rooms needed.",
+  "approaches": [
+    {
+      "name": "Sort + min-heap of end times",
+      "file": "min-heap.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Sort by start; pop the top if top ≤ start; push end; rooms = max(rooms, heap size).",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "Sort plus one heap push and at most one pop per meeting; the heap holds up to n ends.",
+      "viz": "viz/meeting-rooms-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why look only at the heap's top (earliest end)?",
+      "options": [
+        "If even the earliest-ending room is busy, all rooms are busy",
+        "The top is the newest meeting",
+        "Heaps only allow it",
+        "To sort the meetings"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "A meeting ends at 10 and the next starts at 10. Same room?",
+      "options": [
+        "Yes: top ≤ start, so pop and reuse",
+        "No",
+        "Only if they are the same length",
+        "Only if sorted by end"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Another way to get the same answer?",
+      "options": [
+        "Sort starts and ends separately and sweep with two pointers, tracking the most rooms in use",
+        "Binary search on the answer only",
+        "Union-find",
+        "Count meetings longer than 10"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Half-open [start, end)? Can a meeting have length 0?",
+    "Example [[0,30],[5,10],[15,20]]: how many rooms, and when?",
+    "Brute force: at every time point, count running meetings. Cost?",
+    "\"Most intervals overlapping at once\" → which data structure?",
+    "Plan: sort by start, min-heap of ends.",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space? Two-pointer sweep alternative?"
+  ]
+}

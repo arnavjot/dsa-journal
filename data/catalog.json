@@ -872,37 +872,37 @@
     "id": 57,
     "title": "Insert Interval",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 56,
     "title": "Merge Intervals",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 435,
     "title": "Non-overlapping Intervals",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 252,
     "title": "Meeting Rooms",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 253,
     "title": "Meeting Rooms II",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 1851,
     "title": "Minimum Interval to Include Each Query",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    }
   ]
  },
@@ -914,7 +914,7 @@
     "id": 48,
     "title": "Rotate Image",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 54,
@@ -932,7 +932,7 @@
     "id": 202,
     "title": "Happy Number",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 66,
@@ -945,7 +945,7 @@
     "title": "Pow(x, n)",
     "lc": "powx-n",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 43,
