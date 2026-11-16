@@ -1,0 +1,49 @@
+{
+  "id": 1899,
+  "title": "Merge Triplets to Form Target Triplet",
+  "keyIdea": "A merge takes the max of each position, so values only increase. Any triplet with a value above the target can never be used. Merge all the others: the result is the target exactly if every target value appears in at least one of them.",
+  "approaches": [
+    {
+      "name": "Greedy: keep the safe triplets",
+      "file": "greedy-good.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Skip triplets with any value > target; for the rest mark found[k] when t[k] == target[k]; answer found[0] && found[1] && found[2].",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, three booleans.",
+      "viz": "viz/merge-triplets-to-form-target-triplet.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why can a triplet with t[0] > target[0] never be used?",
+      "options": [
+        "Merging takes the max, so position 0 would stay above the target forever",
+        "It is too big to store",
+        "Order matters",
+        "It can be used"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is merging every safe triplet harmless?",
+      "options": [
+        "They never push any value above the target, and merges never decrease values",
+        "Because there are only three values",
+        "Because the triplets are sorted",
+        "It isn't harmless"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Merge = element-wise max? Any number of merges?",
+    "Example 1 by hand.",
+    "Brute force: try every subset. Cost?",
+    "\"Max only goes up\" → which triplets can never help?",
+    "Plan the skip and the found flags.",
+    "Code it.",
+    "Dry-run Example 3.",
+    "Time and space?"
+  ]
+}

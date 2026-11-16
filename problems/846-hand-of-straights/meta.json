@@ -1,0 +1,49 @@
+{
+  "id": 846,
+  "title": "Hand of Straights",
+  "keyIdea": "The smallest card left must be the lowest card of its group, so the group is forced: first, first + 1, …, first + groupSize − 1. Repeatedly take that run from a sorted count map; if a card is missing, it's impossible.",
+  "approaches": [
+    {
+      "name": "Greedy with an ordered map",
+      "file": "ordered-map.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Size check; map<int,int> counts; while not empty: first = smallest key; remove one of first..first + k − 1, failing if any is missing.",
+      "time": "O(n log n)",
+      "space": "O(n)",
+      "why": "Each card is decremented once, each map operation O(log n).",
+      "viz": "viz/hand-of-straights.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why must the smallest card start a group?",
+      "options": [
+        "No smaller card is left to come before it in a run",
+        "Because groups are sorted",
+        "Because it appears once",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the first check?",
+      "options": [
+        "hand.size() % groupSize == 0, or it can't split evenly",
+        "The hand is sorted",
+        "groupSize ≤ 3",
+        "No duplicates"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Groups of consecutive values, size exactly groupSize? Duplicates allowed?",
+    "Example 1 by hand.",
+    "Brute force: try groupings with backtracking. Cost?",
+    "\"Use the smallest first\" → which data structure keeps cards sorted with counts?",
+    "Plan the loop and the missing-card check.",
+    "Code it.",
+    "Dry-run Example 1.",
+    "Time and space? (Same problem: LC 1296.)"
+  ]
+}

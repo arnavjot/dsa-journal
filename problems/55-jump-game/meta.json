@@ -1,0 +1,49 @@
+{
+  "id": 55,
+  "title": "Jump Game",
+  "keyIdea": "The reachable indexes always form a prefix 0..maxReach. Walk left to right: if i > maxReach you are stuck (false); otherwise maxReach = max(maxReach, i + nums[i]). Reaching the end of the loop means the last index is reachable.",
+  "approaches": [
+    {
+      "name": "Greedy farthest reach",
+      "file": "max-reach.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). maxReach starts at 0; return false if i > maxReach; else extend it.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, one int.",
+      "viz": "viz/jump-game.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does one number (maxReach) describe everything reachable?",
+      "options": [
+        "If you can reach index r, you can reach every index before it too",
+        "Because jumps are all 1",
+        "Because the array is sorted",
+        "It doesn't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When does the greedy return false?",
+      "options": [
+        "When i > maxReach: no earlier position can jump to i",
+        "When nums[i] == 0",
+        "When maxReach < n",
+        "Never"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "nums[i] is the maximum jump length? Can it be 0?",
+    "Trace [3,2,1,0,4]: where do you get stuck?",
+    "Brute force: DFS/DP over every jump. Cost?",
+    "\"Can I reach the end?\" → what single value to track?",
+    "Plan the loop and the stuck check.",
+    "Code it.",
+    "Dry-run Example 2.",
+    "Time and space?"
+  ]
+}
