@@ -1,0 +1,59 @@
+{
+  "id": 371,
+  "title": "Sum of Two Integers",
+  "keyIdea": "Binary addition without +: a ^ b adds each column ignoring carries, (a & b) << 1 is the carry into the next column. Set a = a ^ b, b = carry and repeat until the carry is 0. Two's complement makes negatives work too.",
+  "approaches": [
+    {
+      "name": "XOR + carry loop",
+      "file": "xor-and-carry.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code): while b != 0: carry = (unsigned)(a & b) << 1; a ^= b; b = carry.",
+      "time": "O(32) = O(1)",
+      "space": "O(1)",
+      "why": "The carry moves at least one bit left each round, so at most 32 rounds.",
+      "viz": "viz/sum-of-two-integers.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does a ^ b give?",
+      "options": [
+        "The sum of each column without carries",
+        "The carries",
+        "a + b",
+        "a − b"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why cast to unsigned before << in C++?",
+      "options": [
+        "Left-shifting a negative int is undefined behaviour",
+        "For speed",
+        "To make it positive",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does the loop end?",
+      "options": [
+        "The carry shifts left every round and falls off after 32 bits",
+        "b decreases by 1",
+        "a reaches 0",
+        "It may not end"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "No + or −? Negatives allowed?",
+    "Add 2 + 3 in binary by hand: where are the carries?",
+    "Brute force: increment one at a time. Why bad?",
+    "\"Add without +\" → which two bit operations?",
+    "Plan the loop and the unsigned shift.",
+    "Code it.",
+    "Dry-run 7 + 1.",
+    "Time and space? What about subtraction?"
+  ]
+}

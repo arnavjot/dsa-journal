@@ -1,0 +1,59 @@
+{
+  "id": 338,
+  "title": "Counting Bits",
+  "keyIdea": "i = (its highest power of two, offset) + (i − offset). The top bit contributes 1 and i − offset is smaller, already in dp: dp[i] = 1 + dp[i − offset]. offset moves up whenever i hits the next power of two.",
+  "approaches": [
+    {
+      "name": "DP with offset (highest power of two)",
+      "file": "offset-dp.cpp",
+      "best": true,
+      "idea": "Your code: offset = i whenever offset * 2 == i; dp[i] = 1 + dp[i − offset].",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One O(1) step per i; besides the answer array only offset is stored.",
+      "viz": "viz/counting-bits.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "For i = 13 (1101), what are offset and i − offset?",
+      "options": [
+        "offset 8, i − offset 5 (101)",
+        "offset 4, i − offset 9",
+        "offset 1, i − offset 12",
+        "offset 13, i − offset 0"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "When does offset change?",
+      "options": [
+        "When i becomes a power of two (offset * 2 == i)",
+        "Every step",
+        "When i is odd",
+        "Never"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Another O(n) recurrence?",
+      "options": [
+        "dp[i] = dp[i >> 1] + (i & 1)",
+        "dp[i] = dp[i − 1] + 1",
+        "dp[i] = 2 * dp[i / 2]",
+        "dp[i] = i % 2"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Output size n + 1 including 0? Can it be done in O(n) without popcount?",
+    "Write 0..8 in binary and count the 1s.",
+    "Brute force: count bits of each i. Cost?",
+    "\"Bits of i from smaller numbers\" → which DP?",
+    "Pick the smaller number: i − top bit, i >> 1, or i & (i − 1).",
+    "Code it.",
+    "Dry-run n = 5.",
+    "Time and space?"
+  ]
+}

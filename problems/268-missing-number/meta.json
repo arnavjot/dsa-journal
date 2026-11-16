@@ -1,0 +1,93 @@
+{
+  "id": 268,
+  "title": "Missing Number",
+  "keyIdea": "nums holds n distinct numbers from 0..n, so exactly one is missing. Three O(n), O(1) ways: cyclic sort (put each value at its own index, then find the gap), total − sum, or XOR every index with every value so all but the missing one cancel.",
+  "approaches": [
+    {
+      "name": "Sort + scan",
+      "file": "sort-scan.cpp",
+      "idea": "Your commented version: sort, return the first i with nums[i] != i, else n.",
+      "time": "O(n log n)",
+      "space": "O(1)",
+      "why": "The sort dominates."
+    },
+    {
+      "name": "Sort + binary search",
+      "file": "sort-binary-search.cpp",
+      "idea": "Your commented version: after sorting, nums[mid] == mid means the gap is to the right; find the first index where it breaks.",
+      "time": "O(n log n)",
+      "space": "O(1)",
+      "why": "The sort dominates; the search itself is O(log n)."
+    },
+    {
+      "name": "XOR indexes and values",
+      "file": "xor.cpp",
+      "idea": "I added this one (the bit-manipulation answer): ans = n; ans ^= i ^ nums[i] for every i.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass; every present number cancels with its index.",
+      "viz": "viz/missing-number-xor.html"
+    },
+    {
+      "name": "Sum formula",
+      "file": "sum-formula.cpp",
+      "idea": "Your commented \"better\" version: n(n + 1)/2 − sum of nums.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass for the sum.",
+      "viz": "viz/missing-number-sum.html"
+    },
+    {
+      "name": "Cyclic sort",
+      "file": "cyclic-sort.cpp",
+      "best": true,
+      "idea": "Your active code: swap nums[i] into index nums[i] (skip the value n), then the first index i with nums[i] != i is missing; else n.",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "Each swap fixes one value for good, so at most n swaps plus n steps of i. It changes the input array.",
+      "viz": "viz/missing-number.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "In the cyclic sort, why skip nums[i] == n?",
+      "options": [
+        "Index n doesn't exist in an array of size n",
+        "Because n is the answer",
+        "It is a duplicate",
+        "To save time"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[3,0,1]: what does the XOR method compute?",
+      "options": [
+        "3 ^ (0 ^ 3) ^ (1 ^ 0) ^ (2 ^ 1) = 2",
+        "3 + 0 + 1",
+        "0 ^ 1 ^ 3 = 2 only by luck",
+        "6 − 4 = 2 using XOR"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is the sort-based approach slower?",
+      "options": [
+        "Sorting costs O(n log n); the other three are O(n)",
+        "Binary search is slow",
+        "It uses extra memory",
+        "It isn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Distinct numbers from 0..n, exactly one missing? Can I change the array?",
+    "Find the missing number in [9,6,4,2,3,5,7,0,1] by hand.",
+    "Brute force: check each 0..n with a search, or sort. Cost?",
+    "\"0..n with one missing\" → sum, XOR or cyclic sort.",
+    "Plan the cyclic sort: when to swap, when to move i.",
+    "Code it.",
+    "Dry-run [3,0,1].",
+    "Time and space? Which method avoids overflow and keeps the input?"
+  ]
+}

@@ -116,5 +116,12 @@
   "minimum-interval-to-include-each-query": {"box":0,"due":"2026-12-31","log":[],"updated":"1"},
   "happy-number": {"box":0,"due":"2027-01-01","log":[],"updated":"1"},
   "spiral-matrix": {"box":0,"due":"2027-01-02","log":[],"updated":"1"},
-  "maximum-subarray": {"box":0,"due":"2027-01-03","log":[],"updated":"1"}
+  "maximum-subarray": {"box":0,"due":"2027-01-03","log":[],"updated":"1"},
+  "single-number": {"box":0,"due":"2027-01-04","log":[],"updated":"1"},
+  "number-of-1-bits": {"box":0,"due":"2027-01-05","log":[],"updated":"1"},
+  "counting-bits": {"box":0,"due":"2027-01-06","log":[],"updated":"1"},
+  "reverse-bits": {"box":0,"due":"2027-01-07","log":[],"updated":"1"},
+  "missing-number": {"box":0,"due":"2027-01-08","log":[],"updated":"1"},
+  "sum-of-two-integers": {"box":0,"due":"2027-01-09","log":[],"updated":"1"},
+  "reverse-integer": {"box":0,"due":"2027-01-10","log":[],"updated":"1"}
 }

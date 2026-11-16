@@ -969,43 +969,43 @@
     "id": 136,
     "title": "Single Number",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 191,
     "title": "Number of 1 Bits",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 338,
     "title": "Counting Bits",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 190,
     "title": "Reverse Bits",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 268,
     "title": "Missing Number",
     "difficulty": "Easy",
-    "solved": false
+    "solved": true
    },
    {
     "id": 371,
     "title": "Sum of Two Integers",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 7,
     "title": "Reverse Integer",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    }
   ]
  },

@@ -1,0 +1,58 @@
+{
+  "id": 191,
+  "title": "Number of 1 Bits",
+  "keyIdea": "n & (n − 1) clears the lowest set bit (n − 1 flips that 1 and the 0s below it). Repeat until n is 0 and count the steps: one step per 1 bit.",
+  "approaches": [
+    {
+      "name": "Check every bit",
+      "file": "check-each-bit.cpp",
+      "idea": "I wrote this one too: add x & 1, shift right, 32 times.",
+      "time": "O(32) = O(1)",
+      "space": "O(1)",
+      "why": "Always 32 steps.",
+      "viz": "viz/number-of-1-bits-each.html"
+    },
+    {
+      "name": "Drop the lowest set bit",
+      "file": "drop-lowest-bit.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code): while n != 0, n &= n − 1, count++.",
+      "time": "O(number of 1 bits) ≤ O(32)",
+      "space": "O(1)",
+      "why": "One loop per 1 bit.",
+      "viz": "viz/number-of-1-bits.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does n & (n − 1) do to 12 (1100)?",
+      "options": [
+        "Clears the lowest 1 → 8 (1000)",
+        "Clears the highest 1 → 4",
+        "Flips every bit",
+        "Nothing"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How do you test if n is a power of two?",
+      "options": [
+        "n > 0 && (n & (n − 1)) == 0",
+        "n % 2 == 0",
+        "n & 1 == 1",
+        "n >> 1 == 0"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Signed or unsigned input? Range?",
+    "Count the 1s of 11 (1011).",
+    "Simple: test each of 32 bits. Cost?",
+    "\"Count or remove set bits\" → which bit trick?",
+    "Plan the n & (n − 1) loop.",
+    "Code it.",
+    "Dry-run 44 (101100).",
+    "Time and space? Where else is n & (n − 1) used?"
+  ]
+}
