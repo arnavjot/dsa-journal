@@ -1,0 +1,59 @@
+{
+  "id": 1584,
+  "title": "Min Cost to Connect All Points",
+  "keyIdea": "This is a minimum spanning tree on the complete graph (edge cost = Manhattan distance). With n² edges, Prim's with a plain minDist array is O(n²): repeatedly add the closest point outside the tree, then update every outside point's cheapest edge to the tree.",
+  "approaches": [
+    {
+      "name": "Prim's with an array (dense graph)",
+      "file": "prim-dense.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). minDist[0] = 0; n times: pick the outside point with the smallest minDist, add it, relax every outside point with its distance to it.",
+      "time": "O(n²)",
+      "space": "O(n)",
+      "why": "n steps, each scanning n points twice; no edge list is built.",
+      "viz": "viz/min-cost-to-connect-all-points.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why an array instead of a heap for Prim's here?",
+      "options": [
+        "The graph has n² edges, so O(n²) array scans beat O(n² log n) with a heap",
+        "Heaps can't store distances",
+        "Arrays use less memory than one int",
+        "No reason"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does minDist[v] mean?",
+      "options": [
+        "The cheapest single edge from any tree point to v",
+        "Distance from point 0",
+        "The total cost so far",
+        "The number of edges to v"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Kruskal's on this problem costs…",
+      "options": [
+        "O(n² log n): all n² edges must be sorted",
+        "O(n)",
+        "O(n log n)",
+        "O(n³)"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Manhattan distance, every pair can be connected, points distinct?",
+    "Connect Example 2 by hand.",
+    "Brute force: try spanning trees? Way too many.",
+    "\"Connect everything as cheaply as possible\" → which structure?",
+    "Prim's or Kruskal's on a complete graph: which and why?",
+    "Code it.",
+    "Dry-run Example 2.",
+    "Time and space?"
+  ]
+}

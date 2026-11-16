@@ -626,25 +626,25 @@
     "id": 332,
     "title": "Reconstruct Itinerary",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    },
    {
     "id": 1584,
     "title": "Min Cost to Connect All Points",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 743,
     "title": "Network Delay Time",
     "difficulty": "Medium",
-    "solved": false
+    "solved": true
    },
    {
     "id": 778,
     "title": "Swim in Rising Water",
     "difficulty": "Hard",
-    "solved": false
+    "solved": true
    },
    {
     "id": 269,

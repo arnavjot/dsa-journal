@@ -1,0 +1,59 @@
+{
+  "id": 332,
+  "title": "Reconstruct Itinerary",
+  "keyIdea": "The itinerary uses every ticket exactly once: an Eulerian path from JFK. Hierholzer: DFS taking the smallest ticket left each time, and add an airport to the route only when it has no tickets left. Reverse at the end. Dead ends get placed at the end of the trip automatically.",
+  "approaches": [
+    {
+      "name": "Hierholzer's (DFS, add when stuck)",
+      "file": "hierholzer.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Min-heap of destinations per airport; dfs pops the smallest, recurses, and pushes the airport onto route after its loop; reverse route.",
+      "time": "O(E log E)",
+      "space": "O(E)",
+      "why": "Each ticket is pushed and popped from a heap once; the route and recursion hold up to E + 1 airports.",
+      "viz": "viz/reconstruct-itinerary.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why add the airport after its loop, not before?",
+      "options": [
+        "A dead end reached early must end the trip; adding on the way back puts it last",
+        "To save memory",
+        "To sort the route",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why reverse the route at the end?",
+      "options": [
+        "Airports are added from the end of the trip backwards",
+        "To get the smallest order",
+        "Because the heap is a max-heap",
+        "To start at JFK by accident"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What kind of path is this?",
+      "options": [
+        "An Eulerian path (every edge exactly once)",
+        "A shortest path",
+        "A Hamiltonian path (every node once)",
+        "A spanning tree"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Start at JFK, use every ticket once, smallest lexical order on ties? Is a valid trip guaranteed?",
+    "Example 2 by hand: why not JFK → ATL → JFK → SFO first…?",
+    "Brute force: backtracking over ticket orders. Cost?",
+    "\"Use every edge exactly once\" → which algorithm?",
+    "Plan: graph of min-heaps, post-order DFS, reverse.",
+    "Code it.",
+    "Dry-run the KUL dead-end example.",
+    "Time and space?"
+  ]
+}

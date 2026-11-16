@@ -1,0 +1,59 @@
+{
+  "id": 743,
+  "title": "Network Delay Time",
+  "keyIdea": "Single-source shortest paths with non-negative weights → Dijkstra from k. The time for everyone to receive the signal is the largest shortest distance; if any node is unreachable, −1.",
+  "approaches": [
+    {
+      "name": "Dijkstra with a min-heap",
+      "file": "dijkstra.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). dist[k] = 0; pop {d, u}, skip stale entries, relax u's edges and push improvements; answer max(dist) or −1.",
+      "time": "O(E log V)",
+      "space": "O(V + E)",
+      "why": "Each edge can push once; heap operations are O(log E) = O(log V).",
+      "viz": "viz/network-delay-time.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is a node final when it comes off the heap with the smallest time?",
+      "options": [
+        "Weights are non-negative, so any other route is at least as slow",
+        "Because it has no edges",
+        "The heap is sorted by node number",
+        "It isn't final"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why skip when d > dist[u]?",
+      "options": [
+        "It is an old heap entry; u was already reached faster",
+        "To avoid cycles only",
+        "Because d is negative",
+        "To save memory"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is returned?",
+      "options": [
+        "The maximum of all shortest times, or −1 if a node is unreachable",
+        "The sum of all times",
+        "dist[n]",
+        "The minimum time"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Directed edges? Weights ≥ 0? Nodes 1..n?",
+    "Example 1 by hand: when does each node hear the signal?",
+    "Brute force: Bellman-Ford or Floyd-Warshall. Cost?",
+    "\"Shortest times from one source, non-negative weights\" → which algorithm?",
+    "Plan: adjacency list, dist, min-heap, stale check, final max.",
+    "Code it.",
+    "Dry-run the \"later, better path\" example.",
+    "Time and space?"
+  ]
+}
