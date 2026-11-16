@@ -1,0 +1,68 @@
+{
+  "id": 54,
+  "title": "Spiral Matrix",
+  "keyIdea": "Keep four boundaries: startrow, endrow, startcol, endcol. Print the top row left to right, the right column top to bottom, the bottom row right to left and the left column bottom to top, shrinking that boundary after each side. Stop as soon as all m × n cells are printed, so a leftover single row or column isn't printed twice.",
+  "approaches": [
+    {
+      "name": "Peel and erase",
+      "file": "peel-and-erase.cpp",
+      "idea": "Your commented version: take the first row, erase it; pop the last element of each row; take the last row reversed; take the first element of each row going up. Repeat until the matrix is empty.",
+      "time": "O(m × n × (m + n))",
+      "space": "O(1)",
+      "why": "Erasing the first row or the first element of a vector shifts everything after it, so each lap costs extra. It also destroys the input matrix.",
+      "warn": "Works, but modifies the input and the front-erases make it slower."
+    },
+    {
+      "name": "Shrinking boundaries",
+      "file": "boundaries.cpp",
+      "best": true,
+      "idea": "Your active code: four boundary variables and a count; four for-loops per lap, each guarded by count < total.",
+      "time": "O(m × n)",
+      "space": "O(1)",
+      "why": "Every cell is printed exactly once; only a few ints besides the answer.",
+      "viz": "viz/spiral-matrix.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does every inner loop also check count < total?",
+      "options": [
+        "On the last lap a single row or column remains; without it, the left/up loops would print it again",
+        "To avoid an infinite while loop only",
+        "For speed",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "After printing the top row, which boundary changes?",
+      "options": [
+        "startrow++",
+        "endrow--",
+        "startcol++",
+        "endcol--"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is the spiral order of [[1,2,3],[4,5,6],[7,8,9]]?",
+      "options": [
+        "1,2,3,6,9,8,7,4,5",
+        "1,2,3,4,5,6,7,8,9",
+        "1,4,7,8,9,6,3,2,5",
+        "1,2,3,6,9,8,7,5,4"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Rectangular, not just square? Can it have one row or one column?",
+    "Write the order for the 3 × 4 example by hand.",
+    "Alternative: walk with a direction and a visited grid. Cost and extra space?",
+    "\"Print layer by layer\" → which four variables?",
+    "Plan the four loops and when each boundary moves.",
+    "Code it.",
+    "Dry-run the 3 × 4 example.",
+    "Time and space? What breaks without the count checks?"
+  ]
+}
