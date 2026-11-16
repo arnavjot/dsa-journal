@@ -1,0 +1,59 @@
+{
+  "id": 139,
+  "title": "Word Break",
+  "keyIdea": "dp[i] = can the first i letters be split into dictionary words. dp[0] = true. dp[i] = true if some word w ends at i (s[i − |w| .. i) == w) and dp[i − |w|] is true. Answer dp[n].",
+  "approaches": [
+    {
+      "name": "Prefix DP over words",
+      "file": "dp-over-words.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). dp[0] = true; for each i, try every word as the last word ending at i.",
+      "time": "O(n × W × L)",
+      "space": "O(n)",
+      "why": "n positions × W words × an O(L) compare.",
+      "viz": "viz/word-break.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What does dp[i] mean?",
+      "options": [
+        "The first i letters can be split into words",
+        "Letter i is in a word",
+        "i words were used",
+        "The suffix from i can be split"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why is dp[0] true?",
+      "options": [
+        "The empty prefix needs no words",
+        "Because s is not empty",
+        "It is false",
+        "For indexing only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does plain recursion blow up on \"aaaaaaab\" with [\"a\",\"aa\",\"aaa\"]?",
+      "options": [
+        "It retries the same suffix in many ways; dp solves each prefix once",
+        "Because of the b",
+        "Too many words",
+        "It doesn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Words can be reused? Dictionary size and word lengths?",
+    "Split \"applepenapple\" by hand.",
+    "Brute force: try every first word recursively. Cost?",
+    "\"Can the string be cut into dictionary pieces\" → prefix DP.",
+    "Plan dp[i] and the last-word check.",
+    "Code it.",
+    "Dry-run \"leetcode\".",
+    "Time and space? Trie or set alternatives?"
+  ]
+}

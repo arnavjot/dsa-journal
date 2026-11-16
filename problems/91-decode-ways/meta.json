@@ -1,0 +1,59 @@
+{
+  "id": 91,
+  "title": "Decode Ways",
+  "keyIdea": "ways[i] = number of ways to decode s[i..]. If s[i] is 1–9 it is a letter → ways[i + 1]; if s[i..i+1] is 10–26 it is a letter → + ways[i + 2]. '0' alone is never a letter. Fill from the end; only two values are needed.",
+  "approaches": [
+    {
+      "name": "DP with two variables",
+      "file": "two-variables.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). next = ways[i + 1] (starts at 1 for the empty rest), next2 = ways[i + 2]; cur = 0 if s[i] is '0', else next + (two-digit ok ? next2 : 0).",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass from the end; two ints.",
+      "viz": "viz/decode-ways.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is ways[i] = 0 when s[i] == '0'?",
+      "options": [
+        "No letter's code starts with 0",
+        "Because 0 is even",
+        "It is 1",
+        "Only at the start"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Which two-digit codes are letters?",
+      "options": [
+        "10 to 26",
+        "1 to 26",
+        "11 to 26",
+        "10 to 99"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does ways[n] = 1?",
+      "options": [
+        "The empty rest has exactly one decoding (nothing)",
+        "To avoid zero",
+        "Because the last digit is a letter",
+        "It is 0"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Letters A=1..Z=26; can s have leading zeros or '0's inside?",
+    "Decode 226 and 11106 by hand.",
+    "Brute force: try 1 or 2 digits recursively. Cost?",
+    "\"Count ways with 1- or 2-step choices\" → which DP (like Climbing Stairs)?",
+    "Plan the '0' and the 10–26 rules.",
+    "Code it with two variables.",
+    "Dry-run 226.",
+    "Time and space?"
+  ]
+}

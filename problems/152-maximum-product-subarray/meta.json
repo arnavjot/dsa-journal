@@ -1,0 +1,59 @@
+{
+  "id": 152,
+  "title": "Maximum Product Subarray",
+  "keyIdea": "Keep both the largest and the smallest product of a subarray ending at i. A negative number swaps their roles, so swap them first; then curMax = max(x, curMax × x), curMin = min(x, curMin × x). The answer is the best curMax.",
+  "approaches": [
+    {
+      "name": "Max and min ending here",
+      "file": "max-min-ending-here.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). If x < 0 swap curMax and curMin; curMax = max(x, curMax × x); curMin = min(x, curMin × x); best = max(best, curMax).",
+      "time": "O(n)",
+      "space": "O(1)",
+      "why": "One pass, three ints.",
+      "viz": "viz/maximum-product-subarray.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why isn't tracking only the max enough (unlike Kadane's)?",
+      "options": [
+        "A very negative product becomes the largest after another negative",
+        "Products overflow",
+        "Zeros break it",
+        "It is enough"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What happens at x = 0?",
+      "options": [
+        "Both become 0, so the next subarray starts fresh",
+        "The answer becomes 0",
+        "It is skipped",
+        "curMin becomes −∞"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "[−2, 3, −4] → ?",
+      "options": [
+        "24",
+        "3",
+        "−2",
+        "6"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Contiguous, non-empty? Zeros and negatives? Fits in 32 bits?",
+    "Work [2,3,−2,4] and [−2,3,−4] by hand.",
+    "Brute force: every subarray. Cost?",
+    "\"Max product subarray\" → what extra state compared with Kadane?",
+    "Plan the swap and the two updates.",
+    "Code it.",
+    "Dry-run [2,−5,−2,−4,3].",
+    "Time and space?"
+  ]
+}
