@@ -1,0 +1,59 @@
+{
+  "id": 43,
+  "title": "Multiply Strings",
+  "keyIdea": "Grade-school multiplication with a result array of m + n places. num1[i] × num2[j] contributes to place i + j + 1. Add it there, keep the ones digit, and push the tens to place i + j. Strip leading zeros at the end.",
+  "approaches": [
+    {
+      "name": "Grade-school with a position array",
+      "file": "grade-school.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). pos(m + n); for i, j from the right: sum = num1[i] × num2[j] + pos[i + j + 1]; pos[i + j + 1] = sum % 10; pos[i + j] += sum / 10; build the string skipping leading zeros.",
+      "time": "O(m × n)",
+      "space": "O(m + n)",
+      "why": "Every digit pair once; the result has at most m + n digits.",
+      "viz": "viz/multiply-strings.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does the product fit in m + n digits?",
+      "options": [
+        "num1 < 10^m and num2 < 10^n, so the product < 10^(m + n)",
+        "Because of the carry",
+        "It doesn't always",
+        "Because digits are < 10"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "num1[i] × num2[j] goes to which place?",
+      "options": [
+        "i + j + 1 (with the carry going to i + j)",
+        "i × j",
+        "i + j only",
+        "m + n − i − j"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is returned for \"0\" × \"52\"?",
+      "options": [
+        "\"0\"",
+        "\"\"",
+        "\"00\"",
+        "\"052\""
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Non-negative, no leading zeros, can't convert to int?",
+    "Multiply 123 × 456 on paper; where does each partial product go?",
+    "Brute force: add num1 to itself num2 times. Cost?",
+    "\"Big number arithmetic on strings\" → digit array with positions.",
+    "Plan the i + j + 1 rule and the carry.",
+    "Code it.",
+    "Dry-run 99 × 99.",
+    "Time and space? Faster (Karatsuba / FFT)?"
+  ]
+}

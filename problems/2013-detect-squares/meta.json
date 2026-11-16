@@ -1,0 +1,59 @@
+{
+  "id": 2013,
+  "title": "Detect Squares",
+  "keyIdea": "Store counts of each point (duplicates matter). For count(x, y), each stored point (px, py) with |px − x| = |py − y| ≠ 0 is a possible opposite corner; the square's other corners are (x, py) and (px, y). Add cnt[px][py] × cnt[x][py] × cnt[px][y].",
+  "approaches": [
+    {
+      "name": "Count grid + diagonal corner",
+      "file": "count-grid.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). cnt[1001][1001] plus a list of distinct points; count loops over distinct points as diagonals and multiplies the three corner counts.",
+      "time": "add O(1), count O(P)",
+      "space": "O(P) for points (+ the fixed 1001 × 1001 grid)",
+      "why": "Each count looks at every distinct stored point once (P of them).",
+      "viz": "viz/detect-squares.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why loop over the diagonal corner instead of a side corner?",
+      "options": [
+        "The diagonal alone fixes the whole square (side length and direction)",
+        "There are fewer diagonals",
+        "For sorting",
+        "Either works the same with less code"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why multiply the counts?",
+      "options": [
+        "Each copy of each corner gives a different square",
+        "To get the area",
+        "Because of overflow",
+        "They should be added"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why skip px == x?",
+      "options": [
+        "Zero side length is not a square (positive area required)",
+        "To avoid dividing by zero",
+        "Because it is the query",
+        "No reason"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Axis-aligned, positive area, duplicate points count separately?",
+    "Example 1 by hand.",
+    "Brute force: try every triple of stored points. Cost?",
+    "\"Count squares with a fixed corner\" → which corner to enumerate?",
+    "Plan the count storage and the diagonal check.",
+    "Code it.",
+    "Dry-run Example 1's second count.",
+    "Time and space?"
+  ]
+}

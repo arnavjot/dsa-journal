@@ -134,5 +134,9 @@
   "hand-of-straights": {"box":0,"due":"2027-01-18","log":[],"updated":"1"},
   "merge-triplets-to-form-target-triplet": {"box":0,"due":"2027-01-19","log":[],"updated":"1"},
   "partition-labels": {"box":0,"due":"2027-01-20","log":[],"updated":"1"},
-  "valid-parenthesis-string": {"box":0,"due":"2027-01-21","log":[],"updated":"1"}
+  "valid-parenthesis-string": {"box":0,"due":"2027-01-21","log":[],"updated":"1"},
+  "set-matrix-zeroes": {"box":0,"due":"2027-01-22","log":[],"updated":"1"},
+  "plus-one": {"box":0,"due":"2027-01-23","log":[],"updated":"1"},
+  "multiply-strings": {"box":0,"due":"2027-01-24","log":[],"updated":"1"},
+  "detect-squares": {"box":0,"due":"2027-01-25","log":[],"updated":"1"}
 }
