@@ -123,5 +123,9 @@
   "reverse-bits": {"box":0,"due":"2027-01-07","log":[],"updated":"1"},
   "missing-number": {"box":0,"due":"2027-01-08","log":[],"updated":"1"},
   "sum-of-two-integers": {"box":0,"due":"2027-01-09","log":[],"updated":"1"},
-  "reverse-integer": {"box":0,"due":"2027-01-10","log":[],"updated":"1"}
+  "reverse-integer": {"box":0,"due":"2027-01-10","log":[],"updated":"1"},
+  "reconstruct-itinerary": {"box":0,"due":"2027-01-11","log":[],"updated":"1"},
+  "min-cost-to-connect-all-points": {"box":0,"due":"2027-01-12","log":[],"updated":"1"},
+  "network-delay-time": {"box":0,"due":"2027-01-13","log":[],"updated":"1"},
+  "swim-in-rising-water": {"box":0,"due":"2027-01-14","log":[],"updated":"1"}
 }

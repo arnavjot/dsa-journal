@@ -1,0 +1,59 @@
+{
+  "id": 778,
+  "title": "Swim in Rising Water",
+  "keyIdea": "At time t you can stand on any cell with height ≤ t, so a path can be used once t reaches its highest cell. Find the path from the top-left to the bottom-right that minimises that highest cell: Dijkstra where a path's cost is the max height on it.",
+  "approaches": [
+    {
+      "name": "Dijkstra on the max height",
+      "file": "dijkstra-max.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Min-heap of {time, r, c} starting at {grid[0][0], 0, 0}; pop the soonest cell; push unseen neighbours with max(t, height); return when the corner is popped.",
+      "time": "O(n² log n)",
+      "space": "O(n²)",
+      "why": "n² cells, each pushed once into a heap of size up to n².",
+      "viz": "viz/swim-in-rising-water.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "What is the cost of a path here?",
+      "options": [
+        "The highest cell on it",
+        "The sum of its cells",
+        "Its length",
+        "The lowest cell"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why can a cell be marked seen when it is pushed (not popped)?",
+      "options": [
+        "Its key is max(t, height) and t only grows, so the first push is already the best",
+        "To save memory only",
+        "Because the grid is a tree",
+        "It can't"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Another correct approach?",
+      "options": [
+        "Binary search t and check with BFS/DFS if the corner is reachable",
+        "Greedy: always step to the lowest neighbour",
+        "Sort the rows",
+        "DP from the top-left only moving right/down"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Can swim in 4 directions? Heights are a permutation of 0..n² − 1?",
+    "Example 1: when can you reach (1, 1)?",
+    "Brute force: try every t from 0 up with a BFS. Cost?",
+    "\"Minimise the worst cell on a path\" → which shortest-path variant?",
+    "Plan the heap entry and when to stop.",
+    "Code it.",
+    "Dry-run the 2 × 2 example.",
+    "Time and space? Binary search alternative?"
+  ]
+}
