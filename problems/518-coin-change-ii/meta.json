@@ -1,0 +1,59 @@
+{
+  "id": 518,
+  "title": "Coin Change II",
+  "keyIdea": "Count combinations (order doesn't matter) with unlimited coins. dp[a] = ways to make a. Loop coins outside, amounts inside: dp[a] += dp[a − coin]. That counts each multiset once.",
+  "approaches": [
+    {
+      "name": "One-row DP (coins outside)",
+      "file": "one-row-dp.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). dp[0] = 1; for each coin, for a = coin..amount: dp[a] += dp[a − coin]. Unsigned so middle values may wrap safely.",
+      "time": "O(coins × amount)",
+      "space": "O(amount)",
+      "why": "Two loops; one row of amount + 1 counts.",
+      "viz": "viz/coin-change-ii.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why loop over coins on the outside?",
+      "options": [
+        "Each combination is then built in one fixed coin order, so it is counted once",
+        "It is faster",
+        "To find the fewest coins",
+        "It doesn't matter"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does looping amounts on the outside count instead?",
+      "options": [
+        "Ordered sequences (permutations), as in LC 377 Combination Sum IV",
+        "The same thing",
+        "Fewest coins",
+        "Nothing"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why go a upward (not downward) here?",
+      "options": [
+        "Coins are unlimited, so dp[a − coin] may already use this coin",
+        "To save memory",
+        "Downward is also fine",
+        "Because amount is small"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Unlimited coins? Count combinations, not orders? amount = 0?",
+    "Count ways for 5 with [1,2,5] by hand.",
+    "Brute force: recurse on how many of each coin. Cost?",
+    "\"Count ways, unlimited items\" → unbounded knapsack.",
+    "Plan the loop order and dp[0] = 1.",
+    "Code it.",
+    "Dry-run 5 | 1,2,5.",
+    "Time and space? What changes for permutations?"
+  ]
+}

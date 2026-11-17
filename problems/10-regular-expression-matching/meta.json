@@ -1,0 +1,59 @@
+{
+  "id": 10,
+  "title": "Regular Expression Matching",
+  "keyIdea": "dp[i][j] = s[i..] matches p[j..]. If p[j + 1] is '*': skip 'p[j]*' (dp[i][j + 2]) or, if s[i] matches p[j], use it once and stay (dp[i + 1][j]). Otherwise s[i] must match p[j] ('.' matches any) and dp[i + 1][j + 1]. Fill from the end.",
+  "approaches": [
+    {
+      "name": "Bottom-up DP on suffixes",
+      "file": "bottom-up-dp.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). dp[m][n] = true; for i = m..0, j = n − 1..0: first = s[i] matches p[j]; star → dp[i][j + 2] || (first && dp[i + 1][j]); else first && dp[i + 1][j + 1].",
+      "time": "O(m × n)",
+      "space": "O(m × n)",
+      "why": "(m + 1) × n cells, O(1) each.",
+      "viz": "viz/regular-expression-matching.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "When standing on p[j], why check p[j + 1] == '*'?",
+      "options": [
+        "A following '*' changes p[j] into 'zero or more', so the choice is made here",
+        "To skip dots",
+        "For speed",
+        "It isn't needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "'x*' has two options. Which?",
+      "options": [
+        "Skip it entirely (j + 2), or use it for one matching letter and stay on j (i + 1)",
+        "Match exactly one letter",
+        "Match two letters",
+        "Always skip"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why does row i = m (empty s) matter?",
+      "options": [
+        "Patterns like a*b* can still match the empty string",
+        "It is always false",
+        "It is the answer",
+        "It doesn't"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "'.' = any one letter, '*' = zero or more of the previous? Whole string must match?",
+    "Match \"aab\" with \"c*a*b\" by hand.",
+    "Brute force: plain recursion. Cost?",
+    "\"Pattern with * and .\" → DP over (i, j).",
+    "Plan the star and non-star cases.",
+    "Code it bottom-up.",
+    "Dry-run \"aa\", \"a*\".",
+    "Time and space? Top-down memo alternative?"
+  ]
+}

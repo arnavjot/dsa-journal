@@ -141,5 +141,12 @@
   "detect-squares": {"box":0,"due":"2027-01-25","log":[],"updated":"1"},
   "decode-ways": {"box":0,"due":"2027-01-26","log":[],"updated":"1"},
   "maximum-product-subarray": {"box":0,"due":"2027-01-27","log":[],"updated":"1"},
-  "word-break": {"box":0,"due":"2027-01-28","log":[],"updated":"1"}
+  "word-break": {"box":0,"due":"2027-01-28","log":[],"updated":"1"},
+  "coin-change-ii": {"box":0,"due":"2027-01-29","log":[],"updated":"1"},
+  "target-sum": {"box":0,"due":"2027-01-30","log":[],"updated":"1"},
+  "interleaving-string": {"box":0,"due":"2027-01-31","log":[],"updated":"1"},
+  "longest-increasing-path-in-a-matrix": {"box":0,"due":"2027-02-01","log":[],"updated":"1"},
+  "distinct-subsequences": {"box":0,"due":"2027-02-02","log":[],"updated":"1"},
+  "burst-balloons": {"box":0,"due":"2027-02-03","log":[],"updated":"1"},
+  "regular-expression-matching": {"box":0,"due":"2027-02-04","log":[],"updated":"1"}
 }

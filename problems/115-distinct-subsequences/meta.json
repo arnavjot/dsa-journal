@@ -1,0 +1,59 @@
+{
+  "id": 115,
+  "title": "Distinct Subsequences",
+  "keyIdea": "dp[j] = number of ways t[0..j) appears as a subsequence of the part of s read so far. For each letter of s, for j from n down to 1: if s[i − 1] == t[j − 1], dp[j] += dp[j − 1]. dp[0] = 1.",
+  "approaches": [
+    {
+      "name": "One-row DP",
+      "file": "one-row-dp.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). dp[0] = 1; for each letter of s, for j = n..1: if it matches t[j − 1], dp[j] += dp[j − 1]. Unsigned so middle values may wrap safely.",
+      "time": "O(m × n)",
+      "space": "O(n)",
+      "why": "Every (letter of s, letter of t) pair once; one row.",
+      "viz": "viz/distinct-subsequences.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why loop j from right to left?",
+      "options": [
+        "So dp[j − 1] is still the old value and a single letter of s isn't used twice",
+        "For speed",
+        "Left to right is the same",
+        "Because t is reversed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What is dp[0] and why?",
+      "options": [
+        "1: the empty t appears exactly once in any prefix of s",
+        "0",
+        "m",
+        "n"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "On a match, why add and not set?",
+      "options": [
+        "Ways that skip this letter of s still count; ways that use it are added",
+        "To double count",
+        "Because of overflow",
+        "Set is correct"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Count distinct index choices, not distinct strings?",
+    "Count \"bag\" in \"babgbag\" by hand.",
+    "Brute force: try all subsequences of s. Cost?",
+    "\"Count ways one string appears in another\" → 2-D DP over (i, j).",
+    "Plan the recurrence and the row trick.",
+    "Code it.",
+    "Dry-run \"rabbbit\", \"rbt\".",
+    "Time and space?"
+  ]
+}

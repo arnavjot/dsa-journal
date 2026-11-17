@@ -1,0 +1,59 @@
+{
+  "id": 97,
+  "title": "Interleaving String",
+  "keyIdea": "dp[i][j] = s1[0..i) and s2[0..j) can make s3[0..i + j). The last letter came from s1 (dp[i − 1][j] and s1[i − 1] == s3[i + j − 1]) or from s2 (dp[i][j − 1] and s2[j − 1] == s3[i + j − 1]). One row is enough.",
+  "approaches": [
+    {
+      "name": "One-row DP",
+      "file": "one-row-dp.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Length check; dp over j for each i; fromS1 uses the old dp[j], fromS2 uses the new dp[j − 1].",
+      "time": "O(m × n)",
+      "space": "O(n)",
+      "why": "(m + 1)(n + 1) cells, one row kept.",
+      "viz": "viz/interleaving-string.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why does greedy (take from whichever string matches) fail?",
+      "options": [
+        "Both strings can offer the same letter; the wrong pick fails later",
+        "It is too slow",
+        "It works",
+        "Because of empty strings"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "In the one-row version, what is dp[j] before it is overwritten?",
+      "options": [
+        "The row above: whether s1[0..i − 1) + s2[0..j) worked",
+        "Always false",
+        "The cell to the left",
+        "The answer"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "First check?",
+      "options": [
+        "len(s1) + len(s2) == len(s3)",
+        "s1 ≠ s2",
+        "s3 sorted",
+        "None needed"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Must use all letters of both, keeping their orders?",
+    "Check Example 1 by hand.",
+    "Brute force: recursion on (i, j). Cost without memo?",
+    "\"Two strings merged keeping order\" → 2-D DP over (i, j).",
+    "Plan the two transitions and the base.",
+    "Code it with one row.",
+    "Dry-run a small case.",
+    "Time and space?"
+  ]
+}

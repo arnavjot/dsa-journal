@@ -1,0 +1,59 @@
+{
+  "id": 329,
+  "title": "Longest Increasing Path in a Matrix",
+  "keyIdea": "memo[r][c] = longest strictly increasing path starting at (r, c) = 1 + max over bigger neighbours. Values strictly increase along a path, so there are no cycles; DFS with memo solves each cell once.",
+  "approaches": [
+    {
+      "name": "DFS + memo",
+      "file": "dfs-memo.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). dfs(r, c) returns memo if set; else 1 + best dfs of each larger neighbour; answer = max over all cells.",
+      "time": "O(m × n)",
+      "space": "O(m × n)",
+      "why": "Each cell is computed once and looks at 4 neighbours; memo plus recursion stack.",
+      "viz": "viz/longest-increasing-path-in-a-matrix.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why is no visited set needed?",
+      "options": [
+        "Paths strictly increase, so they can never return to a cell (no cycles)",
+        "Memo replaces it",
+        "The grid is small",
+        "It is needed"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "What does memo[r][c] store?",
+      "options": [
+        "The longest increasing path that starts at (r, c)",
+        "Whether (r, c) was visited",
+        "The cell's value",
+        "The longest path ending at (r, c) only"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Another O(mn) approach?",
+      "options": [
+        "Topological sort: peel cells with no smaller neighbour layer by layer",
+        "Dijkstra",
+        "Binary search",
+        "Union-find"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "4 directions, strictly increasing?",
+    "Find the path in Example 1 by hand.",
+    "Brute force: DFS from every cell without memo. Cost?",
+    "\"Longest path in a DAG on a grid\" → DFS + memo.",
+    "Plan dfs and the memo check.",
+    "Code it.",
+    "Dry-run Example 2.",
+    "Time and space?"
+  ]
+}

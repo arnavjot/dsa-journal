@@ -1,0 +1,59 @@
+{
+  "id": 312,
+  "title": "Burst Balloons",
+  "keyIdea": "Pad with 1s. dp[l][r] = best coins from bursting every balloon strictly between l and r. Pick k as the LAST one burst in that range: then its neighbours are l and r, so dp[l][r] = max(dp[l][k] + dp[k][r] + v[l]·v[k]·v[r]). Fill short ranges first.",
+  "approaches": [
+    {
+      "name": "Interval DP (last balloon)",
+      "file": "interval-dp.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). v = [1, nums..., 1]; for len = 2..n + 1, for l, r = l + len, for k in (l, r): dp[l][r] = max(..., dp[l][k] + dp[k][r] + v[l]·v[k]·v[r]).",
+      "time": "O(n³)",
+      "space": "O(n²)",
+      "why": "O(n²) ranges, each trying O(n) choices of k.",
+      "viz": "viz/burst-balloons.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why choose the LAST balloon burst, not the first?",
+      "options": [
+        "If k is last, its neighbours are fixed (l and r) and the two sides are independent",
+        "It is the biggest",
+        "Fewer choices",
+        "First works the same"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why pad with 1 on both ends?",
+      "options": [
+        "Bursting next to the edge multiplies by 1, and l and r always exist",
+        "To make n even",
+        "For sorting",
+        "To avoid zeros"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Fill order?",
+      "options": [
+        "Shorter intervals first, so dp[l][k] and dp[k][r] are ready",
+        "Left to right by l only",
+        "Any order",
+        "Longest first"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Bursting i gives nums[i − 1]·nums[i]·nums[i + 1] with current neighbours; out of range = 1?",
+    "Try [3,1,5,8] orders by hand.",
+    "Brute force: every burst order. Cost?",
+    "\"Order of removals with neighbour effects\" → interval DP on the LAST removal.",
+    "Define dp[l][r] on an open interval and the transition.",
+    "Code it.",
+    "Dry-run [1,5].",
+    "Time and space?"
+  ]
+}
