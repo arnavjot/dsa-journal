@@ -748,7 +748,7 @@ function dotHTML(p, on) {
 }
 // "LeetCode ↗" pill inside a list row: opens the problem on LeetCode in a new tab (the row itself still opens the journal page)
 const lcURL = p => `https://leetcode.com/problems/${p.lc || p.slug}/`;
-function lcPill(p) { return `<span class="pill lc" role="link" tabindex="0" data-lc="${lcURL(p)}" title="Open #${p.id} on LeetCode">LeetCode ↗</span>`; }
+function lcPill(p) { return `<span class="pill lc" role="link" tabindex="0" data-lc="${lcURL(p)}" title="Open #${p.id} on LeetCode" aria-label="Open #${p.id} on LeetCode">LC ↗</span>`; }
 function toggleTick(slug) {
   const p = S.bySlug[slug]; if (!p) return;
   if (p.solved) {
