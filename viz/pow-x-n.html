@@ -193,8 +193,8 @@ pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--st)}
 <div class="wrap">
 <a class="vback" id="vback" href="../#pow-x-n"><span class="arr" aria-hidden="true">←</span><span>Back to the problem</span></a>
   <header>
-    <h1>Pow(x, n), step by step (binary exponentiation)</h1>
-    <p class="sub">Write n in binary. x keeps squaring (x, x², x⁴, x⁸…) and ans multiplies in the powers whose bit is 1, so it takes about log₂ n steps instead of n.</p>
+    <h1>Pow(x, n), step by step (your long double fast power)</h1>
+    <p class="sub">Your code. Write n in binary. x keeps squaring (x, x², x⁴, x⁸…) and ans multiplies in the powers whose bit is 1, so it takes about log₂ n steps instead of n.</p>
   </header>
   <div class="legend"><span><i class="dot" style="background:var(--ok)"></i>bit 1: multiplied in</span><span><i class="dot" style="background:var(--cur)"></i>bit 0: skipped</span></div>
   <div class="presets" id="presets"></div>
@@ -214,12 +214,12 @@ pre.code span.on{background:var(--hl);box-shadow:inset 3px 0 0 var(--st)}
     <div class="card"><div class="label">What just happened</div><div class="msg" id="msg"></div>
       <div class="label" style="margin-top:6px">The numbers</div><dl class="math" id="math"></dl></div>
   </div>
-  <p class="why"><b>Why it works:</b> 13 = 8 + 4 + 1, so x¹³ = x⁸ · x⁴ · x¹. The powers x^(2^k) come free by squaring.</p><p class="why"><b>Negative n:</b> x^−n = (1/x)^n. Use long long, because −(−2³¹) overflows an int.</p><p class="why"><b>Cost:</b> O(log n) time, O(1) space.</p>
+  <p class="why"><b>Why it works:</b> 13 = 8 + 4 + 1, so x¹³ = x⁸ · x⁴ · x¹. The powers x^(2^k) come free by squaring.</p><p class="why"><b>Negative n:</b> x^−n = (1/x)^n. Use long long, because −(−2³¹) overflows an int.</p><p class="why"><b>Why long double:</b> it keeps more digits through the repeated squaring; on LeetCode-sized answers its worst relative error was about 10⁻¹⁴ vs 10⁻¹¹ for plain double.</p><p class="why"><b>Cost:</b> O(log n) time, O(1) space.</p>
 </div>
 <script>
 const $ = id => document.getElementById(id);
 const PRESETS = [{"key": "ex1", "label": "Example 1: 2, 10", "input": [2, 10]}, {"key": "ex2", "label": "Example 2: 2.1, 3", "input": [2.1, 3]}, {"key": "ex3", "label": "Example 3: 2, −2", "input": [2, -2]}, {"key": "odd", "label": "3, 13 (1101)", "input": [3, 13]}];
-const CODE = ["// Binary exponentiation (fast power) - O(log n) time, O(1) space", "class Solution {", "public:", "    double myPow(double x, int n) {", "        long long N = n;          // -INT_MIN overflows int, so use long long", "        if (N < 0) {", "            x = 1 / x;", "            N = -N;", "        }", "        double ans = 1;", "        while (N > 0) {", "            if (N & 1) {", "                ans *= x;         // this bit of N is set: use the current power", "            }", "            x *= x;               // x, x^2, x^4, x^8, ...", "            N >>= 1;", "        }", "        return ans;", "    }", "};"];
+const CODE = ["// Binary exponentiation in long double - O(log n) time, O(1) space", "class Solution {", "public:", "    double myPow(double x, int n) {", "        long long num = n;", "        long double base = x;", "        if (num < 0) {", "            base = 1.0L / base;", "            num = -num;", "        }", "        long double ans = 1.0L;", "        while (num > 0) {", "            if (num & 1) {", "                ans *= base;", "            }", "            base *= base;", "            num >>= 1;", "        }", "        return (double)ans;", "    }", "};"];
 const INPUT_HINT = "your own: x, n \u2014 2, 10";
 // line number by text: L('freq[nums[i]]++'), or the first match after line `after`
 const L = (s, after = -1) => { const i = CODE.findIndex((l, k) => k > after && l.includes(s)); if(i < 0) throw new Error('no code line: ' + s); return i; };
@@ -268,7 +268,9 @@ const tg = list => { const t = {}; list.forEach(([k, l, c]) => { if(k !== null &
 
 const LE = (t, after = -1) => { const i = CODE.findIndex((l, k) => k > after && l.trim() === t); if(i < 0) throw new Error('no exact line: ' + t); return i; };
 const tagsAt = list => { const t = {}; list.forEach(([k, l, c]) => { if(k !== null && k >= 0) (t[k] = t[k] || []).push({t: l, c}); }); return t; };
-const MODE = 'pow';
+const MODE = 'powu';
+const KL = k => MODE === 'powu' ? L(["long long num = n", "if (num < 0)", "base = 1.0L / base", "num = -num", "long double ans = 1.0L", "while (num > 0)", "if (num & 1)", "ans *= base", "base *= base", "num >>= 1", "return (double)ans"][k]) : L(["long long N = n", "if (N < 0)", "x = 1 / x", "N = -N", "double ans = 1", "while (N > 0)", "if (N & 1)", "ans *= x", "x *= x", "N >>= 1", "return ans;"][k]);
+const XV = MODE === 'powu' ? 'base' : 'x', NV = MODE === 'powu' ? 'num' : 'N';
 function readCustom(t){ const m = String(t).match(/-?\d+(\.\d+)?/g) || []; if(m.length !== 2) throw 'Write x, n like 2, 10';
   const x = +m[0], n = +m[1]; if(!Number.isInteger(n) || Math.abs(n) > 1000) throw 'n is a whole number from -1000 to 1000.'; if(Math.abs(x) > 100) throw 'x from -100 to 100.'; if(x === 0 && n < 0) throw '0 to a negative power is undefined.'; return [x, n]; }
 function prepare([x0, n]){
@@ -277,20 +279,20 @@ function prepare([x0, n]){
   const bits = Math.abs(n).toString(2).split('');
   const B = (done, cur) => [row('bits of |n|<br><small>(right = lowest)</small>', bits, k => { const fromRight = bits.length - 1 - k; return fromRight === cur ? (bits[k] === '1' ? 'ok' : 'cur') : fromRight < done ? 'dim' : ''; }, {}, {idxLabels: bits.map((_, k) => `2^${bits.length - 1 - k}`)}),
     note('x^n = product of x^(2^k) for every set bit k of n. x keeps squaring (x, x², x⁴, x⁸…); ans takes it whenever the lowest bit of N is 1.')];
-  F.push({blocks: B(0, -1), lines: [L('long long N = n')], ph: 'Start', msg: `<span class="eq">N = ${n}</span>long long, because −(−2³¹) doesn't fit in an int.`, math: [['x', f(x)], ['N', `${N}`]]});
-  if(N < 0){ x = 1 / x; N = -N; F.push({blocks: B(0, -1), lines: [L('if (N < 0)'), L('x = 1 / x'), L('N = -N')], ph: 'Start', msg: `<span class="eq">x = 1 / ${f(x0)} = ${f(x)}, N = ${N}</span>x^−n = (1/x)^n.`, math: [['x', f(x)], ['N', `${N}`]]}); }
-  else F.push({blocks: B(0, -1), lines: [L('if (N < 0)')], ph: 'Start', msg: `<span class="eq">N = ${N} ≥ 0</span>No flip needed.`, math: [['x', f(x)], ['N', `${N}`]]});
-  F.push({blocks: B(0, -1), lines: [L('double ans = 1')], ph: 'Start', msg: '<span class="eq">ans = 1</span>', math: [['ans', '1'], ['x', f(x)], ['N', `${N}`]]});
+  F.push({blocks: B(0, -1), lines: MODE === 'powu' ? [KL(0), L('long double base = x')] : [KL(0)], ph: 'Start', msg: `<span class="eq">${NV} = ${n}</span>long long, because −(−2³¹) doesn't fit in an int.`, math: [[XV, f(x)], [NV, `${N}`]]});
+  if(N < 0){ x = 1 / x; N = -N; F.push({blocks: B(0, -1), lines: [KL(1), KL(2), KL(3)], ph: 'Start', msg: `<span class="eq">${XV} = 1 / ${f(x0)} = ${f(x)}, ${NV} = ${N}</span>x^−n = (1/x)^n.`, math: [[XV, f(x)], [NV, `${N}`]]}); }
+  else F.push({blocks: B(0, -1), lines: [KL(1)], ph: 'Start', msg: `<span class="eq">${NV} = ${N} ≥ 0</span>No flip needed.`, math: [[XV, f(x)], [NV, `${N}`]]});
+  F.push({blocks: B(0, -1), lines: [KL(4)], ph: 'Start', msg: '<span class="eq">ans = 1</span>', math: [['ans', '1'], [XV, f(x)], [NV, `${N}`]]});
   let k = 0;
   while(N > 0){
     const odd = N % 2 === 1, before = ans, px = x;
     if(odd) ans *= x;
     x *= x; const oldN = N; N = Math.floor(N / 2);
-    F.push({blocks: B(k, k), lines: [L('while (N > 0)'), L('if (N & 1)')].concat(odd ? [L('ans *= x')] : []).concat([L('x *= x'), L('N >>= 1')]), ph: `bit ${k}`,
-      msg: `<span class="eq">N = ${oldN}: lowest bit ${odd ? `1 → ans = ${f(before)} × ${f(px)} = ${f(ans)}` : '0 → skip'}; x = ${f(px)}² = ${f(x)}; N = ${N}</span>${odd ? `x here is x0^(2^${k}), so ans picks up that power.` : `Bit ${k} isn't in n, so x0^(2^${k}) isn't used.`}`, math: [['ans', f(ans)], ['x', f(x)], ['N', `${N}`]]});
+    F.push({blocks: B(k, k), lines: [KL(5), KL(6)].concat(odd ? [KL(7)] : []).concat([KL(8), KL(9)]), ph: `bit ${k}`,
+      msg: `<span class="eq">${NV} = ${oldN}: lowest bit ${odd ? `1 → ans = ${f(before)} × ${f(px)} = ${f(ans)}` : '0 → skip'}; ${XV} = ${f(px)}² = ${f(x)}; ${NV} = ${N}</span>${odd ? `${XV} here is x^(2^${k}), so ans picks up that power.` : `Bit ${k} isn't in n, so x0^(2^${k}) isn't used.`}`, math: [['ans', f(ans)], [XV, f(x)], [NV, `${N}`]]});
     k++;
   }
-  F.push({blocks: B(k, -1), lines: [L('while (N > 0)'), L('return ans;')], ph: 'Done', msg: `<span class="eq">${f(x0)}^${n} = ${f(ans)}</span>Only ${k} loop step${k === 1 ? '' : 's'} (the number of bits of |n|) instead of ${Math.abs(n)} multiplications.`, math: [['answer', f(ans)]]});
+  F.push({blocks: B(k, -1), lines: [KL(5), KL(10)], ph: 'Done', msg: `<span class="eq">${f(x0)}^${n} = ${f(ans)}</span>Only ${k} loop step${k === 1 ? '' : 's'} (the number of bits of |n|) instead of ${Math.abs(n)} multiplications.`, math: [['answer', f(ans)]]});
   return F;
 }
 

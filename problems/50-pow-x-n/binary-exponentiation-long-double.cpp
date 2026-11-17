@@ -1,0 +1,21 @@
+// Binary exponentiation in long double - O(log n) time, O(1) space
+class Solution {
+public:
+    double myPow(double x, int n) {
+        long long num = n;
+        long double base = x;
+        if (num < 0) {
+            base = 1.0L / base;
+            num = -num;
+        }
+        long double ans = 1.0L;
+        while (num > 0) {
+            if (num & 1) {
+                ans *= base;
+            }
+            base *= base;
+            num >>= 1;
+        }
+        return (double)ans;
+    }
+};
