@@ -1,16 +1,25 @@
 {
   "id": 50,
   "title": "Pow(x, n)",
-  "keyIdea": "Write n in binary. Square x over and over (x, x², x⁴, x⁸…) and multiply the answer by the powers whose bit is 1: x¹³ = x⁸ · x⁴ · x¹. That is about log₂ n steps. For negative n use 1/x, and keep n in a long long because −(−2³¹) overflows an int.",
+  "keyIdea": "Write n in binary. Square x over and over (x, x², x⁴, x⁸…) and multiply the answer by the powers whose bit is 1: x¹³ = x⁸ · x⁴ · x¹. That is about log₂ n steps. For negative n use 1/x, and keep n in a long long because −(−2³¹) overflows an int. Your version also uses long double for extra precision.",
   "approaches": [
     {
-      "name": "Binary exponentiation",
+      "name": "Binary exponentiation (double)",
       "file": "binary-exponentiation.cpp",
-      "best": true,
-      "idea": "I wrote this one (you didn't paste code). N = |n| as long long, x = 1/x if n < 0; while N > 0: if the lowest bit is 1, ans *= x; x *= x; N >>= 1.",
+      "idea": "The version I wrote first: the same loop with x and ans as double.",
       "time": "O(log n)",
       "space": "O(1)",
       "why": "One loop step per bit of n; three variables.",
+      "viz": "viz/pow-x-n-double.html"
+    },
+    {
+      "name": "Binary exponentiation (long double)",
+      "file": "binary-exponentiation-long-double.cpp",
+      "best": true,
+      "idea": "Your code: num = n as long long, base = x as long double; flip base for negative n; while num > 0: if the low bit is 1, ans *= base; base *= base; num >>= 1. Return (double)ans.",
+      "time": "O(log n)",
+      "space": "O(1)",
+      "why": "One loop step per bit of |n|; long double gives extra precision through the squarings.",
       "viz": "viz/pow-x-n.html"
     }
   ],

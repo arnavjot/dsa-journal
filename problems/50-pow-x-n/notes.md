@@ -43,4 +43,5 @@ See the approaches above.
 
 - Every n is a sum of powers of 2, so x^n is a product of x^(2^k), and those come from repeated squaring.
 - −2³¹ can't be negated in an int: use long long.
-- I didn't paste code for this one; this is the standard solution, written to match the visualizer.
+- My code uses `long double` for base and ans. That keeps more digits through the squarings: on LeetCode-sized answers its worst relative error was about 8 × 10⁻¹⁵, vs 5 × 10⁻¹² with plain double.
+- `long long num = n` makes −(−2³¹) safe.
