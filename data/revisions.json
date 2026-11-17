@@ -148,5 +148,6 @@
   "longest-increasing-path-in-a-matrix": {"box":0,"due":"2027-02-01","log":[],"updated":"1"},
   "distinct-subsequences": {"box":0,"due":"2027-02-02","log":[],"updated":"1"},
   "burst-balloons": {"box":0,"due":"2027-02-03","log":[],"updated":"1"},
-  "regular-expression-matching": {"box":0,"due":"2027-02-04","log":[],"updated":"1"}
+  "regular-expression-matching": {"box":0,"due":"2027-02-04","log":[],"updated":"1"},
+  "best-time-to-buy-and-sell-stock-with-cooldown": {"box":0,"due":"2027-02-05","log":[],"updated":"1"}
 }
