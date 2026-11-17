@@ -325,7 +325,7 @@ function dailyCard() {
       <span class="pill ${done === list.length ? 'ok' : 'soon'}">${done}/${list.length} done</span></div>
     <ul class="plist daily-list">${list.map(p => `<li class="${p.solved ? '' : 'todo'}"><a href="#${p.slug}">
       <span class="dot${p.solved ? ' on' : ''}"></span><span class="num">#${p.id}</span><span class="t">${esc(p.title)}</span>
-      <span class="meta"><span class="pill soon">${esc(p.cat.name)}</span><span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span></a></li>`).join('')}</ul>
+      <span class="meta">${lcPill(p)}<span class="pill soon">${esc(p.cat.name)}</span><span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span></a></li>`).join('')}</ul>
   </section>`;
 }
 
@@ -344,7 +344,7 @@ function catCard(c) {
       ${dotHTML(p, p.solved)}
       <span class="num">#${p.id}</span>
       <span class="t">${esc(p.title)}</span>
-      <span class="meta">${p.folder ? '<span class="pill notes">notes</span>' : ''}${duePill(p)}<span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span>
+      <span class="meta">${lcPill(p)}${duePill(p)}<span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span>
     </a></li>`).join('')}</ul>
   </details>`;
 }
@@ -366,7 +366,7 @@ function tidyCode(t) {
 }
 async function renderProblem(p) {
   const v = $('#view');
-  const lc = `https://leetcode.com/problems/${p.lc || p.slug}/`;
+  const lc = lcURL(p);
   const rec = recOf(p);
   const head = `
     <div class="phead"><a class="crumb" href="#"><span class="arr" aria-hidden="true">←</span>${esc(p.cat.name)}</a>${isOwner() ? '' : p.solved ? '<button class="btn solved-btn" id="unmark" title="Tap to unmark">✓ Solved</button>' : '<button class="btn primary" id="markSolved">✓ Mark solved</button>'}</div>
@@ -746,6 +746,9 @@ function dotHTML(p, on) {
   if (isOwner()) return `<span class="dot${on ? ' on' : ''}" title="${on ? 'Solved' : 'Not yet'}"></span>`;
   return `<span class="dot tick${on ? ' on' : ''}" role="checkbox" tabindex="0" aria-checked="${!!on}" data-tick="${p.slug}" title="${on ? 'Solved · tap to untick' : 'Tap when solved'}" aria-label="#${p.id} ${esc(p.title)} solved"></span>`;
 }
+// "LeetCode ↗" pill inside a list row: opens the problem on LeetCode in a new tab (the row itself still opens the journal page)
+const lcURL = p => `https://leetcode.com/problems/${p.lc || p.slug}/`;
+function lcPill(p) { return `<span class="pill lc" role="link" tabindex="0" data-lc="${lcURL(p)}" title="Open #${p.id} on LeetCode">LeetCode ↗</span>`; }
 function toggleTick(slug) {
   const p = S.bySlug[slug]; if (!p) return;
   if (p.solved) {
@@ -761,10 +764,14 @@ function toggleTick(slug) {
   const again = $(`[data-tick="${CSS.escape(slug)}"]`); if (again) again.focus({ preventScroll: true });
 }
 document.addEventListener('click', e => {
+  const l = e.target.closest('[data-lc]');
+  if (l) { e.preventDefault(); e.stopPropagation(); window.open(l.dataset.lc, '_blank', 'noopener'); return; }
   const t = e.target.closest('[data-tick]'); if (!t) return;
   e.preventDefault(); e.stopPropagation(); toggleTick(t.dataset.tick);
 }, true);
 document.addEventListener('keydown', e => {
+  const l = e.target.closest && e.target.closest('[data-lc]');
+  if (l && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); e.stopPropagation(); window.open(l.dataset.lc, '_blank', 'noopener'); return; }
   const t = e.target.closest && e.target.closest('[data-tick]');
   if (t && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); toggleTick(t.dataset.tick); }
 });
@@ -773,7 +780,7 @@ document.addEventListener('keydown', e => {
 function plRow(p, done, extra = '', tick = true) {
   return `<li class="${done ? 'done' : ''}"><a href="#${p.slug}">
     ${tick ? dotHTML(p, done) : '<span class="dot on"></span>'}<span class="num">#${p.id}</span><span class="t">${esc(p.title)}</span>
-    <span class="meta">${extra}${p.folder ? '<span class="pill notes">notes</span>' : ''}<span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span></a></li>`;
+    <span class="meta">${extra}${lcPill(p)}<span class="diff ${p.difficulty}">${p.difficulty[0]}</span></span></a></li>`;
 }
 function todayParts() {
   const fresh = planToday(), dueAll = revisionsDue(), revs = dueAll.slice(0, DAILY_CAP);
