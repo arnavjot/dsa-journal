@@ -91,6 +91,9 @@ details[open] .chev{transform:rotate(90deg)}
 .pill.weak{background:var(--hard);color:var(--surface)}
 .pill.ok{background:var(--easy-bg);color:var(--easy)}
 .pill.notes{background:var(--accent-soft);color:var(--accent)}
+.pill.lc{background:var(--accent-soft);color:var(--accent);cursor:pointer}
+.pill.lc:hover{background:var(--accent);color:var(--surface)}
+.pill.lc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .diff{font-size:12px;font-weight:700}
 .diff.Easy{color:var(--easy)} .diff.Medium{color:var(--med)} .diff.Hard{color:var(--hard)}
 .plist{list-style:none;margin:0;padding:0 8px 10px;border-top:1px solid var(--line)}
