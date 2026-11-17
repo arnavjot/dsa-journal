@@ -1,0 +1,59 @@
+{
+  "id": 494,
+  "title": "Target Sum",
+  "keyIdea": "Put '+' or '−' before each number to hit target. If the '+' numbers sum to P, then P − (total − P) = target, so P = (total + target) / 2. Count subsets with sum P using a 0/1 knapsack row (backwards).",
+  "approaches": [
+    {
+      "name": "Count subsets with sum P",
+      "file": "subset-count.cpp",
+      "best": true,
+      "idea": "I wrote this one (you didn't paste code). Reject if |target| > total or (total + target) is odd; dp[0] = 1; for each x, for s = P down to x: dp[s] += dp[s − x].",
+      "time": "O(n × P)",
+      "space": "O(P)",
+      "why": "n numbers × P sums; one row.",
+      "viz": "viz/target-sum.html"
+    }
+  ],
+  "quiz": [
+    {
+      "q": "Why P = (total + target) / 2?",
+      "options": [
+        "'+' sum − '−' sum = target and '+' sum + '−' sum = total",
+        "It is a guess",
+        "Because of the zeros",
+        "To halve the work"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "Why loop s downwards?",
+      "options": [
+        "Each number can be used at most once (0/1 knapsack)",
+        "For speed",
+        "Upward is the same",
+        "Because target can be negative"
+      ],
+      "answer": 0
+    },
+    {
+      "q": "How do zeros affect the count?",
+      "options": [
+        "Each 0 can be + or −, doubling the count; dp[s] += dp[s] does that",
+        "They are ignored",
+        "They make it 0",
+        "They break the formula"
+      ],
+      "answer": 0
+    }
+  ],
+  "steps": [
+    "Every number gets a sign? Zeros? Negative target?",
+    "Count Example 1 by hand.",
+    "Brute force: try all 2ⁿ sign choices. Cost?",
+    "\"Assign + / − to reach a target\" → which subset problem?",
+    "Plan the reject checks and the knapsack row.",
+    "Code it.",
+    "Dry-run [0,1,2] → 3.",
+    "Time and space?"
+  ]
+}
